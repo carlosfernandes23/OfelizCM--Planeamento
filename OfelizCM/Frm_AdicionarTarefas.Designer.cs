@@ -331,7 +331,6 @@
             this.ComboBoxPreparadorAdd.Size = new System.Drawing.Size(222, 36);
             this.ComboBoxPreparadorAdd.TabIndex = 25;
             this.ComboBoxPreparadorAdd.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.ComboBoxPreparadorAdd.SelectedIndexChanged += new System.EventHandler(this.ComboBoxPreparadorAdd_SelectedIndexChanged);
             // 
             // ComboBoxPrioAdd
             // 
@@ -354,7 +353,6 @@
             this.ComboBoxPrioAdd.Size = new System.Drawing.Size(352, 36);
             this.ComboBoxPrioAdd.TabIndex = 26;
             this.ComboBoxPrioAdd.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.ComboBoxPrioAdd.SelectedIndexChanged += new System.EventHandler(this.ComboBoxPrioAdd_SelectedIndexChanged);
             // 
             // DataGridViewAddTarefas
             // 
@@ -430,7 +428,6 @@
             this.DataGridViewAddTarefas.ThemeStyle.RowsStyle.Height = 28;
             this.DataGridViewAddTarefas.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.DataGridViewAddTarefas.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            this.DataGridViewAddTarefas.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewAddTarefas_CellContentClick);
             // 
             // DateTimePickerInicio
             // 
@@ -452,7 +449,6 @@
             this.DateTimePickerInicio.Size = new System.Drawing.Size(234, 32);
             this.DateTimePickerInicio.TabIndex = 28;
             this.DateTimePickerInicio.Value = new System.DateTime(2024, 12, 1, 19, 7, 10, 494);
-            this.DateTimePickerInicio.ValueChanged += new System.EventHandler(this.DateTimePickerInicio_ValueChanged);
             // 
             // label8
             // 
@@ -567,7 +563,6 @@
             this.TextBoxNObra.Size = new System.Drawing.Size(162, 36);
             this.TextBoxNObra.TabIndex = 38;
             this.TextBoxNObra.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBoxNObra.TextChanged += new System.EventHandler(this.TextBoxNObra_TextChanged);
             // 
             // guna2VScrollBar1
             // 
@@ -993,7 +988,6 @@
             this.guna2ControlBox3.Name = "guna2ControlBox3";
             this.guna2ControlBox3.Size = new System.Drawing.Size(30, 25);
             this.guna2ControlBox3.TabIndex = 79;
-            this.guna2ControlBox3.Click += new System.EventHandler(this.guna2ControlBox3_Click);
             // 
             // guna2ControlBox2
             // 
@@ -1102,7 +1096,6 @@
             this.TextBoxObsAdd.Size = new System.Drawing.Size(389, 142);
             this.TextBoxObsAdd.TabIndex = 84;
             this.TextBoxObsAdd.Text = "";
-            this.TextBoxObsAdd.TextChanged += new System.EventHandler(this.TextBoxObsAdd_TextChanged);
             // 
             // guna2DragControl2
             // 
@@ -1133,7 +1126,6 @@
             this.guna2HtmlLabel4.TabIndex = 89;
             this.guna2HtmlLabel4.Text = "Pendente / Concluido";
             this.guna2HtmlLabel4.Visible = false;
-            this.guna2HtmlLabel4.Click += new System.EventHandler(this.guna2HtmlLabel4_Click);
             // 
             // guna2ContainerControl5
             // 
@@ -1156,7 +1148,6 @@
             this.guna2ContainerControl5.TabIndex = 90;
             this.guna2ContainerControl5.Text = "guna2ContainerControl5";
             this.guna2ContainerControl5.Visible = false;
-            this.guna2ContainerControl5.Click += new System.EventHandler(this.guna2ContainerControl5_Click);
             // 
             // guna2ImageButton13
             // 
@@ -1183,7 +1174,6 @@
             this.pictureBox7.Size = new System.Drawing.Size(195, 31);
             this.pictureBox7.TabIndex = 44;
             this.pictureBox7.TabStop = false;
-            this.pictureBox7.Click += new System.EventHandler(this.pictureBox7_Click);
             // 
             // guna2ImageButton2
             // 

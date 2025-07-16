@@ -49,7 +49,6 @@ namespace OfelizCM
             VerificarUsuario();
         }
 
-
         private void Atualizartabaleas()
         {
             ComunicaBDparaTabelaAbertas();
@@ -58,7 +57,6 @@ namespace OfelizCM
             OrdenarDataGridViews();
 
         }
-
 
         private void atualizardaComobobox()
         {
@@ -85,7 +83,6 @@ namespace OfelizCM
                 DataGridViewAguardarAprovação.Sort(DataGridViewAguardarAprovação.Columns["Data de Conclusão"], System.ComponentModel.ListSortDirection.Ascending);
             }
         }
-
 
         public void VerificarUsuario()
         {
@@ -420,7 +417,6 @@ namespace OfelizCM
             return System.Text.RegularExpressions.Regex.Replace(input, @"[^\w\s]", " ");
         }
 
-
         public void CarregarPreparadoresNaComboBox()
         {
             ComunicaBD BD = new ComunicaBD();
@@ -466,6 +462,7 @@ namespace OfelizCM
 
             }
         }
+
         public void InserirTarefaNoBD()
         {
             string nomeObra = labelNomeObra.Text;
@@ -645,9 +642,6 @@ namespace OfelizCM
             }
         }
 
-        private void DataGridViewAddTarefas_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        { }
-
         private void ComboBoxAnoAdd_SelectedIndexChanged(object sender, EventArgs e)
         {
             CarregarPastasNaComboBoxObras();
@@ -656,20 +650,6 @@ namespace OfelizCM
         private void ComboBoxObrasAdd_SelectedIndexChanged(object sender, EventArgs e)
         {
             CarregarNomeObraPorCaminho();
-        }
-
-        private void ComboBoxPreparadorAdd_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void ComboBoxEstadoAdd_SelectedIndexChanged(object sender, EventArgs e)
-        { }
-
-        private void ComboBoxPrioAdd_SelectedIndexChanged(object sender, EventArgs e)
-        { }
-
-        private void TextBoxTarefaAdd_TextChanged(object sender, EventArgs e)
-        {
         }
 
         private void ButtonConfirmarTarefa_Click(object sender, EventArgs e)
@@ -685,13 +665,6 @@ namespace OfelizCM
             ExcluirTarefaSelecionada();
             FiltrarTarefas2();
         }
-
-        private void ButtonTerminarTarefa_Click(object sender, EventArgs e)
-        {
-        }
-
-
-
 
         private void ButtonAtualizar_Click(object sender, EventArgs e)
         {
@@ -791,10 +764,8 @@ namespace OfelizCM
             this.DataGridViewAddTarefas.SelectionChanged += new System.EventHandler(this.DataGridViewAddTarefas_SelectionChanged);
             this.DataGridViewPendente.SelectionChanged += new System.EventHandler(this.DataGridViewPendente_SelectionChanged);
             this.DataGridViewAguardarAprovação.SelectionChanged += new System.EventHandler(this.DataGridViewConcluido_SelectionChanged);
-
-
-
         }
+
         private void DataGridViewAddTarefas_SelectionChanged(object sender, EventArgs e)
         {
             if (DataGridViewAddTarefas.SelectedRows.Count > 0)
@@ -821,18 +792,6 @@ namespace OfelizCM
                 DataGridViewPendente.ClearSelection();
             }
         }
-
-
-        private void DataGridViewRelatorio_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void guna2Button2_Click(object sender, EventArgs e)
-        {
-
-        }
-
 
         private void AtualizarParaPendenteVarios()
         {
@@ -900,9 +859,7 @@ namespace OfelizCM
             {
                 MessageBox.Show("Por favor, selecione uma tarefa para atualizar o estado.");
             }
-        }
-
-
+        }        
 
         private void AtualizarParaPendenteDefeniçoesOfeliz()
         {
@@ -971,8 +928,6 @@ namespace OfelizCM
             }
         }
 
-
-
         private void AtualizarParaPendenteDefeniçoesCliente()
         {
             DataGridView selectedDataGridView = null;
@@ -1040,8 +995,6 @@ namespace OfelizCM
             }
         }
 
-
-
         private void guna2Button2_Click_1(object sender, EventArgs e)
         {
             AtualizarParaPendenteVarios();
@@ -1054,8 +1007,6 @@ namespace OfelizCM
             Atualizartabaleas();
 
         }
-
-
 
         private void guna2Button3_Click(object sender, EventArgs e)
         {
@@ -1073,7 +1024,6 @@ namespace OfelizCM
             Atualizartabaleas();
 
         }
-
 
         private void AtualizarEstadoTarefa()
         {
@@ -1154,7 +1104,6 @@ namespace OfelizCM
             }
         }
 
-
         private void guna2Button5_Click(object sender, EventArgs e)
         {
             TextBoxNObra.Clear();
@@ -1167,7 +1116,6 @@ namespace OfelizCM
             DateTimePickerInicio.Value = DateTime.Now;
             DateTimePickerConclusao.Value = DateTime.Now.AddDays(10);
         }
-
 
         private void FiltrarTarefas()
         {
@@ -1268,8 +1216,7 @@ namespace OfelizCM
 
             }
         }
-
-
+        
         private void FiltrarDataGridViewPendente(ComunicaBD BD, string obraSelecionado, string preparadorSelecionado, string prioridadeSelecionada)
         {
             string query = "SELECT * FROM dbo.RegistoTarefas WHERE 1=1";
@@ -1334,8 +1281,6 @@ namespace OfelizCM
                 DataGridViewPendente.Columns["Tarefa"].Width = 200;
                 DataGridViewPendente.Columns["Preparador"].Width = 50;
                 DataGridViewPendente.Columns["Observações"].Width = 750;
-
-
             }
         }
 
@@ -1404,29 +1349,7 @@ namespace OfelizCM
                 DataGridViewAguardarAprovação.Columns["Preparador"].Width = 50;
                 DataGridViewAguardarAprovação.Columns["Observações"].Width = 750;
             }
-        }
-
-
-
-        private void pictureBox7_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void guna2ContainerControl5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void guna2HtmlLabel4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void DateTimePickerInicio_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
+        }    
 
         private void AtualizarValores()
         {
@@ -1607,7 +1530,6 @@ namespace OfelizCM
             }
         }
 
-
         private void AtualizarValoresConcluido()
         {
             if (DataGridViewAddTarefas.SelectedRows.Count > 0)
@@ -1635,9 +1557,7 @@ namespace OfelizCM
                 MessageBox.Show("Por favor, selecione uma tarefa para concluir.");
                 return;
             }
-
             var selectedRow = dataGridView.SelectedRows[0];
-
             if (selectedRow == null)
             {
                 MessageBox.Show("Nenhuma linha selecionada.");
@@ -1664,7 +1584,6 @@ namespace OfelizCM
                 }
 
                 ComunicaBD BD = new ComunicaBD();
-
                 try
                 {
                     BD.ConectarBD();
@@ -1687,7 +1606,6 @@ namespace OfelizCM
                 }
             }
         }
-
 
         private void guna2ImageButton3_Click(object sender, EventArgs e)
         {
@@ -1719,7 +1637,6 @@ namespace OfelizCM
                 MessageBox.Show("Erro ao tentar abrir o arquivo PDF: " + ex.Message);
             }
         }
-
 
         private void DataGridViewAddTarefas_CellClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -1798,12 +1715,7 @@ namespace OfelizCM
             AtualizarValoresConcluido();
             Atualizartabaleas();
         }
-
-        private void TextBoxNObra_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
+                
         private void FiltrarTarefas2()
         {
             string PreparadorSelecionado = null;
@@ -1869,7 +1781,6 @@ namespace OfelizCM
 
             }
         }
-
 
         private void FiltrarDataGridViewPendente2(ComunicaBD BD, string PreparadorSelecionado)
         {
@@ -1963,12 +1874,7 @@ namespace OfelizCM
                 DataGridViewAguardarAprovação.Columns["Preparador"].Width = 50;
                 DataGridViewAguardarAprovação.Columns["Observações"].Width = 750;
             }
-        }
-
-        private void guna2ControlBox3_Click(object sender, EventArgs e)
-        {
-
-        }
+        }            
 
         private void guna2ImageButton1_Click(object sender, EventArgs e)
         {
@@ -2029,6 +1935,10 @@ namespace OfelizCM
 
         private void guna2ImageButton6_Click(object sender, EventArgs e)
         {
+            if (ExisteTarefaEmAndamento())
+            {
+                return;
+            }
             ExcluirTarefaSelecionada();
             FiltrarTarefas2();
         }
@@ -2123,8 +2033,6 @@ namespace OfelizCM
             }
         }
 
-                
-
         static async Task<string> VerificarOrtografiaComLanguageTool(string texto)
         {
             string url = "https://api.languagetool.org/v2/check";
@@ -2169,12 +2077,6 @@ namespace OfelizCM
                 MessageBox.Show($"Erro ao acessar a API: {ex.Message}");
                 return texto;
             }
-        }
-
-
-        private void TextBoxObsAdd_TextChanged(object sender, EventArgs e)
-        {
-            
         }
 
         private void enviarsoldadura()
@@ -2336,7 +2238,6 @@ namespace OfelizCM
             { }
         }
 
-
         private void VerificarTarefaExistente()
         {
             string numerodaObra;
@@ -2425,19 +2326,97 @@ namespace OfelizCM
             }
         }
 
+        private bool ExisteTarefaEmAndamento()
+        {
+            string Numeroobra = null;
+            string NomeObra = null;
+            string Tarefa = null;
+            string Preparador = null;
+            string Prioridades = null;
+            string DataTarefa = null;
+            string horafinal = "00:00:00";
+            string QtdHora = "00:00:00";
 
+            if (DataGridViewAddTarefas.SelectedRows.Count > 0)
+            {
+                Numeroobra = DataGridViewAddTarefas.SelectedRows[0].Cells["Numero da Obra"].Value?.ToString().Trim();
+                Tarefa = DataGridViewAddTarefas.SelectedRows[0].Cells["Tarefa"].Value?.ToString().Trim();
+                Preparador = DataGridViewAddTarefas.SelectedRows[0].Cells["Preparador"].Value?.ToString().Trim();
+                Prioridades = DataGridViewAddTarefas.SelectedRows[0].Cells["Prioridades"].Value?.ToString().Trim();
+                DataTarefa = DateTime.Now.ToString("dd/MM/yyyy"); 
+            }
+            else if (DataGridViewPendente.SelectedRows.Count > 0)
+            {
+                Numeroobra = DataGridViewPendente.SelectedRows[0].Cells["Numero da Obra"].Value?.ToString().Trim();
+                Tarefa = DataGridViewPendente.SelectedRows[0].Cells["Tarefa"].Value?.ToString().Trim();
+                Preparador = DataGridViewPendente.SelectedRows[0].Cells["Preparador"].Value?.ToString().Trim();
+                Prioridades = DataGridViewPendente.SelectedRows[0].Cells["Prioridades"].Value?.ToString().Trim();
+                DataTarefa = DateTime.Now.ToString("dd/MM/yyyy");
+            }
+            else if (DataGridViewAguardarAprovação.SelectedRows.Count > 0)
+            {
+                Numeroobra = DataGridViewAguardarAprovação.SelectedRows[0].Cells["Numero da Obra"].Value?.ToString().Trim();
+                Tarefa = DataGridViewAguardarAprovação.SelectedRows[0].Cells["Tarefa"].Value?.ToString().Trim();
+                Preparador = DataGridViewAguardarAprovação.SelectedRows[0].Cells["Preparador"].Value?.ToString().Trim();
+                Prioridades = DataGridViewAguardarAprovação.SelectedRows[0].Cells["Prioridades"].Value?.ToString().Trim();
+                DataTarefa = DateTime.Now.ToString("dd/MM/yyyy");
+            }
 
+            ComunicaBD comunicaBD = new ComunicaBD();
+            try
+            {
+                comunicaBD.ConectarBD();
+                              
+                string query = @"SELECT 1 FROM dbo.RegistoTempo 
+                         WHERE [Numero da Obra] = @NumeroObra  
+                            AND Tarefa = @Tarefa
+                            AND Preparador = @Preparador
+                            AND Prioridade = @Prioridade
+                            AND [Data da Tarefa] = @DataTarefa
+                            AND [Qtd de Hora] = @QtdHora 
+                            AND [Hora Final] = @Horafinal";
 
+               
 
+                using (SqlCommand cmd = new SqlCommand(query, comunicaBD.GetConnection()))
+                {
+                    cmd.Parameters.AddWithValue("@NumeroObra", Numeroobra);
+                    cmd.Parameters.AddWithValue("@Tarefa", Tarefa);
+                    cmd.Parameters.AddWithValue("@Preparador", Preparador);
+                    cmd.Parameters.AddWithValue("@Prioridade", Prioridades);
+                    cmd.Parameters.AddWithValue("@DataTarefa", DataTarefa);
+                    cmd.Parameters.AddWithValue("@QtdHora", QtdHora);
+                    cmd.Parameters.AddWithValue("@Horafinal", horafinal);
 
-
-
-
-
-
-
-
-
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            MessageBox.Show(
+                                            $"O Preparador: {Preparador} tem a tarefa a decorrer",
+                                            "Aviso",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Warning
+                                        );
+                            return true;
+                        }
+                        else
+                        {                            
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao verificar tarefa em andamento: " + ex.Message);
+                return true; 
+            }
+            finally
+            {
+                comunicaBD.DesonectarBD();
+            }
+        }
     }
 }
 

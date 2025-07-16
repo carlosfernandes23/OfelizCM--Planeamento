@@ -57,6 +57,7 @@ namespace OfelizCM
             ComunicaBDparaTabelaTipologia();
             ComunicaBDparaTabelaUserPassword();
         }
+
         public void VerificarUsuario()
         {
             string nomeUsuario = Environment.UserName.ToLower();
@@ -159,8 +160,7 @@ namespace OfelizCM
             {
                 BD.DesonectarBD(); 
             }
-        }
-
+        }        
 
         private void ComunicaBDparaTabelaPreparadores()
         {
@@ -192,8 +192,7 @@ namespace OfelizCM
             {
                 comunicaBD.DesonectarBD();
             }
-        }
-              
+        }             
 
         private void AtualizarPreparadores()
         {
@@ -279,7 +278,6 @@ namespace OfelizCM
                 }
             }
         }
-
 
         private void guna2Button4_Click(object sender, EventArgs e)
         {
@@ -523,8 +521,7 @@ namespace OfelizCM
                 }
             }
         }
-
-
+        
         private void DataGridViewPreparadores_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -560,8 +557,6 @@ namespace OfelizCM
         }
 
         private void ComunicaBDparaTabelaPreparadoresAutorizacao()
-
-
         {
             ComunicaBD comunicaBD = new ComunicaBD();
 
@@ -687,11 +682,6 @@ namespace OfelizCM
 
         }
 
-        private void DataGridViewPrioridades_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
         private void ComunicaBDparaTabelaTipologia()
         {
             ComunicaBD comunicaBD = new ComunicaBD();
@@ -756,7 +746,6 @@ namespace OfelizCM
                 BD.DesonectarBD();
             }
         }
-
 
         private void guna2Button10_Click(object sender, EventArgs e)
         {
@@ -882,7 +871,7 @@ namespace OfelizCM
                 comunicaBD.DesonectarBD();
             }
         }
-
+        
         public void ExcluirUserePasswordSelecionada()
         {
             if (DataGridViewPassword.SelectedRows.Count > 0)

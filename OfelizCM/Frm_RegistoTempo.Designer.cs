@@ -177,7 +177,6 @@
             this.DataGridViewRegistoTempo.ThemeStyle.RowsStyle.Height = 28;
             this.DataGridViewRegistoTempo.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.DataGridViewRegistoTempo.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            this.DataGridViewRegistoTempo.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewRegistoTempo_CellContentClick);
             // 
             // ButtonConfirmarTarefa
             // 
@@ -259,7 +258,6 @@
             this.TextBoxNumeroObra.SelectedText = "";
             this.TextBoxNumeroObra.Size = new System.Drawing.Size(149, 31);
             this.TextBoxNumeroObra.TabIndex = 31;
-            this.TextBoxNumeroObra.TextChanged += new System.EventHandler(this.TextBoxAtualizar_TextChanged);
             // 
             // ButtonAtualizarDados
             // 
@@ -355,7 +353,6 @@
             this.DateTimePickerApioaaObra.Size = new System.Drawing.Size(217, 32);
             this.DateTimePickerApioaaObra.TabIndex = 75;
             this.DateTimePickerApioaaObra.Value = new System.DateTime(2024, 12, 1, 19, 7, 10, 494);
-            this.DateTimePickerApioaaObra.ValueChanged += new System.EventHandler(this.DateTimePickerApioaaObra_ValueChanged);
             // 
             // label7
             // 
@@ -392,7 +389,6 @@
             this.NumericUpDownMFinal.Size = new System.Drawing.Size(60, 30);
             this.NumericUpDownMFinal.TabIndex = 72;
             this.NumericUpDownMFinal.UpDownButtonFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.NumericUpDownMFinal.UpDownButtonForeColor = System.Drawing.Color.White;
             // 
             // NumericUpDownHFinal
             // 
@@ -409,7 +405,6 @@
             this.NumericUpDownHFinal.Size = new System.Drawing.Size(60, 30);
             this.NumericUpDownHFinal.TabIndex = 71;
             this.NumericUpDownHFinal.UpDownButtonFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.NumericUpDownHFinal.UpDownButtonForeColor = System.Drawing.Color.White;
             this.NumericUpDownHFinal.Value = new decimal(new int[] {
             18,
             0,
@@ -431,7 +426,6 @@
             this.NumericUpDownMInicio.Size = new System.Drawing.Size(60, 30);
             this.NumericUpDownMInicio.TabIndex = 70;
             this.NumericUpDownMInicio.UpDownButtonFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.NumericUpDownMInicio.UpDownButtonForeColor = System.Drawing.Color.White;
             this.NumericUpDownMInicio.Value = new decimal(new int[] {
             30,
             0,
@@ -453,7 +447,6 @@
             this.NumericUpDownHInicio.Size = new System.Drawing.Size(60, 30);
             this.NumericUpDownHInicio.TabIndex = 69;
             this.NumericUpDownHInicio.UpDownButtonFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.NumericUpDownHInicio.UpDownButtonForeColor = System.Drawing.Color.White;
             this.NumericUpDownHInicio.Value = new decimal(new int[] {
             8,
             0,
@@ -913,7 +906,6 @@
             this.NumericUpDownMinutos.Size = new System.Drawing.Size(60, 30);
             this.NumericUpDownMinutos.TabIndex = 68;
             this.NumericUpDownMinutos.UpDownButtonFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.NumericUpDownMinutos.UpDownButtonForeColor = System.Drawing.Color.White;
             this.NumericUpDownMinutos.Value = new decimal(new int[] {
             30,
             0,
@@ -935,7 +927,6 @@
             this.NumericUpDownHoras.Size = new System.Drawing.Size(60, 30);
             this.NumericUpDownHoras.TabIndex = 67;
             this.NumericUpDownHoras.UpDownButtonFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.NumericUpDownHoras.UpDownButtonForeColor = System.Drawing.Color.White;
             this.NumericUpDownHoras.Value = new decimal(new int[] {
             1,
             0,

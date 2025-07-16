@@ -29,35 +29,26 @@ namespace OfelizCM
             ComunicaBDparaTabelaObeservações();
             ComunicaBDparaTabelaConluido();
             DataGridViewRelatorio.CellClick += DataGridViewRelatorio_CellClick;
-            DataGridViewRelatorioOBS.CellClick += DataGridViewRelatorioOBS_CellClick;
-
-            
-
+            DataGridViewRelatorioOBS.CellClick += DataGridViewRelatorioOBS_CellClick;         
             DataGridViewRelatorioOBS.Scroll += DataGridViewRelatorioOBS_Scroll;
-            DataGridViewRelatorio.Scroll += DataGridViewRelatorio_Scroll;
-
-            
+            DataGridViewRelatorio.Scroll += DataGridViewRelatorio_Scroll;            
         }
 
         private void DataGridViewRelatorio_Scroll(object sender, ScrollEventArgs e)
         {
             DataGridViewRelatorioOBS.FirstDisplayedScrollingRowIndex = DataGridViewRelatorio.FirstDisplayedScrollingRowIndex;
             DataGridViewRelatorioOBS.HorizontalScrollingOffset = DataGridViewRelatorio.HorizontalScrollingOffset;
-
         }
 
         private void DataGridViewRelatorioOBS_Scroll(object sender, ScrollEventArgs e)
         {
             DataGridViewRelatorio.FirstDisplayedScrollingRowIndex = DataGridViewRelatorioOBS.FirstDisplayedScrollingRowIndex;
             DataGridViewRelatorio.HorizontalScrollingOffset = DataGridViewRelatorioOBS.HorizontalScrollingOffset;
-
         }
-
 
         private void ComunicaBDparaTabelaRelatoriodias()
         {
             ComunicaBD comunicaBD = new ComunicaBD();
-
             try
             {
                 comunicaBD.ConectarBD();
@@ -68,7 +59,6 @@ namespace OfelizCM
                 DateTime ultimoDomingo = hoje.AddDays(-diasAtras);
 
                 string dataUltimoDomingo = ultimoDomingo.ToString("yyyy-MM-dd");
-
                 string query = "SELECT Id, Preparador, [Numero da Obra], [Nome da Obra], Tarefa, Relatorio, Prioridades, [Data de Conclusão], Concluido, [Observações do Relatorio] " +
                                "FROM dbo.RegistoTarefas " +
                                "WHERE Relatorio IS NOT NULL " +
@@ -121,11 +111,9 @@ namespace OfelizCM
             }
         }
 
-
         private void ComunicaBDparaTabelaConluido()
         {
             ComunicaBD comunicaBD = new ComunicaBD();
-
             try
             {
                 comunicaBD.ConectarBD();
@@ -168,12 +156,9 @@ namespace OfelizCM
             }
         }
 
-
-
         private void ComunicaBDparaTabelaObeservações()
         {
             ComunicaBD comunicaBD = new ComunicaBD();
-
             try
             {
                 comunicaBD.ConectarBD();
@@ -203,7 +188,6 @@ namespace OfelizCM
                 }
 
                 DataGridViewRelatorioOBS.DataSource = dataTable;
-
                 DataGridViewRelatorioOBS.Columns["Id"].Visible = false;
                 DataGridViewRelatorioOBS.Columns["Data de Conclusão"].Visible = false;
                 DataGridViewRelatorioOBS.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -225,10 +209,7 @@ namespace OfelizCM
         {
             string novaObservacao = DataGridViewRelatorioOBS.SelectedRows[0].Cells["Observações do Relatorio"].Value?.ToString();
             string idTarefa = DataGridViewRelatorioOBS.SelectedRows[0].Cells["Id"].Value?.ToString();
-
-
             ComunicaBD comunicaBD = new ComunicaBD();
-
             try
             {
                 comunicaBD.ConectarBD();
@@ -255,7 +236,6 @@ namespace OfelizCM
                 comunicaBD.DesonectarBD();
             }
         }
-
 
         private void DataGridViewRelatorio_CellClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -302,9 +282,7 @@ namespace OfelizCM
             string estado = "";
             string datadeconclusao = "2100-01-20";
             int concluido = 0;
-
             ComunicaBD comunicaBD = new ComunicaBD();
-
             try
             {
                 comunicaBD.ConectarBD();
@@ -319,10 +297,7 @@ namespace OfelizCM
                 cmd.Parameters.AddWithValue("@Estado", estado);
                 cmd.Parameters.AddWithValue("@datadeconclusao", datadeconclusao);
                 cmd.Parameters.AddWithValue("@concluido", concluido);
-
-
                 cmd.ExecuteNonQuery();
-
                 MessageBox.Show("Tarefa foi Retirada!");
             }
             catch (Exception ex)
@@ -343,12 +318,9 @@ namespace OfelizCM
             {
                 Directory.CreateDirectory(folderPath);
             }
-
             string filePath = Path.Combine(folderPath, "relatoriotarefasexpiradas.pdf");
-
             ExportDataGridViewToPdf export = new ExportDataGridViewToPdf(DataGridViewRelatorio);
             export.ExportToPdfRelaotorio(filePath);
-
             try
             {
                 if (File.Exists(filePath))
@@ -369,17 +341,14 @@ namespace OfelizCM
         private void guna2ImageButton15_Click(object sender, EventArgs e)
         {
             string folderPath = @"C:\r";
-
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);
             }
 
             string filePath = Path.Combine(folderPath, "relatoriotarefasconcluidas.pdf");
-
             ExportDataGridViewToPdf export = new ExportDataGridViewToPdf(DataGridViewConcluido);
             export.ExportToPdfRelaotorioConcluido(filePath);
-
             try
             {
                 if (File.Exists(filePath))
@@ -396,5 +365,6 @@ namespace OfelizCM
                 MessageBox.Show("Erro ao tentar abrir o arquivo PDF: " + ex.Message);
             }
         }
+
     }
 }

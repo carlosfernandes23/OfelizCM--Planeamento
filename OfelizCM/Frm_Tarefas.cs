@@ -87,19 +87,14 @@ namespace OfelizCM
             VerificarUsuario();
             SemNenhumatarefa();
             ComunicaBDparaTabelaTarefasAbertasHelder();
-
             timer3.Interval = 1000;
             timer3.Start();
-
             filtarLinha();
-
             label1.Text = DateTime.Now.ToString("dd/MM/yyyy");
-
             Timer timerVerificacao = new Timer();
             timerVerificacao.Interval = 60000; 
             timerVerificacao.Tick += TimerVerificacao_Tick;
             timerVerificacao.Start();
-
         }
 
         private void VerificarVisibilidade(object sender, EventArgs e)
@@ -191,10 +186,7 @@ namespace OfelizCM
         private void TimerContagemTempo_Tick(object sender, EventArgs e)
         {
             TimeSpan tempoDecorrido = DateTime.Now - new DateTime(Properties.Settings.Default.HoraInicioTicks);
-            //TimeSpan tempoDecorrido = DateTime.Now - horaInicio;
-
             labelHoracontar1.Text = tempoDecorrido.ToString(@"hh\:mm\:ss");
-
             Properties.Settings.Default.TempoDecorridoTicks = tempoDecorrido.Ticks;
             Properties.Settings.Default.Save();
         }
@@ -224,7 +216,6 @@ namespace OfelizCM
             labelIndicadorPercentagem.Text = "0%";
             timerProgresso.Start();
         }
-
 
         private void btnAtualizarProgressBar_Click(object sender, EventArgs e)
         {
@@ -259,14 +250,11 @@ namespace OfelizCM
             }
         }
 
-        
-
         private void ComunicaBDparaTabela()
         {
             string nomePreparador = Environment.UserName;
             string[] partes = nomePreparador.Split('.');
             List<string> partesComMaiusculas = new List<string>();
-
             foreach (string parte in partes)
             {
                 if (!string.IsNullOrEmpty(parte))
@@ -276,9 +264,7 @@ namespace OfelizCM
                 }
             }
             string nomeFormatado = string.Join(" ", partesComMaiusculas);
-
             ComunicaBD comunicaBD = new ComunicaBD();
-
             try
             {
                 comunicaBD.ConectarBD();
@@ -314,8 +300,6 @@ namespace OfelizCM
 
         }
 
-
-
         private void ButtonIniciarTarefa_Click(object sender, EventArgs e)
         {
             DateTime horaInicio = DateTime.Now;
@@ -341,16 +325,13 @@ namespace OfelizCM
                 Properties.Settings.Default.Save();
                 SalvarHoraFimNaBD();
                 AtualizarTotalTarefas();
-
             }
         }
 
         public void VerificarUsuario()
         {
             string nomeUsuario = Environment.UserName.ToLower();
-
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -370,21 +351,15 @@ namespace OfelizCM
                         if (autorizacao)
                         {
                             guna2ImageButton3.Visible = true;
-
-
                         }
                         else
                         {
                             guna2ImageButton3.Visible = false;
-
-
                         }
                     }
                     else
                     {
-
                         guna2ImageButton3.Visible = false;
-
                     }
 
                     string nomeUsuario2 = Properties.Settings.Default.NomeUsuario;
@@ -405,230 +380,11 @@ namespace OfelizCM
             }
         }
 
-        //private void EnviarHoraInicioParaBaseDeDados()
-        //{
-        //    string Observações = TextBoxObs.Text;
-        //    if (string.IsNullOrEmpty(TextBoxObs.Text))
-        //    {
-        //        Observações = "0";
-        //    }
-        //    string HoraInicio = labelHoradeInicio.Text;
-        //    string HoraFinal = "00:00:00";
-        //    string QtdHora = "00:00:00";
-
-        //    DateTime dataHoje = DateTime.Now;
-        //    string DatadaTarefa = dataHoje.ToString("dd/MM/yyyy");
-
-
-        //    if (DataGridViewTarefas.SelectedRows.Count > 0)
-        //    {
-        //        int IdTarefa = Convert.ToInt32(DataGridViewTarefas.SelectedRows[0].Cells["Id"].Value);
-        //        string NumeroObra = DataGridViewTarefas.SelectedRows[0].Cells["Numero da Obra"].Value.ToString();
-        //        string NomeObra = DataGridViewTarefas.SelectedRows[0].Cells["Nome da Obra"].Value.ToString();
-        //        string Tarefa = DataGridViewTarefas.SelectedRows[0].Cells["Tarefa"].Value.ToString();
-        //        string Prioridade = DataGridViewTarefas.SelectedRows[0].Cells["Prioridades"].Value.ToString();
-        //        string Preparador = DataGridViewTarefas.SelectedRows[0].Cells["Preparador"].Value.ToString();
-        //        string Codigo = DataGridViewTarefas.SelectedRows[0].Cells["Codigo da Tarefa"].Value.ToString();
-
-        //        ComunicaBD BD = new ComunicaBD();
-        //        try
-        //        {
-        //            BD.ConectarBD();
-        //            string query = "INSERT INTO dbo.RegistoTempo ([Numero da Obra], [Nome da Obra], Tarefa, Preparador, [Hora Inicial], [Hora Final], [Data da Tarefa], [Qtd de Hora], ObservaçõesPreparador, Prioridade, [Codigo da Tarefa]) " +
-        //                            "VALUES (@NumeroObra, @NomeObra, @Tarefa, @TarefaPreparador, @HoraInicial, @HoraFinal, @DatadaTarefa, @QtddeHora, @ObservaçõesPreparador, @Prioridade, @CodigodaTarefa) ";
-
-        //            using (SqlCommand cmd = new SqlCommand(query, BD.GetConnection()))
-        //            {
-        //                cmd.Parameters.AddWithValue("@NumeroObra", NumeroObra);
-        //                cmd.Parameters.AddWithValue("@NomeObra", NomeObra);
-        //                cmd.Parameters.AddWithValue("@Tarefa", Tarefa);
-        //                cmd.Parameters.AddWithValue("@TarefaPreparador", Preparador);
-        //                cmd.Parameters.AddWithValue("@HoraInicial", HoraInicio);
-        //                cmd.Parameters.AddWithValue("@HoraFinal", HoraFinal);
-        //                cmd.Parameters.AddWithValue("@DatadaTarefa", DatadaTarefa);
-        //                cmd.Parameters.AddWithValue("@QtddeHora", QtdHora);
-        //                cmd.Parameters.AddWithValue("@ObservaçõesPreparador", Observações);
-        //                cmd.Parameters.AddWithValue("@Prioridade", Prioridade);
-        //                cmd.Parameters.AddWithValue("@CodigodaTarefa", Codigo);
-
-
-        //                cmd.ExecuteNonQuery();
-        //            }
-
-        //            MessageBox.Show($" Hora Registada com sucesso. \n\n Hora Inicial da Tarefa :{HoraInicio}");
-
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show("Erro ao registrar a hora de início: " + ex.Message);
-        //        }
-        //        finally
-        //        {
-        //            BD.DesonectarBD();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Por favor, selecione uma tarefa na tabela.");
-        //    }
-        //}
-
-        //private void EnviarHoraInicioParaBaseDeDados()
-        //{
-        //    string nomePreparador = GetNomePreparadorFormatado();
-
-        //    string HoraInicio = GetHoraInicio(nomePreparador);
-        //    if (HoraInicio == null) return;
-
-        //    string Observações = string.IsNullOrEmpty(TextBoxObs.Text) ? "0" : TextBoxObs.Text;
-        //    string HoraFinal = "00:00:00";
-        //    string QtdHora = "00:00:00";
-        //    string DatadaTarefa = DateTime.Now.ToString("dd/MM/yyyy");
-
-        //    if (DataGridViewTarefas.SelectedRows.Count > 0)
-        //    {
-        //        var tarefaData = GetTarefaData();
-
-        //        if (!InserirHoraInicioNoBanco(tarefaData, HoraInicio, HoraFinal, DatadaTarefa, QtdHora, Observações))
-        //        {
-        //            MessageBox.Show("Erro ao registrar a hora de início.");
-        //        }
-        //        else
-        //        {
-        //            MessageBox.Show($"Hora Registada com sucesso. \n\n Hora Inicial da Tarefa : {HoraInicio}");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Por favor, selecione uma tarefa na tabela.");
-        //    }
-        //}
-
-        //private string GetNomePreparadorFormatado()
-        //{
-        //    string nomePreparador = Environment.UserName;
-        //    string[] partes = nomePreparador.Split('.');
-        //    List<string> partesComMaiusculas = new List<string>();
-
-        //    foreach (string parte in partes)
-        //    {
-        //        if (!string.IsNullOrEmpty(parte))
-        //        {
-        //            string parteFormatada = char.ToUpper(parte[0]) + parte.Substring(1).ToLower();
-        //            partesComMaiusculas.Add(parteFormatada);
-        //        }
-        //    }
-        //    return string.Join(" ", partesComMaiusculas);
-        //}
-
-        //private string GetHoraInicio(string nomePreparador)
-        //{
-        //    string dataAtual = DateTime.Now.ToString("dd/MM/yyyy");
-
-        //    string queryHoraFinal = "SELECT TOP 1 [Hora Final], [Data da Tarefa] FROM dbo.RegistoTempo " +
-        //                            "WHERE [Preparador] = @Preparador " +
-        //                            "ORDER BY ID DESC";
-
-        //    string HoraFinal = "08:30:00"; 
-
-        //    ComunicaBD BD = new ComunicaBD();
-
-        //    try
-        //    {
-        //        BD.ConectarBD();
-
-        //        using (SqlCommand cmd = new SqlCommand(queryHoraFinal, BD.GetConnection()))
-        //        {
-        //            cmd.Parameters.AddWithValue("@Preparador", nomePreparador);
-
-        //            using (SqlDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                if (reader.Read())
-        //                {
-        //                    string dataTarefa = reader["Data da Tarefa"].ToString();
-
-        //                    if (dataTarefa == dataAtual)
-        //                    {
-        //                        HoraFinal = reader["Hora Final"].ToString();
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    MessageBox.Show("Seu Primeiro Registo do dia,  Bom Dia!");
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Erro ao buscar Hora Final: " + ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        BD.DesonectarBD();
-        //    }
-
-        //    return HoraFinal;
-        //}
-
-        //private (int IdTarefa, string NumeroObra, string NomeObra, string Tarefa, string Prioridade, string Preparador, string Codigo) GetTarefaData()
-        //{
-        //    var selectedRow = DataGridViewTarefas.SelectedRows[0];
-        //    return (
-        //        IdTarefa: Convert.ToInt32(selectedRow.Cells["Id"].Value),
-        //        NumeroObra: selectedRow.Cells["Numero da Obra"].Value.ToString(),
-        //        NomeObra: selectedRow.Cells["Nome da Obra"].Value.ToString(),
-        //        Tarefa: selectedRow.Cells["Tarefa"].Value.ToString(),
-        //        Prioridade: selectedRow.Cells["Prioridades"].Value.ToString(),
-        //        Preparador: selectedRow.Cells["Preparador"].Value.ToString(),
-        //        Codigo: selectedRow.Cells["Codigo da Tarefa"].Value.ToString()
-        //    );
-        //}
-
-        //private bool InserirHoraInicioNoBanco((int IdTarefa, string NumeroObra, string NomeObra, string Tarefa, string Prioridade, string Preparador, string Codigo) tarefaData, string HoraInicio, string HoraFinal, string DatadaTarefa, string QtdHora, string Observações)
-        //{
-        //    string query = "INSERT INTO dbo.RegistoTempo ([Numero da Obra], [Nome da Obra], Tarefa, Preparador, [Hora Inicial], [Hora Final], [Data da Tarefa], [Qtd de Hora], ObservaçõesPreparador, Prioridade, [Codigo da Tarefa]) " +
-        //                   "VALUES (@NumeroObra, @NomeObra, @Tarefa, @TarefaPreparador, @HoraInicial, @HoraFinal, @DatadaTarefa, @QtddeHora, @ObservaçõesPreparador, @Prioridade, @CodigodaTarefa)";
-
-        //    ComunicaBD BD = new ComunicaBD();
-        //    try
-        //    {
-        //        BD.ConectarBD();
-        //        using (SqlCommand cmd = new SqlCommand(query, BD.GetConnection()))
-        //        {
-        //            cmd.Parameters.AddWithValue("@NumeroObra", tarefaData.NumeroObra);
-        //            cmd.Parameters.AddWithValue("@NomeObra", tarefaData.NomeObra);
-        //            cmd.Parameters.AddWithValue("@Tarefa", tarefaData.Tarefa);
-        //            cmd.Parameters.AddWithValue("@TarefaPreparador", tarefaData.Preparador);
-        //            cmd.Parameters.AddWithValue("@HoraInicial", HoraInicio);
-        //            cmd.Parameters.AddWithValue("@HoraFinal", HoraFinal);
-        //            cmd.Parameters.AddWithValue("@DatadaTarefa", DatadaTarefa);
-        //            cmd.Parameters.AddWithValue("@QtddeHora", QtdHora);
-        //            cmd.Parameters.AddWithValue("@ObservaçõesPreparador", Observações);
-        //            cmd.Parameters.AddWithValue("@Prioridade", tarefaData.Prioridade);
-        //            cmd.Parameters.AddWithValue("@CodigodaTarefa", tarefaData.Codigo);
-
-        //            cmd.ExecuteNonQuery();
-        //        }
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Erro ao registrar a hora de início: " + ex.Message);
-        //        return false;
-        //    }
-        //    finally
-        //    {
-        //        BD.DesonectarBD();
-        //    }
-        //}
-
         private void EnviarHoraInicioParaBaseDeDados()
         {
             string nomePreparador = GetNomePreparadorFormatado();
             string HoraInicio = GetHoraInicio(nomePreparador);
             if (HoraInicio == null) return;
-
             string Observações = string.IsNullOrEmpty(TextBoxObs.Text) ? "0" : TextBoxObs.Text;
             string HoraFinal = "00:00:00";
             string QtdHora = "00:00:00";
@@ -682,7 +438,6 @@ namespace OfelizCM
             string HoraFinal = "08:30:00";
 
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -769,7 +524,6 @@ namespace OfelizCM
             }
         }
 
-
         private void AtualizarEstadoTarefa()
         {
             if (DataGridViewTarefas.SelectedRows.Count > 0)
@@ -794,7 +548,6 @@ namespace OfelizCM
                     }
 
                     ComunicaBD BD = new ComunicaBD();
-
                     try
                     {
                         BD.ConectarBD();
@@ -838,7 +591,6 @@ namespace OfelizCM
                     string query = "UPDATE dbo.RegistoTarefas SET Estado = 'Pendente' WHERE ID = @IdTarefa";
 
                     ComunicaBD BD = new ComunicaBD();
-
                     try
                     {
                         BD.ConectarBD();
@@ -882,7 +634,6 @@ namespace OfelizCM
                     string query = "UPDATE dbo.RegistoTarefas SET Estado = 'Pendente', Observações = 'Faltam definições da parte do Feliz' WHERE ID = @IdTarefa";
 
                     ComunicaBD BD = new ComunicaBD();
-
                     try
                     {
                         BD.ConectarBD();
@@ -926,7 +677,6 @@ namespace OfelizCM
                     string query = "UPDATE dbo.RegistoTarefas SET Estado = 'Pendente', Observações = 'Faltam definições por parte do cliente' WHERE ID = @IdTarefa";
 
                     ComunicaBD BD = new ComunicaBD();
-
                     try
                     {
                         BD.ConectarBD();
@@ -1014,7 +764,6 @@ namespace OfelizCM
                                "AND [Prioridade] = @Prioridade";
 
                 ComunicaBD BD = new ComunicaBD();
-
                 try
                 {
                     BD.ConectarBD();
@@ -1068,7 +817,6 @@ namespace OfelizCM
             string nomeFormatado = string.Join(" ", partesComMaiusculas);
 
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -1104,7 +852,6 @@ namespace OfelizCM
         {
 
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -1191,24 +938,10 @@ namespace OfelizCM
             }
         }
 
-
-
-        private void guna2ImageButton4_Click(object sender, EventArgs e)
-        {      }
-
-        private void guna2ShadowPanel1_Paint(object sender, PaintEventArgs e)
-        {       }
-
         private void timer3_Tick(object sender, EventArgs e)
         {
             LabelHoras.Text = DateTime.Now.ToString("HH:mm:ss");
         }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {      }
-
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {      }
 
         private void AtualizarTotalTarefas()
         {
@@ -1360,48 +1093,29 @@ namespace OfelizCM
             }
         }
 
-
         private void guna2ImageButton3_Click_1(object sender, EventArgs e)
         {
             string numeroObra = "129000";
-
             int anoAtual = DateTime.Now.Year;
-
             string anoDoisUltimos = anoAtual.ToString().Substring(2, 2);
-
             string novoNumeroObra = anoDoisUltimos + numeroObra;
-
             TextBoxNumeroObra.Text = novoNumeroObra;
-
             string Tarefa = "Gestão de Planeamento";
             TextBoxTarefaExtra.Text = Tarefa;
-
             CarregarNomeObraPorCaminho();
         }
-
-        private void Label15_Click(object sender, EventArgs e)
-        {
-
-        }
-       
-
-       
         
         private void EnviarTraefaExtra()
         {
             string HoraInicio = labelHoradeInicio.Text;
             string HoraFinal = "00:00:00";
             string QtdHora = "00:00:00";
-
             DateTime dataHoje = DateTime.Now;
             string DatadaTarefa = dataHoje.ToString("dd/MM/yyyy");
-
             DateTime HoraInicioDT = DateTime.ParseExact(HoraInicio, "HH:mm:ss", null);
             DateTime HoraFinalDT = DateTime.ParseExact(HoraFinal, "HH:mm:ss", null);
-
             TimeSpan tempoDecorrido = HoraFinalDT - HoraInicioDT;
             TimeSpan tempoAjustado = tempoDecorrido;
-
             string numeroobra = TextBoxNumeroObra.Text;
 
             if (labelNomeObra.Text.Contains("."))
@@ -1410,13 +1124,10 @@ namespace OfelizCM
 
             }
             string nomedaobra = labelNomeObra.Text;
-
             string tarefa = TextBoxTarefaExtra.Text;
             string Observações = TextBoxTarefaExtra.Text;
-
             string Prioridade = "12- Tarefas Diversas";
             string CodigodaTarefa = "408";
-
             string nomePreparador = Environment.UserName;
             string[] partes = nomePreparador.Split('.');
             List<string> partesComMaiusculas = new List<string>();
@@ -1519,7 +1230,6 @@ namespace OfelizCM
                             (@NumerodaObra, @NomedaObra, @TAREFA, @PreparadordaTarefa, @Estado, @Observações, @Prioridades, @CodigodadaTarefa, @DataInicio, @DataConclusão, @Concluido, @DataConclusaoUser)";
 
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -1554,7 +1264,6 @@ namespace OfelizCM
             }
         }
 
-
         public void CarregarNomeObraPorCaminho()
         {
             string anoSelecionado;
@@ -1562,7 +1271,6 @@ namespace OfelizCM
 
             obraSelecionado = TextBoxNumeroObra.Text;
             anoSelecionado = "20" + obraSelecionado.Substring(0, 2);
-
 
             if (!string.IsNullOrEmpty(anoSelecionado) && !string.IsNullOrEmpty(obraSelecionado))
             {
@@ -1615,7 +1323,6 @@ namespace OfelizCM
             return System.Text.RegularExpressions.Regex.Replace(input, @"[^\w\s]", " ");
         }
                
-
         private void ConcluirSoldadaduraEmailClara()
         {
             string Prioridades = DataGridViewTarefas.SelectedRows[0].Cells["Tarefa"].Value?.ToString();
@@ -1669,7 +1376,6 @@ namespace OfelizCM
                     try
                     {
                         SmtpServer.Send(mail);
-                        //MessageBox.Show("Email enviado");
                         enviado = true;
                     }
                     catch (SmtpException ex)
@@ -1749,7 +1455,6 @@ namespace OfelizCM
                 MessageBox.Show("Erro ao atualizar registros: " + ex.Message);
             }
         }
-                
 
         private void AtualizarEstadoTarefaSoldadura(string preparador)
         {
@@ -1767,7 +1472,6 @@ namespace OfelizCM
                                    "WHERE Prioridades = @Prioridades AND [Numero da Obra] = @NumerodaObra AND Tarefa = @Tarefa AND Preparador = @Preparador";
 
                     ComunicaBD BD = new ComunicaBD();
-
                     try
                     {
                         BD.ConectarBD();
@@ -1811,8 +1515,6 @@ namespace OfelizCM
             DataGridViewTarefasAbertas.ReadOnly = true;
         }
 
-
-
         private void ComunicaBDparaTabelaTarefaAbertaparaObra()
         {
             string numeroObra = string.Empty;
@@ -1836,11 +1538,9 @@ namespace OfelizCM
                 numeroObra = TextBoxNumeroObra.Text;
             }
 
-
             labelobra1.Visible = true;
             labelobra1.Text = numeroObra;
             labelobra2.Visible = true;
-
             string nomePreparador = Environment.UserName;
             string[] partes = nomePreparador.Split('.');
             List<string> partesComMaiusculas = new List<string>();
@@ -1856,8 +1556,6 @@ namespace OfelizCM
             string nomeFormatado = string.Join(" ", partesComMaiusculas);
 
             ComunicaBD comunicaBD = new ComunicaBD();
-
-
             try
             {
                 comunicaBD.ConectarBD();
@@ -1893,12 +1591,9 @@ namespace OfelizCM
             }
 
         }
-        private void guna2DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
 
         private int lastSelectedRowIndex = -1;
+
         private void BloquearLinha()
         {
             if (DataGridViewTarefas.SelectedRows.Count > 0)
@@ -1921,11 +1616,6 @@ namespace OfelizCM
             }
         }
 
-        private void DataGridViewTarefasAbertas_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
         private void DataGridViewTarefasAbertas_SelectionChanged(object sender, EventArgs e)
         {
             if (DataGridViewTarefasAbertas.SelectedRows.Count > 0)
@@ -1945,8 +1635,7 @@ namespace OfelizCM
             BloquearLinha();
             Properties.Settings.Default.tabelabolqueada = true;
             Properties.Settings.Default.Save();
-            DataGridViewTarefas.Refresh(); // Atualiza o DataGridView para aplicar a formatação
-
+            DataGridViewTarefas.Refresh(); 
         }
 
         private void UnlockDataGridView()
@@ -1954,11 +1643,9 @@ namespace OfelizCM
             DesbloquearLinha();
             Properties.Settings.Default.tabelabolqueada = false;
             Properties.Settings.Default.Save();
-            DataGridViewTarefas.Refresh(); // Atualiza o DataGridView para aplicar a formatação
-
+            DataGridViewTarefas.Refresh(); 
         }
 
-       
         private void filtarLinha()
         {
             if (DataGridViewTarefasAbertas.Rows.Count == 2)
@@ -2128,18 +1815,6 @@ namespace OfelizCM
             filtarLinha();
         }
 
-        private void guna2GradientTileButton1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void guna2GradientTileButton2_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void guna2GradientTileButton3_Click(object sender, EventArgs e)
-        {
-        }
-
         private void guna2Button8_Click(object sender, EventArgs e)
         {
             int numLinhas = DataGridViewTarefasAbertas.Rows.Count;
@@ -2227,7 +1902,6 @@ namespace OfelizCM
             string numeroobra1 = DataGridViewTarefasAbertas.Rows[0].Cells["Numero da Obra"].Value.ToString().Trim();
             string tarefa = DataGridViewTarefasAbertas.Rows[0].Cells["Tarefa"].Value.ToString().Trim();
             string prioridade = DataGridViewTarefasAbertas.Rows[0].Cells["Prioridade"].Value.ToString().Trim();
-
             DataGridViewTarefas.ClearSelection();
 
             foreach (DataGridViewRow row in DataGridViewTarefas.Rows)
@@ -2238,14 +1912,13 @@ namespace OfelizCM
                 string tarefaNaLinha = row.Cells["Tarefa"].Value?.ToString();
                 string prioridades = row.Cells["Prioridades"].Value?.ToString();
 
-
                if (numeroobra == numeroobra1 && tarefaNaLinha == tarefa && prioridades == prioridade)
-                  {
+               {
                       row.Selected = true;
                       DataGridViewTarefas.CurrentCell = row.Cells[1];
                       DataGridViewTarefas.FirstDisplayedScrollingRowIndex = row.Index;
                       break;
-                  }
+               }
             }
         }
 
@@ -2350,7 +2023,6 @@ namespace OfelizCM
                             AND Concluido = 0";
 
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -2374,9 +2046,6 @@ namespace OfelizCM
                 BD.DesonectarBD();
             }
         }
-
-       
-
       
 
     }

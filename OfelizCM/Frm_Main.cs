@@ -29,8 +29,7 @@ namespace OfelizCM
 
         public Frm_Main()
         {
-            InitializeComponent();  
-            
+            InitializeComponent();             
         }
 
         private void Frm_Main_Load(object sender, EventArgs e)
@@ -50,15 +49,12 @@ namespace OfelizCM
 
             locationAddTarefasOriginal = new Point(1, 230);
             locationObrasOriginal = new Point(1, 310);
-
-
         }
 
         public void VerificarEExportar()
-        {
-            
-                ExportExcelRegistoparaContabelizar();
-                ExportExcelRegistoparaContabelizarPorMes();            
+        {            
+            ExportExcelRegistoparaContabelizar();
+            ExportExcelRegistoparaContabelizarPorMes();            
         }                          
 
         private bool TemTarefasPendentes()
@@ -106,15 +102,11 @@ namespace OfelizCM
         public void VerificarUsuario()
         {
             string nomeUsuario = Environment.UserName.ToLower();
-
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
-
                 string query = "SELECT AutorizacaoPreparador FROM dbo.nPreparadores1 WHERE [nome.sigla] = @nomeUsuario";
-
                 using (SqlCommand cmd = new SqlCommand(query, BD.GetConnection()))
                 {
                     cmd.Parameters.AddWithValue("@nomeUsuario", nomeUsuario);
@@ -195,17 +187,17 @@ namespace OfelizCM
             {
                 labelUtilizador.Visible = false;
 
-            if (Properties.Settings.Default.Login == "noLogin")
-            {
-                Frm_Login frmLogin = new Frm_Login();
-                frmLogin.ShowDialog();
-                this.Hide();
-            }
-            else if (Properties.Settings.Default.Login == "Login")
-            {
+                    if (Properties.Settings.Default.Login == "noLogin")
+                    {
+                        Frm_Login frmLogin = new Frm_Login();
+                        frmLogin.ShowDialog();
+                        this.Hide();
+                    }
+                    else if (Properties.Settings.Default.Login == "Login")
+                    {
                  
+                    }
             }
-          }
         }          
 
         private void guna2Button1_Click(object sender, EventArgs e)
@@ -223,9 +215,9 @@ namespace OfelizCM
         {
             Form Fm = _form as Form;
             if (panel1.Controls.Count > 0)
-            {
-                panel1.Controls[0].Dispose();
-            }
+                {
+                    panel1.Controls[0].Dispose();
+                }
             Fm.TopLevel = false;
             Fm.FormBorderStyle = FormBorderStyle.None;
             Fm.Dock = DockStyle.Fill;
@@ -351,7 +343,6 @@ namespace OfelizCM
             // Dia de Carnaval
             DateTime inicioCarnaval = pascoa.AddDays(-47); 
             DateTime fimCarnaval = pascoa.AddDays(-53);
-
 
             if (dataAtual >= inicioBoasFestas && dataAtual <= fimBoasFestas)
             {
@@ -483,17 +474,17 @@ namespace OfelizCM
                 BD.DesonectarBD();
 
                 ComboBoxObrasPesquisa.Items.Clear();
-                if (list.Count > 0)
-                {
-                    foreach (string nome in list)
+                    if (list.Count > 0)
                     {
-                        ComboBoxObrasPesquisa.Items.Add(nome);
+                        foreach (string nome in list)
+                        {
+                            ComboBoxObrasPesquisa.Items.Add(nome);
+                        }
                     }
-                }
-                else
-                {
-                    MessageBox.Show("Nenhuma obra encontrada para o ano selecionado.");
-                }
+                    else
+                    {
+                        MessageBox.Show("Nenhuma obra encontrada para o ano selecionado.");
+                    }
             }
             else
             {
@@ -505,18 +496,18 @@ namespace OfelizCM
         {
             Form Fm = _form as Form;
             if (panel1.Controls.Count > 0)
-            {
-                panel1.Controls[0].Dispose();
-            }
+                {
+                    panel1.Controls[0].Dispose();
+                }
             Fm.TopLevel = false;
             Fm.FormBorderStyle = FormBorderStyle.None;
             Fm.Dock = DockStyle.Fill;
             panel1.Controls.Add(Fm);
 
             if (Fm is Frm_Dashbord frmDashbord)
-            {
-                frmDashbord.NomeObra = ComboBoxObrasPesquisa.SelectedItem.ToString();
-            }
+                {
+                    frmDashbord.NomeObra = ComboBoxObrasPesquisa.SelectedItem.ToString();
+                }
 
             Fm.Show();
         }
@@ -531,8 +522,7 @@ namespace OfelizCM
         {
             ComboBoxObrasPesquisaAno.Visible = !ComboBoxObrasPesquisaAno.Visible;
             ComboBoxObrasPesquisa.Visible = !ComboBoxObrasPesquisa.Visible;
-        }       
-               
+        }                      
 
         private void guna2Button1_Click_1(object sender, EventArgs e)
         {
@@ -540,11 +530,9 @@ namespace OfelizCM
 
         }
 
-
         public void CarregarPastasNaComboBoxAno()
         {
             string caminhoPasta = @"\\marconi\COMPANY SHARED FOLDER\OFELIZ\OFM\2.AN\2.CM\DP\1 Obras";
-
             if (Directory.Exists(caminhoPasta))
             {
                 string[] subpastas = Directory.GetDirectories(caminhoPasta);
@@ -576,121 +564,10 @@ namespace OfelizCM
             }
         }
 
-
-        //public void CarregarPastasNaComboBoxAno()
-        //{
-        //    string caminhoPasta = @"\\marconi\COMPANY SHARED FOLDER\OFELIZ\OFM\2.AN\2.CM\DP\1 Obras";
-
-        //    if (Directory.Exists(caminhoPasta))
-        //    {
-        //        string[] subpastas = Directory.GetDirectories(caminhoPasta);
-
-        //        ComboBoxObrasPesquisaAno.Items.Clear();
-        //        string pattern = @"^[A-Za-z0-9]{4}$";
-        //        foreach (string subpasta in subpastas)
-        //        {
-        //            string nomePasta = Path.GetFileName(subpasta);
-
-        //            if (Regex.IsMatch(nomePasta, pattern))
-        //            {
-        //                ComboBoxObrasPesquisaAno.Items.Add(nomePasta);                        
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("O caminho especificado não existe.");
-        //    }
-        //}
-
         private void ComboBoxObrasPesquisaAno_SelectedIndexChanged(object sender, EventArgs e)
         {
             CarregarPastasNaComboBoxObras();
-        }       
-               
-               
-        //private void ExportExcelRegistoparaContabelizar()
-        //{
-        //    string query = @"
-        //             SELECT [Data da Tarefa], [Numero da Obra], Preparador, [Codigo da Tarefa], [Hora Inicial], [Hora Final], ObservaçõesPreparador, Prioridade, [Qtd de Hora]
-        //             FROM dbo.RegistoTempo
-        //             WHERE [Data da Tarefa] >= DATEADD(MONTH, -7, GETDATE()) -- Seleciona apenas tarefas com até 7 meses de antiguidade
-        //             ORDER BY [Data da Tarefa] ASC"; 
-
-
-        //    ComunicaBD comunicaBD = new ComunicaBD();
-        //    ExcelExport excelExport = new ExcelExport();
-
-        //    SqlCommand command = new SqlCommand(query, comunicaBD.GetConnection());
-        //    comunicaBD.ConectarBD();
-        //    DataTable dataTable = comunicaBD.BuscarRegistros(command);
-        //    string filePath = $@"C:\r\RegistrosANOTAR.xlsx";
-        //    excelExport.ExportarParaExcelTodos(dataTable, filePath);
-        //    comunicaBD.DesonectarBD();
-
-        //    try
-        //    {
-        //        var excelApp = new Microsoft.Office.Interop.Excel.Application();
-        //        var workbooks = excelApp.Workbooks.Open(filePath);
-        //        var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbooks.Sheets[1];
-
-        //        DateTime dataLimite = DateTime.Now.AddMonths(-7); 
-        //        int rowCount = worksheet.UsedRange.Rows.Count;
-
-        //        for (int i = rowCount; i >= 1; i--) // Começar de baixo para cima ao excluir
-        //        {
-        //            var cellValue = worksheet.Cells[i, 1].Value; // A primeira coluna contém a data
-        //            if (cellValue != null)
-        //            {
-        //                DateTime dataTarefa;
-        //                if (DateTime.TryParse(cellValue.ToString(), out dataTarefa))
-        //                {
-        //                    if (dataTarefa < dataLimite)
-        //                    {
-        //                        worksheet.Rows[i].Delete(); // Excluir a linha se a data for maior que 7 meses
-        //                    }
-        //                }
-        //            }
-        //        }
-
-        //        // Salvar e fechar o arquivo Excel
-        //        workbooks.Save();
-        //        workbooks.Close();
-        //        excelApp.Quit();
-
-        //        // Liberar recursos
-        //        System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
-
-        //        // Tentar abrir o arquivo Excel após as alterações
-        //        System.Diagnostics.Process.Start(filePath);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Erro ao tentar processar o arquivo Excel: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-        //}
-
-        // Para Exportar 2 
-
-        //private void ExportExcelRegistoparaContabelizar()
-        //{
-        //    string query = @"
-        //                   SELECT [Data da Tarefa], [Numero da Obra], Preparador, [Codigo da Tarefa], [Hora Inicial], [Hora Final], ObservaçõesPreparador, Prioridade, [Qtd de Hora]
-        //                   FROM dbo.RegistoTempo
-        //                   ORDER BY [Data da Tarefa] ASC ";
-
-        //    ComunicaBD comunicaBD = new ComunicaBD();
-        //    ExcelExport excelExport = new ExcelExport();
-
-        //    SqlCommand command = new SqlCommand(query, comunicaBD.GetConnection());
-        //    comunicaBD.ConectarBD();
-        //    DataTable dataTable = comunicaBD.BuscarRegistros(command);
-        //    string filePath = $@"\\marconi\COMPANY SHARED FOLDER\OFELIZ\OFM\3.SP\7.DT\1.Técnico\5.CTS\Registo_Tempo-preparacao.xlsx";
-        //    excelExport.ExportarParaExcelContabelizar(dataTable, filePath);
-        //    comunicaBD.DesonectarBD();
-        //    ExcelHelper.RemoverLinhasAntigas(filePath);
-
-        //}            
+        }         
 
         private void ExportExcelRegistoparaContabelizar()
         {
@@ -701,11 +578,9 @@ namespace OfelizCM
 
             ComunicaBD comunicaBD = new ComunicaBD();
             ExcelExport excelExport = new ExcelExport();
-
             SqlCommand command = new SqlCommand(query, comunicaBD.GetConnection());
             comunicaBD.ConectarBD();
             DataTable dataTable = comunicaBD.BuscarRegistros(command);
-
             foreach (DataRow row in dataTable.Rows)
             {
                 if (DateTime.TryParse(row["Data da Tarefa"].ToString(), out DateTime data))
@@ -713,18 +588,11 @@ namespace OfelizCM
                     row["Data da Tarefa"] = data.ToString("dd/MM/yyyy");
                 }
             }
-
             string filePath = $@"\\marconi\COMPANY SHARED FOLDER\OFELIZ\OFM\3.SP\7.DT\1.Técnico\5.CTS\Registo_Tempo-preparacao.xlsx";
             excelExport.ExportarParaExcelContabelizar(dataTable, filePath);
-
-
             comunicaBD.DesonectarBD();
             ExcelHelper.RemoverLinhasAntigas(filePath);
-
         }
-               
-
-
 
         private void ExportExcelRegistoparaContabelizarPorMes()
         {
@@ -735,23 +603,17 @@ namespace OfelizCM
 
             ComunicaBD comunicaBD = new ComunicaBD();
             ExcelExport excelExport = new ExcelExport();
-
             SqlCommand command = new SqlCommand(query, comunicaBD.GetConnection());
             comunicaBD.ConectarBD();
             DataTable dataTable = comunicaBD.BuscarRegistros(command);
-
             int currentMonth = DateTime.Now.Month;
             int currentYear = DateTime.Now.Year;
-
             var filteredRows = dataTable.AsEnumerable()
                                         .Where(row => DateTime.TryParse(row["Data da Tarefa"].ToString(), out DateTime data)
                                                    && data.Month == currentMonth
                                                    && data.Year == currentYear)
                                         .ToList();
-
-
             DataTable filteredDataTable = filteredRows.CopyToDataTable();
-
             string filePath = $@"\\marconi\COMPANY SHARED FOLDER\OFELIZ\OFM\3.SP\7.DT\1.Técnico\5.CTS\Registo de Tempo\Registo_Tempo_do_ano_{currentYear}.xlsx";
 
             if (!File.Exists(filePath))
@@ -768,13 +630,7 @@ namespace OfelizCM
 
             comunicaBD.DesonectarBD();
         }
-
-      
-
-        private void guna2CustomGradientPanel2_Paint_1(object sender, PaintEventArgs e)
-        {
-
-        }
+              
     }
 }
 

@@ -39,11 +39,6 @@ namespace OfelizCM
             InitializeComponent();
         }
 
-
-        private void LabelDashbordObra_Click(object sender, EventArgs e)
-        {
-        }
-
         private void Frm_Dashbord_Load(object sender, EventArgs e)
         {
             CarregarPreparadorResponsavel();
@@ -743,43 +738,6 @@ namespace OfelizCM
             }
         }
 
-        //private void AtualizarTabelaHorasPreparador()
-        //{
-        //    ConfigurarDataGridView();
-
-        //    string NumeroObra = labelNumeroObra.Text.Trim();
-
-        //    DataGridViewHorasPreparador.Rows.Clear();
-
-        //    ComunicaBD BD = new ComunicaBD();
-
-        //    try
-        //    {
-        //        BD.ConectarBD();
-
-        //        List<PreparadorHoras> preparadores = ObterHorasTotaisPorPreparador(NumeroObra, BD);
-
-        //        int totalHorasObra = preparadores.Sum(p => p.HorasTotais);
-
-        //        foreach (var preparador in preparadores)
-        //        {
-        //            //double horas = (double)preparador.HorasTotais / 60;
-        //            double horas = Math.Round((double)preparador.HorasTotais / 60); 
-        //            double porcentagem = (double)preparador.HorasTotais / totalHorasObra * 100;
-
-        //            DataGridViewHorasPreparador.Rows.Add(preparador.Nome, horas.ToString("0.00"), porcentagem.ToString("0.00") + "%");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Erro ao registrar as informações: " + ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        BD.DesonectarBD();
-        //    }
-        //}
-
         private void AtualizarTabelaHorasPreparador()
         {
             ConfigurarDataGridView();
@@ -826,7 +784,6 @@ namespace OfelizCM
                 BD.DesonectarBD();
             }
         }
-
 
         private List<PreparadorHoras> ObterHorasTotaisPorPreparador(string NumeroObra, ComunicaBD BD)
         {
@@ -1150,8 +1107,7 @@ namespace OfelizCM
 
         }
 
-
-    private void ImagemObraTomb()
+        private void ImagemObraTomb()
     {
         string NumeroObra = labelNumeroObra.Text.Trim();
 
@@ -1191,32 +1147,7 @@ namespace OfelizCM
             labelDiferncaValor.Text = FormatValor(labelDiferncaValor.Text);
             labelEuroReal.Text = FormatValor(labelEuroReal.Text);
 
-        }
-
-        //private string FormatValor(string valor)
-        //{
-        //    valor = valor.Replace(",", ".");
-        //    valor = valor.Replace("€", "");   
-        //    valor = valor.Replace("h", "");   
-
-
-        //    if (valor.Contains("." ) || valor.Contains(","))
-        //    {
-        //        if (decimal.TryParse(valor, out decimal valorDecimal))
-        //        {
-        //            return valorDecimal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " €";
-        //        }
-        //        else
-        //        {
-        //            return "Valor inválido"; 
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return valor + " €";
-        //    }
-        //}
-
+        }            
 
         private string FormatValor(string valor)
         {
@@ -1235,131 +1166,95 @@ namespace OfelizCM
             }
         }
 
+        private void AtualizarImagemHoras()
+         {
+                string diferencaHoras = labelDiferncahoras.Text.Trim().Replace("h", "").Replace(".", ",");
+                double diferencaHorasStr = 0;
 
-        private void label23_Click(object sender, EventArgs e)
-    {
-
-    }                
-
-     private void timer1_Tick(object sender, EventArgs e)
-     {
-            
-     }
-
-     private void timer2_Tick(object sender, EventArgs e)
-     {
-            
-     }     
-
-     private void DataGridViewHorasPreparador_CellContentClick(object sender, DataGridViewCellEventArgs e)
-     {
-
-     }
-
-     private void AtualizarImagemHoras()
-        {
-            string diferencaHoras = labelDiferncahoras.Text.Trim().Replace("h", "").Replace(".", ",");
-            double diferencaHorasStr = 0;
-
-            if (double.TryParse(diferencaHoras, out diferencaHorasStr))
-            {
-                if (diferencaHorasStr <= 0)
+                if (double.TryParse(diferencaHoras, out diferencaHorasStr))
                 {
-                    pictureBoxhour.ImageLocation = @".\Imagens\goodhour.png";
-                }
-                else
-                {
-                    pictureBoxhour.ImageLocation = @".\Imagens\badhour.png";
-                }
-            }
-            else
-            {
-                MessageBox.Show("O valor de 'labelDiferncahoras' não é um número válido. Verifique o conteúdo do campo.", "Erro de Conversão", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-    private void AtualizarImagemHoras2()
-    {
-            string diferencaHorasorcamentadas = labelHorasOrc.Text.Trim().Replace("h", "").Replace(".", ",");
-            string diferencaHorasreal = labelHorasReall.Text.Trim().Replace("h", "").Replace(".", ",");
-
-            double horasOrcamentadas = 0;
-            double horasReais = 0;
-
-            if (double.TryParse(diferencaHorasorcamentadas, out horasOrcamentadas))
-            {
-                if (double.TryParse(diferencaHorasreal, out horasReais))
-                {
-                    double diferencaHoras = horasReais - horasOrcamentadas;
-
-                    if (diferencaHoras <= 0)
+                    if (diferencaHorasStr <= 0)
                     {
-                        pictureBox3.ImageLocation = @".\Imagens\goodhour.png";
+                        pictureBoxhour.ImageLocation = @".\Imagens\goodhour.png";
                     }
                     else
                     {
-                        pictureBox3.ImageLocation = @".\Imagens\badhour.png";
+                        pictureBoxhour.ImageLocation = @".\Imagens\badhour.png";
                     }
                 }
                 else
                 {
-                    MessageBox.Show("O valor de 'labelHorasReall' não é um número válido. Verifique o conteúdo do campo.", "Erro de Conversão", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("O valor de 'labelDiferncahoras' não é um número válido. Verifique o conteúdo do campo.", "Erro de Conversão", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            else
-            {
-                MessageBox.Show("O valor de 'labelHorasOrc' não é um número válido. Verifique o conteúdo do campo.", "Erro de Conversão", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
-    private void AtualizarImagemHoras3()
-    {
-            string diferencaHorasorcamentadas = labelHorasREVOrc.Text.Trim().Replace("h", "").Replace(".", ",");
-            string diferencaHorasreal = labelHorasREVReal.Text.Trim().Replace("h", "").Replace(".", ",");
+        private void AtualizarImagemHoras2()
+         {
+                string diferencaHorasorcamentadas = labelHorasOrc.Text.Trim().Replace("h", "").Replace(".", ",");
+                string diferencaHorasreal = labelHorasReall.Text.Trim().Replace("h", "").Replace(".", ",");
 
-            double horasOrcamentadas = 0;
-            double horasReais = 0;
+                double horasOrcamentadas = 0;
+                double horasReais = 0;
 
-            if (double.TryParse(diferencaHorasorcamentadas, out horasOrcamentadas))
-            {
-                if (double.TryParse(diferencaHorasreal, out horasReais))
+                if (double.TryParse(diferencaHorasorcamentadas, out horasOrcamentadas))
                 {
-                    double diferencaHoras = horasReais - horasOrcamentadas;
-
-                    if (diferencaHoras <= 0)
+                    if (double.TryParse(diferencaHorasreal, out horasReais))
                     {
-                        pictureBox6.ImageLocation = @".\Imagens\goodhour.png";
+                        double diferencaHoras = horasReais - horasOrcamentadas;
+
+                        if (diferencaHoras <= 0)
+                        {
+                            pictureBox3.ImageLocation = @".\Imagens\goodhour.png";
+                        }
+                        else
+                        {
+                            pictureBox3.ImageLocation = @".\Imagens\badhour.png";
+                        }
                     }
                     else
                     {
-                        pictureBox6.ImageLocation = @".\Imagens\badhour.png";
+                        MessageBox.Show("O valor de 'labelHorasReall' não é um número válido. Verifique o conteúdo do campo.", "Erro de Conversão", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("O valor de 'labelHorasReall' não é um número válido. Verifique o conteúdo do campo.", "Erro de Conversão", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("O valor de 'labelHorasOrc' não é um número válido. Verifique o conteúdo do campo.", "Erro de Conversão", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            else
-            {
-                MessageBox.Show("O valor de 'labelHorasOrc' não é um número válido. Verifique o conteúdo do campo.", "Erro de Conversão", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
-        private void pictureBoxhour_Click(object sender, EventArgs e)
-        {
-            
-        }
+        private void AtualizarImagemHoras3()
+         {
+                string diferencaHorasorcamentadas = labelHorasREVOrc.Text.Trim().Replace("h", "").Replace(".", ",");
+                string diferencaHorasreal = labelHorasREVReal.Text.Trim().Replace("h", "").Replace(".", ",");
 
-        private void pictureBox5_Click(object sender, EventArgs e)
-        {
+                double horasOrcamentadas = 0;
+                double horasReais = 0;
 
-        }
+                if (double.TryParse(diferencaHorasorcamentadas, out horasOrcamentadas))
+                {
+                    if (double.TryParse(diferencaHorasreal, out horasReais))
+                    {
+                        double diferencaHoras = horasReais - horasOrcamentadas;
 
-        private void guna2CustomGradientPanel4_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
+                        if (diferencaHoras <= 0)
+                        {
+                            pictureBox6.ImageLocation = @".\Imagens\goodhour.png";
+                        }
+                        else
+                        {
+                            pictureBox6.ImageLocation = @".\Imagens\badhour.png";
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("O valor de 'labelHorasReall' não é um número válido. Verifique o conteúdo do campo.", "Erro de Conversão", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("O valor de 'labelHorasOrc' não é um número válido. Verifique o conteúdo do campo.", "Erro de Conversão", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+          }                          
 
         private void ButtonExcel_Click(object sender, EventArgs e)
         {
@@ -1398,11 +1293,6 @@ namespace OfelizCM
             {
                 MessageBox.Show("Erro ao tentar abrir o arquivo Excel: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-        }
-
-        private void label15_Click(object sender, EventArgs e)
-        {
 
         }
 
@@ -1468,21 +1358,6 @@ namespace OfelizCM
             }
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void guna2ShadowPanel5_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void GraficoTotalhoras()
         {
             chartTotalHoras.Series["Horas"].Points.Clear();
@@ -1511,14 +1386,15 @@ namespace OfelizCM
                 }
             }
         }
-            private void GraficoTotalPercentagem()
-                 {
-                     chartTotalPercentagem.Series["Percentagem"].Points.Clear();
 
-                foreach (DataGridViewRow row in DataGridViewHorasPreparador.Rows)
-                 {
+        private void GraficoTotalPercentagem()
+        {
+            chartTotalPercentagem.Series["Percentagem"].Points.Clear();
+
+               foreach (DataGridViewRow row in DataGridViewHorasPreparador.Rows)
+               {
                 if (!row.IsNewRow)
-                {
+                 {
                     string nomePreparador = row.Cells[0].Value?.ToString();
                     string valorBruto = row.Cells[2].Value?.ToString();
 
@@ -1536,25 +1412,12 @@ namespace OfelizCM
                             MessageBox.Show($"Erro ao converter valor: {valorBruto} (limpo: {valorLimpo})");
                         }
                     }
-                }
-            }
+                 }
+           }
 
         }
+               
 
-        private void chartCircle_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox8_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void guna2ShadowPanel13_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
     }
 

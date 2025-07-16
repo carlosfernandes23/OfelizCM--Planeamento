@@ -25,7 +25,6 @@ namespace OfelizCM
 
         private void Frm_RegistoTempo_Load(object sender, EventArgs e)
         {
-
             ConfirmarComunicacaoBD();
             CarregarPrioridadesNaComboBox();
             CarregarPreparadoresNaComboBox();
@@ -51,19 +50,11 @@ namespace OfelizCM
                 DataGridViewRegistoTempo.Columns["ObservaçõesPreparador"].ReadOnly = false;
             }
 
-            DataGridViewRegistoTempo.CellFormatting += DataGridViewRegistoTempo_CellFormatting;
-
-            
-
-
-        }
-        private void DataGridViewRegistoTempo_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
+            DataGridViewRegistoTempo.CellFormatting += DataGridViewRegistoTempo_CellFormatting;          
         }
 
         private void DataGridViewRegistoTempo_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-
             if (DataGridViewRegistoTempo.Columns[e.ColumnIndex].Name == "ObservaçõesPreparador")
             {
                 if (e.Value != null && e.Value.ToString() == "0")
@@ -72,8 +63,6 @@ namespace OfelizCM
                 }
             }
             DataGridViewRegistoTempo.Columns["ObservaçõesPreparador"].HeaderText = "Observações do Preparador";
-
-
         }
 
         public void CarregarPrioridadesNaComboBox()
@@ -98,150 +87,6 @@ namespace OfelizCM
 
             }
         }
-        //private void ComunicaBDparaTabela()
-        //{
-        //    string nomePreparador = Environment.UserName;
-        //    string[] partes = nomePreparador.Split('.');
-        //    List<string> partesComMaiusculas = new List<string>();
-
-        //    foreach (string parte in partes)
-        //    {
-        //        if (!string.IsNullOrEmpty(parte))
-        //        {
-        //            string parteFormatada = char.ToUpper(parte[0]) + parte.Substring(1).ToLower();
-        //            partesComMaiusculas.Add(parteFormatada);
-        //        }
-        //    }
-        //    string nomeFormatado = string.Join(" ", partesComMaiusculas);
-
-        //    ComunicaBD BD = new ComunicaBD();
-
-        //    try
-        //    {
-        //        BD.ConectarBD();  
-
-        //        string query = "SELECT ID, [Numero da Obra], [Nome da Obra], Tarefa, Preparador, [Hora Inicial], [Hora Final], [Data da Tarefa], [Qtd de Hora], Prioridade, ObservaçõesPreparador " +
-        //                       "FROM dbo.RegistoTempo " +
-        //                       "WHERE Preparador = '" + nomeFormatado + "'";  
-
-        //        DataTable dataTable = BD.Procurarbd(query);  
-
-        //        DataGridViewRegistoTempo.DataSource = dataTable;
-        //        DataGridViewRegistoTempo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        //        DataGridViewRegistoTempo.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        //        DataGridViewRegistoTempo.Columns["ID"].Visible = false;
-        //        DataGridViewRegistoTempo.Columns["Preparador"].Visible = false;
-        //        DataGridViewRegistoTempo.ClearSelection();
-        //        DataGridViewRegistoTempo.AutoResizeColumns();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        BD.DesonectarBD();  
-        //    }
-        //}
-
-
-        //private void ComunicaBDparaTabelafiltrocomData()
-        //{
-        //    ComunicaBD comunicaBD = new ComunicaBD();
-
-        //    try
-        //    {
-        //        comunicaBD.ConectarBD();
-
-        //        string nomePreparador = Environment.UserName;
-        //        string[] partes = nomePreparador.Split('.');
-        //        List<string> partesComMaiusculas = new List<string>();
-
-        //        foreach (string parte in partes)
-        //        {
-        //            if (!string.IsNullOrEmpty(parte))
-        //            {
-        //                string parteFormatada = char.ToUpper(parte[0]) + parte.Substring(1).ToLower();
-        //                partesComMaiusculas.Add(parteFormatada);
-        //            }
-        //        }
-
-        //        string nomeFormatado = string.Join(" ", partesComMaiusculas);
-
-        //        string Obra = TextBoxNObra.Text;
-
-        //        string Prioridades = null;
-
-        //        if (ComboBoxPrioAdd.SelectedItem != null)
-        //        {
-        //            Prioridades = ComboBoxPrioAdd.SelectedItem.ToString();
-        //        }
-
-        //        string query = "SELECT Id, [Numero da Obra], [Nome da Obra], Tarefa, Preparador, [Hora Inicial], [Hora Final], [Data da Tarefa], [Qtd de Hora], Prioridade, ObservaçõesPreparador " +
-        //                       "FROM dbo.RegistoTempo WHERE 1=1";
-
-        //        query += " AND Preparador = @NomePreparador";
-
-        //        if (DateTimePickerInicio.Value != DateTimePickerInicio.MinDate)
-        //        {
-        //            query += " AND TRY_CONVERT(DATETIME, [Data da Tarefa], 103) = @DataInicio";
-        //        }
-
-        //        if (!string.IsNullOrEmpty(TextBoxNObra.Text))
-        //        {
-        //            query += " AND [Numero da Obra] = @NumeroObra";
-        //        }
-
-        //        if (!string.IsNullOrEmpty(Prioridades))
-        //        {
-        //            query += " AND Prioridade = @Prioridade";
-        //        }
-
-        //        DataTable dataTable = new DataTable();
-
-        //        using (var command = new SqlCommand(query, comunicaBD.GetConnection()))
-        //        {
-        //            command.Parameters.AddWithValue("@NomePreparador", nomeFormatado);
-
-        //            if (DateTimePickerInicio.Value != DateTimePickerInicio.MinDate)
-        //            {
-        //                command.Parameters.AddWithValue("@DataInicio", DateTimePickerInicio.Value.Date);
-        //            }
-
-        //            if (!string.IsNullOrEmpty(TextBoxNObra.Text))
-        //            {
-        //                command.Parameters.AddWithValue("@NumeroObra", Obra);
-        //            }
-
-        //            if (!string.IsNullOrEmpty(Prioridades))
-        //            {
-        //                command.Parameters.AddWithValue("@Prioridade", Prioridades);
-        //            }
-
-        //            using (var adapter = new SqlDataAdapter(command))
-        //            {
-        //                adapter.Fill(dataTable);
-        //            }
-        //        }
-
-        //        DataGridViewRegistoTempo.DataSource = dataTable;
-        //        DataGridViewRegistoTempo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        //        DataGridViewRegistoTempo.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        //        DataGridViewRegistoTempo.Columns["Id"].Visible = false;
-        //        DataGridViewRegistoTempo.Columns["Preparador"].Visible = false;
-        //        DataGridViewRegistoTempo.ClearSelection();
-        //        DataGridViewRegistoTempo.AutoResizeColumns();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        comunicaBD.DesonectarBD();
-        //    }
-        //}
-
 
         private void ConfirmarComunicacaoBD()
         {
@@ -338,9 +183,7 @@ namespace OfelizCM
                 }
             }
             string nomeFormatado = string.Join(" ", partesComMaiusculas);
-
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -374,21 +217,16 @@ namespace OfelizCM
 
         private void ComunicaBDparaTabelaHelder1semanas()
         {
-
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
-
-
                 string query = "SELECT ID, Preparador, [Numero da Obra], [Nome da Obra], Tarefa, [Hora Inicial], [Hora Final], [Data da Tarefa], [Qtd de Hora], Prioridade, ObservaçõesPreparador " +
                                "FROM dbo.RegistoTempo " +
                                "WHERE DATEDIFF(day, TRY_CONVERT(DATE, [Data da Tarefa], 103), TRY_CONVERT(DATE, GETDATE(), 103)) <= 7 " +
                                "ORDER BY [Data da Tarefa] ASC";
 
                 DataTable dataTable = BD.Procurarbd(query);
-
                 DataGridViewRegistoTempo.DataSource = dataTable;
                 DataGridViewRegistoTempo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 DataGridViewRegistoTempo.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -421,9 +259,7 @@ namespace OfelizCM
                 }
             }
             string nomeFormatado = string.Join(" ", partesComMaiusculas);
-
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -471,9 +307,7 @@ namespace OfelizCM
                 }
             }
             string nomeFormatado = string.Join(" ", partesComMaiusculas);
-
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -483,8 +317,6 @@ namespace OfelizCM
                                "WHERE Preparador = '" + nomeFormatado + "' " +
                                "AND DATEDIFF(day, TRY_CONVERT(DATE, [Data da Tarefa], 103), TRY_CONVERT(DATE, GETDATE(), 103)) <= 14" +
                                "ORDER BY [Data da Tarefa] ASC";
-
-
 
                 DataTable dataTable = BD.Procurarbd(query);
 
@@ -510,7 +342,6 @@ namespace OfelizCM
         {
 
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -520,10 +351,7 @@ namespace OfelizCM
                                "WHERE DATEDIFF(day, TRY_CONVERT(DATE, [Data da Tarefa], 103), TRY_CONVERT(DATE, GETDATE(), 103)) <= 14" +
                                "ORDER BY [Data da Tarefa] ASC";
 
-
-
                 DataTable dataTable = BD.Procurarbd(query);
-
                 DataGridViewRegistoTempo.DataSource = dataTable;
                 DataGridViewRegistoTempo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 DataGridViewRegistoTempo.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -546,7 +374,6 @@ namespace OfelizCM
             string nomePreparador = Environment.UserName;
             string[] partes = nomePreparador.Split('.');
             List<string> partesComMaiusculas = new List<string>();
-
             foreach (string parte in partes)
             {
                 if (!string.IsNullOrEmpty(parte))
@@ -556,9 +383,7 @@ namespace OfelizCM
                 }
             }
             string nomeFormatado = string.Join(" ", partesComMaiusculas);
-
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -569,10 +394,7 @@ namespace OfelizCM
                                "AND DATEDIFF(day, TRY_CONVERT(DATE, [Data da Tarefa], 103), TRY_CONVERT(DATE, GETDATE(), 103)) <= 21" +
                                "ORDER BY [Data da Tarefa] ASC";
 
-
-
                 DataTable dataTable = BD.Procurarbd(query);
-
                 DataGridViewRegistoTempo.DataSource = dataTable;
                 DataGridViewRegistoTempo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 DataGridViewRegistoTempo.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -593,9 +415,7 @@ namespace OfelizCM
 
         private void ComunicaBDparaTabelaHelder3semanas()
         {
-
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -605,10 +425,7 @@ namespace OfelizCM
                                "WHERE DATEDIFF(day, TRY_CONVERT(DATE, [Data da Tarefa], 103), TRY_CONVERT(DATE, GETDATE(), 103)) <= 21" +
                                "ORDER BY [Data da Tarefa] ASC";
 
-
-
                 DataTable dataTable = BD.Procurarbd(query);
-
                 DataGridViewRegistoTempo.DataSource = dataTable;
                 DataGridViewRegistoTempo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 DataGridViewRegistoTempo.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -641,9 +458,7 @@ namespace OfelizCM
                 }
             }
             string nomeFormatado = string.Join(" ", partesComMaiusculas);
-
             ComunicaBD BD = new ComunicaBD();
-
             try
             {
                 BD.ConectarBD();
@@ -654,10 +469,7 @@ namespace OfelizCM
                                "AND DATEDIFF(day, TRY_CONVERT(DATE, [Data da Tarefa], 103), TRY_CONVERT(DATE, GETDATE(), 103)) <= 31" +
                                "ORDER BY [Data da Tarefa] ASC";
 
-
-
                 DataTable dataTable = BD.Procurarbd(query);
-
                 DataGridViewRegistoTempo.DataSource = dataTable;
                 DataGridViewRegistoTempo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 DataGridViewRegistoTempo.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -690,10 +502,7 @@ namespace OfelizCM
                                "WHERE DATEDIFF(day, TRY_CONVERT(DATE, [Data da Tarefa], 103), TRY_CONVERT(DATE, GETDATE(), 103)) <= 31" +
                                "ORDER BY [Data da Tarefa] ASC";
 
-
-
                 DataTable dataTable = BD.Procurarbd(query);
-
                 DataGridViewRegistoTempo.DataSource = dataTable;
                 DataGridViewRegistoTempo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 DataGridViewRegistoTempo.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -744,9 +553,7 @@ namespace OfelizCM
                 }
 
                 string Obra = TextBoxNObra.Text;
-
                 string Prioridades = null;
-
                 if (ComboBoxPrioAdd.SelectedItem != null)
                 {
                     Prioridades = ComboBoxPrioAdd.SelectedItem.ToString();
@@ -816,96 +623,6 @@ namespace OfelizCM
                 comunicaBD.DesonectarBD();
             }
         }
-
-
-        //private void ComunicaBDparaTabelafiltrosemData()
-        //{
-        //    ComunicaBD comunicaBD = new ComunicaBD();
-
-        //    try
-        //    {
-        //        comunicaBD.ConectarBD();
-
-        //        string nomePreparador = Environment.UserName;
-        //        string[] partes = nomePreparador.Split('.');
-        //        List<string> partesComMaiusculas = new List<string>();
-
-        //        foreach (string parte in partes)
-        //        {
-        //            if (!string.IsNullOrEmpty(parte))
-        //            {
-        //                string parteFormatada = char.ToUpper(parte[0]) + parte.Substring(1).ToLower();
-        //                partesComMaiusculas.Add(parteFormatada);
-        //            }
-        //        }
-
-        //        string nomeFormatado = string.Join(" ", partesComMaiusculas);
-
-        //        string Obra = TextBoxNObra.Text;
-
-        //        string Prioridades = null;
-
-        //        if (ComboBoxPrioAdd.SelectedItem != null)
-        //        {
-        //            Prioridades = ComboBoxPrioAdd.SelectedItem.ToString();
-        //        }
-
-        //        string query = "SELECT Id, [Numero da Obra], [Nome da Obra], Tarefa, Preparador, [Hora Inicial], [Hora Final], [Data da Tarefa], [Qtd de Hora], Prioridade, ObservaçõesPreparador " +
-        //                       "FROM dbo.RegistoTempo WHERE 1=1";
-
-        //        query += " AND Preparador = @NomePreparador";
-
-
-        //        if (!string.IsNullOrEmpty(TextBoxNObra.Text))
-        //        {
-        //            query += " AND [Numero da Obra] = @NumeroObra";
-        //        }
-
-        //        if (!string.IsNullOrEmpty(Prioridades))
-        //        {
-        //            query += " AND Prioridade = @Prioridade";
-        //        }
-
-        //        DataTable dataTable = new DataTable();
-
-        //        using (var command = new SqlCommand(query, comunicaBD.GetConnection()))
-        //        {
-        //            command.Parameters.AddWithValue("@NomePreparador", nomeFormatado);
-
-
-        //            if (!string.IsNullOrEmpty(TextBoxNObra.Text))
-        //            {
-        //                command.Parameters.AddWithValue("@NumeroObra", Obra);
-        //            }
-
-        //            if (!string.IsNullOrEmpty(Prioridades))
-        //            {
-        //                command.Parameters.AddWithValue("@Prioridade", Prioridades);
-        //            }
-
-        //            using (var adapter = new SqlDataAdapter(command))
-        //            {
-        //                adapter.Fill(dataTable);
-        //            }
-        //        }
-
-        //        DataGridViewRegistoTempo.DataSource = dataTable;
-        //        DataGridViewRegistoTempo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        //        DataGridViewRegistoTempo.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        //        DataGridViewRegistoTempo.Columns["Id"].Visible = false;
-        //        DataGridViewRegistoTempo.Columns["Preparador"].Visible = false;
-        //        DataGridViewRegistoTempo.ClearSelection();
-        //        DataGridViewRegistoTempo.AutoResizeColumns();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        comunicaBD.DesonectarBD();
-        //    }
-        //}      
 
         private void ComunicaBDparaTabelafiltrosemData()
         {
@@ -1003,7 +720,6 @@ namespace OfelizCM
             }
         }
 
-
         private void guna2Button1_Click(object sender, EventArgs e)
         {
             ComunicaBDparaTabelafiltrocomData();
@@ -1014,7 +730,6 @@ namespace OfelizCM
             ComunicaBDparaTabelafiltrosemData();
         }
 
-      
         private void ButtonAtualizarDados_Click(object sender, EventArgs e)
         {
             CarregarNomeObraPorCaminho();
@@ -1210,11 +925,6 @@ namespace OfelizCM
 
         }       
 
-        private void TextBoxAtualizar_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         public void ExcluirTarefaSelecionada()
         {
             if (DataGridViewRegistoTempo.SelectedRows.Count > 0)
@@ -1293,7 +1003,6 @@ namespace OfelizCM
             }
         }
 
-        
         public void VerificarUsuario()
         {
             string nomeUsuario = Environment.UserName.ToLower();
@@ -1444,7 +1153,6 @@ namespace OfelizCM
                 comunicaBD.DesonectarBD();
             }
         }
-
 
         private void ComunicaBDparaTabelaTodosComData()
         {
@@ -1620,7 +1328,6 @@ namespace OfelizCM
             }
         }
 
-
         private TimeSpan ConverterTextoParaTimeSpan(string texto)
         {
             if (TimeSpan.TryParse(texto, out TimeSpan resultado))
@@ -1649,12 +1356,7 @@ namespace OfelizCM
 
             return new TimeSpan(horas, minutos, segundos);
         }
-
-        private void DateTimePickerApioaaObra_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
+                
         private void guna2ImageButton9_Click(object sender, EventArgs e)
         {
             ConfirmarComunicacaoBD();
