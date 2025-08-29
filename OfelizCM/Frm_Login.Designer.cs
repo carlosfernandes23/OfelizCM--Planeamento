@@ -37,7 +37,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.TextBoxPassword = new Guna.UI2.WinForms.Guna2TextBox();
             this.TextBoxUsername = new Guna.UI2.WinForms.Guna2TextBox();
-            this.bunifuDragControl1 = new Bunifu.Framework.UI.BunifuDragControl(this.components);
             this.ButtonLogin = new Guna.UI2.WinForms.Guna2Button();
             this.guna2DragControl1 = new Guna.UI2.WinForms.Guna2DragControl(this.components);
             this.guna2DragControl2 = new Guna.UI2.WinForms.Guna2DragControl(this.components);
@@ -157,13 +156,6 @@
             this.TextBoxUsername.Size = new System.Drawing.Size(184, 31);
             this.TextBoxUsername.TabIndex = 15;
             // 
-            // bunifuDragControl1
-            // 
-            this.bunifuDragControl1.Fixed = true;
-            this.bunifuDragControl1.Horizontal = true;
-            this.bunifuDragControl1.TargetControl = this;
-            this.bunifuDragControl1.Vertical = true;
-            // 
             // ButtonLogin
             // 
             this.ButtonLogin.Anchor = System.Windows.Forms.AnchorStyles.Top;
@@ -245,7 +237,6 @@
         private System.Windows.Forms.Label label4;
         private Guna.UI2.WinForms.Guna2TextBox TextBoxPassword;
         private Guna.UI2.WinForms.Guna2TextBox TextBoxUsername;
-        private Bunifu.Framework.UI.BunifuDragControl bunifuDragControl1;
         private Guna.UI2.WinForms.Guna2Button ButtonLogin;
         private Guna.UI2.WinForms.Guna2DragControl guna2DragControl1;
         private Guna.UI2.WinForms.Guna2DragControl guna2DragControl2;

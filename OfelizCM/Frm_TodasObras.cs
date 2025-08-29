@@ -1,4 +1,6 @@
-﻿using OfficeOpenXml;
+﻿using LiveCharts;
+using LiveCharts.Wpf;
+using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using ServiceStack.Script;
 using System;
@@ -16,18 +18,32 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Windows.Media;
+using static ServiceStack.Script.Lisp;
+using Cor = System.Windows.Media;
+using Color = System.Drawing.Color;
 
 namespace OfelizCM
 {
     public partial class Frm_TodasObras : Form
     {
+        private ChamarX _hook;
         public Frm_TodasObras()
         {
             InitializeComponent();
+            _hook = new ChamarX();
         }
 
         private void Frm_TodasObras_Load(object sender, EventArgs e)
         {
+            this.WindowState = FormWindowState.Maximized;
+            //this.Size = new Size(2565, 1200);
+            //this.MaximumSize = new Size(2565, 1200);
+            //this.MinimumSize = new Size(2565, 1200);
+
+            PanelTabelas.Location = new Point(495, 100); 
+            PanelTabelas.Size = new Size(2055, 1275);
+
             this.totalObrasTableAdapter.Fill(this.tempoPreparacaoDataSet.TotalObras);
             ComunicarTabelas();
             AtualizarDados();
@@ -50,25 +66,17 @@ namespace OfelizCM
             CarregarPastasNaComboBoxAno();
             FormatacaodosGraficos();
             AdicionarSufixosNasColunas();
-            CarregarTipologiaNaComboBox(); 
-
-            chartObrasHoras.ChartAreas[0].AxisX.IsMarginVisible = true;
-            chartObrasHoras.ChartAreas[0].AxisX.LabelStyle.Angle = -45;  // Gira os rótulos do eixo X em -45 graus
-            chartObrasHoras.ChartAreas[0].AxisX.Interval = 1;  // Exibe um rótulo a cada 1 valor no eixo X                      
-
-            chartTotalPercentagem.ChartAreas[0].AxisX.IsMarginVisible = true;
-            chartTotalPercentagem.ChartAreas[0].AxisX.LabelStyle.Angle = -45;  
-            chartTotalPercentagem.ChartAreas[0].AxisX.Interval = 1;  
+            CarregarTipologiaNaComboBox();           
         }
 
         private void ComunicarTabelas()
         {
-            ComunicaBDparaTabelaOrcamentacao();
-            ComunicaBDparaTabelaReal();
-            ComunicaBDparaTabelaConcluido();
-            ComunicaBDparaTabelaOrcamentacaoTotal();
-            ComunicaBDparaTabelaRealTotais();
-            ComunicaBDparaTabelaConclusaoTotal();
+            VisualizarTabelaOrcamentacao();
+            VisualizarTabelaReal();
+            VisualizarTabelaConcluido();
+            VisualizarTabelaOrcamentacaoTotal();
+            VisualizarTabelaRealTotais();
+            VisualizarTabelaConclusaoTotal();
         }
 
         private void AtualizarDados()
@@ -90,11 +98,11 @@ namespace OfelizCM
 
         private void CarregarGraficos()
         {
-            CarregarGraficoObras();
-            CarregarGraficoObras2();
-            CarregarGraficoObrasvalor();
-            CarregarGraficoObrasPercentagem();
-            CarregarGraficoPiePercentagem();
+            VisualizarGraficoTotalHoras();
+            VisualizarGraficoObrasHoras();
+            VisualizarGraficoObrasValor();
+            VisualizarGraficoObrasPercentagem();
+            VisualizarGraficoPiePercentagem();
         }
 
         public void VerificarUsuario()
@@ -176,12 +184,7 @@ namespace OfelizCM
         }
 
         private void FormatacaodosGraficos()
-        {
-              foreach (var point in chartCircle.Series["Percentagens"].Points)
-                  {
-                    point.Label = point.YValues[0].ToString("F1");
-                  }
-            
+        {                        
              foreach (var point in chartTotalPercentagem.Series["% Total"].Points)
                   {
                     point.Label = point.YValues[0].ToString("F1"); 
@@ -189,52 +192,6 @@ namespace OfelizCM
 
         }
                 
-        private void ComunicaBDparaTabelaOrcamentacao()
-        {
-            ComunicaBD comunicaBD = new ComunicaBD();
-            try
-            {
-                comunicaBD.ConectarBD();
-                string query = "SELECT Id, [Ano de fecho], [Numero da Obra], [Nome da Obra], [Preparador Responsavel], Tipologia, [KG Estrutura], [Horas Estrutura], [Valor Estrutura], [KG/Euro Estrutura], [Horas Revestimentos], [Valor Revestimentos], [Total Horas], [Total Valor] FROM dbo.Orçamentação";
-                DataTable dataTable = comunicaBD.Procurarbd(query);
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    for (int i = 0; i < dataTable.Columns.Count; i++)
-                    {
-                        if (row[i] != DBNull.Value && row[i] is string)
-                        {
-                            row[i] = ((string)row[i]).Trim();  
-                        }
-                    }
-                }
-
-                DataGridViewOrcamentacaoObras.DataSource = dataTable;
-                DataGridViewOrcamentacaoObras.ClearSelection();
-                DataGridViewOrcamentacaoObras.ScrollBars = ScrollBars.Horizontal;
-                DataGridViewOrcamentacaoObras.Columns["Id"].Visible = false;
-                DataGridViewOrcamentacaoObras.Columns["Ano de fecho"].Width = 40;
-                DataGridViewOrcamentacaoObras.Columns["Numero da Obra"].Width = 60;
-                DataGridViewOrcamentacaoObras.Columns["Nome da Obra"].Width = 120;
-                DataGridViewOrcamentacaoObras.Columns["Preparador Responsavel"].Width = 70;
-                DataGridViewOrcamentacaoObras.Columns["Tipologia"].Width = 65;
-                DataGridViewOrcamentacaoObras.Columns["KG Estrutura"].Width = 70;
-                DataGridViewOrcamentacaoObras.Columns["Horas Estrutura"].Width = 50;
-                DataGridViewOrcamentacaoObras.Columns["Valor Estrutura"].Width = 75;
-                DataGridViewOrcamentacaoObras.Columns["KG/Euro Estrutura"].Width = 40;
-                DataGridViewOrcamentacaoObras.Columns["Horas Revestimentos"].Width = 50;
-                DataGridViewOrcamentacaoObras.Columns["Valor Revestimentos"].Width = 50;
-                DataGridViewOrcamentacaoObras.Columns["Total Horas"].Width = 50;
-                DataGridViewOrcamentacaoObras.Columns["Total Valor"].Width = 90;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
-            }
-            finally
-            {
-                comunicaBD.DesonectarBD();
-            }
-        }
 
         private void SalvarOrcamentacaoBD()
         {
@@ -444,92 +401,14 @@ namespace OfelizCM
                 }
             }
         }
-
-        private void ComunicaBDparaTabelaOrcamentacaoTotal()
-        {
-            ComunicaBD comunicaBD = new ComunicaBD();
-            try
-            {
-                comunicaBD.ConectarBD();
-
-                string query = "SELECT ID, [Total KG Estrutura Orc], [Total Horas Estrutura Orc], [Total Valor Estrutura Orc], [Total KG/Euro Estrutura Orc], [Total Horas Revestimentos Orc], [Total Valor Revestimentos Orc], [Total Horas Orc], [Total Valor Orc]  FROM dbo.TotalObras";
-
-                DataTable dataTable = comunicaBD.Procurarbd(query);
-
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    for (int i = 0; i < dataTable.Columns.Count; i++)
-                    {
-                        if (row[i] != DBNull.Value && row[i] is string)
-                        {
-                            row[i] = ((string)row[i]).Trim();
-                        }
-                    }
-                }
-                DataGridViewOrcamentacaoObrasTotal.DataSource = dataTable;
-                DataGridViewOrcamentacaoObrasTotal.ClearSelection();
-                DataGridViewOrcamentacaoObrasTotal.Columns["Id"].Visible = false;
-                DataGridViewOrcamentacaoObrasTotal.ReadOnly = true;
-                DataGridViewOrcamentacaoObrasTotal.ColumnHeadersVisible = false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
-            }
-            finally
-            {
-                comunicaBD.DesonectarBD();
-            }
-        }
+               
 
         private string SubstituirSeparadorDecimal(string valor)
         {
             return valor.Replace(",", ".");
         }
               
-        private void ComunicaBDparaTabelaReal()
-        {
-            ComunicaBD comunicaBD = new ComunicaBD();
-            try
-            {
-                comunicaBD.ConectarBD();
-
-                string query = "SELECT ID, [Ano de fecho], [Numero da Obra], Tipologia, [KG Estrutura], [Horas Estrutura], [Valor Estrutura], [KG/Euro Estrutura], [Percentagem Estrutura], [Horas Revestimentos], [Valor Revestimentos] , [Percentagem Revestimentos], [Horas Aprovação], [Valor Aprovação], [Percentagem Aprovação], [Horas Alterações], [Valor Alterações], [Percentagem Alterações], [Horas Fabrico], [Valor Fabrico], [Percentagem Fabrico], [Horas Soldadura], [Valor Soldadura], [Percentagem Soldadura], [Horas Montagem], [Valor Montagem], [Percentagem Montagem], [Horas Diversos], [Valor Diversos], [Percentagem Diversos] , [Comentario Diversos], [Total Horas], [Total Valor] FROM dbo.RealObras";
-
-                DataTable dataTable = comunicaBD.Procurarbd(query);
-
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    for (int i = 0; i < dataTable.Columns.Count; i++)
-                    {
-                        if (row[i] != DBNull.Value && row[i] is string)
-                        {
-                            row[i] = ((string)row[i]).Trim();
-                        }
-                    }
-                }
-                DataGridViewRealObras.DataSource = dataTable;
-                DataGridViewRealObras.ClearSelection();
-                DataGridViewRealObras.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-                DataGridViewRealObras.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-                DataGridViewRealObras.Columns["Id"].Visible = false;
-                DataGridViewRealObras.Columns["Numero da Obra"].Visible = false;
-                DataGridViewRealObras.Columns["Ano de fecho"].Visible = false;
-                DataGridViewRealObras.Columns["Tipologia"].Visible = false;
-                DataGridViewRealObras.ReadOnly = true;
-                ApplyColumnColors();
-                DataGridViewRealObras.Columns["KG Estrutura"].Width = 90;
-                DataGridViewRealObras.ScrollBars = ScrollBars.Horizontal;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
-            }
-            finally
-            {
-                comunicaBD.DesonectarBD();
-            }
-        }
+       
 
         private void ApplyColumnColors()
         {
@@ -609,137 +488,8 @@ namespace OfelizCM
             else if (colunasDiversos.Contains(columnName)) ApplyColumnStyle(colunasDiversos, Color.FromArgb(30, 144, 255));
             else if (colunasTotal.Contains(columnName)) ApplyColumnStyle(colunasTotal, Color.FromArgb(112, 128, 144));
         }
-
-        private void ComunicaBDparaTabelaRealTotais()
-        {
-            ComunicaBD comunicaBD = new ComunicaBD();
-            try
-            {
-                comunicaBD.ConectarBD();
-
-                string query = "SELECT ID, [Total KG Estrutura Real], [Total Horas Estrutura Real], [Total Valor Estrutura Real], [Total KG/Euro Estrutura Real], [Percentagem Estrutura Real], [Total Horas Revestimentos Real], [Total Valor Revestimentos Real], [Percentagem Revestimentos Real]," +
-                    " [Total Horas Aprovacao Real] ,[Total Valor Aprovacao Real], [Percentagem Aprovacao Real], [Total Horas Alteracoes Real], [Total Valor Alteracoes Real], [Percentagem Alteracoes Real], [Total Horas Fabrico Real], [Total Valor Fabrico Real], [Percentagem Fabrico Real], [Total Horas Soldadura Real], " +
-                    " [Total Valor Soldadura Real], [Percentagem Soldadura Real], [Total Horas Montagem Real], [Total Valor Montagem Real], [Percentagem Montagem Real], [Total Horas Diversos Real], [Total Valor Diversos Real], [Percentagem Diversos Real],  [Comentario Diversos Real]," +
-                    " [Total Horas Real], [Total Valor Real]  FROM dbo.TotalObras";
-
-                DataTable dataTable = comunicaBD.Procurarbd(query);
-
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    for (int i = 0; i < dataTable.Columns.Count; i++)
-                    {
-                        if (row[i] != DBNull.Value && row[i] is string)
-                        {
-                            row[i] = ((string)row[i]).Trim();
-                        }
-                    }
-                }
-                DataGridViewRealObrasTotal.DataSource = dataTable;
-                DataGridViewRealObrasTotal.ClearSelection();
-                DataGridViewRealObrasTotal.Columns["Id"].Visible = false;
-                DataGridViewRealObrasTotal.ReadOnly = true;
-                DataGridViewRealObrasTotal.ColumnHeadersVisible = false;
-                DataGridViewRealObrasTotal.ScrollBars = ScrollBars.Horizontal;
-
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
-            }
-            finally
-            {
-                comunicaBD.DesonectarBD();
-            }
-        }
+               
         
-        private void ComunicaBDparaTabelaConcluido()
-        {
-            ComunicaBD comunicaBD = new ComunicaBD();
-            try
-            {
-                comunicaBD.ConectarBD();
-
-                string query = "SELECT ID, [Ano de fecho], [Numero da Obra], Tipologia, [Total Horas], [Total Valor], [Percentagem Total], [Dias de Preparação] FROM dbo.ConclusaoObras";
-
-                DataTable dataTable = comunicaBD.Procurarbd(query);
-
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    for (int i = 0; i < dataTable.Columns.Count; i++)
-                    {
-                        if (row[i] != DBNull.Value && row[i] is string)
-                        {
-                            row[i] = ((string)row[i]).Trim();
-                        }
-                    }
-                }
-                DataGridViewConclusaoObras.DataSource = dataTable;
-                DataGridViewConclusaoObras.ClearSelection();
-                DataGridViewConclusaoObras.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                DataGridViewConclusaoObras.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                DataGridViewConclusaoObras.Columns["Id"].Visible = false;
-                DataGridViewConclusaoObras.Columns["Numero da Obra"].Visible = false;
-                DataGridViewConclusaoObras.Columns["Ano de fecho"].Visible = false;
-                DataGridViewConclusaoObras.Columns["Tipologia"].Visible = false;
-                DataGridViewConclusaoObras.ReadOnly = true;
-                DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
-                DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
-                DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
-                DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
-            }
-            finally
-            {
-                comunicaBD.DesonectarBD();
-            }
-        }
-
-        private void ComunicaBDparaTabelaConclusaoTotal()
-        {
-            ComunicaBD comunicaBD = new ComunicaBD();
-            try
-            {
-                comunicaBD.ConectarBD();
-
-                string query = "SELECT ID, [Total Horas Concl], [Total Valor Concl], [Percentagem Total Concl], [Dias de Preparacao Concl] FROM dbo.TotalObras";
-
-                DataTable dataTable = comunicaBD.Procurarbd(query);
-
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    for (int i = 0; i < dataTable.Columns.Count; i++)
-                    {
-                        if (row[i] != DBNull.Value && row[i] is string)
-                        {
-                            row[i] = ((string)row[i]).Trim();
-                        }
-                    }
-                }
-                DataGridViewConclusaoObrasTotal.DataSource = dataTable;
-                DataGridViewConclusaoObrasTotal.ClearSelection();
-                DataGridViewConclusaoObrasTotal.Columns["Id"].Visible = false;
-                DataGridViewConclusaoObrasTotal.ReadOnly = true;
-                DataGridViewConclusaoObrasTotal.ColumnHeadersVisible = false;
-                DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
-                DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
-                DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
-                DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
-            }
-            finally
-            {
-                comunicaBD.DesonectarBD();
-            }
-        }
 
         private void VerificarEAtualizarOuSalvar()
         {
@@ -1115,9 +865,7 @@ namespace OfelizCM
 
         private void guna2Button1_Click(object sender, EventArgs e)
         {
-            guna2ContainerControl2.Visible = !guna2ContainerControl2.Visible;
-            label5.Visible = !label5.Visible;
-            pictureBox7.Visible = !pictureBox7.Visible;
+            
         }
 
         private void AtualizarTabelaRealnaBd()
@@ -2447,412 +2195,7 @@ namespace OfelizCM
                 BD.DesonectarBD();
             }
         }
-
-        public void CarregarGraficoObras()
-        {
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-            int obraId = 1;
-            string query = @"
-            SELECT [Total Horas Orc], [Total Horas Real]
-            FROM dbo.TotalObras
-            WHERE ID = @ID";
-
-            using (SqlCommand cmd = new SqlCommand(query, BD.GetConnection()))
-            {
-                cmd.Parameters.AddWithValue("@ID", obraId);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    chartTotalHoras1.Series["Orçamentação"].Points.Clear();
-                    chartTotalHoras1.Series["Real"].Points.Clear();
-
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-
-                            double totalHorasOrc;
-                            double totalHorasReal;
-
-                            string totalHorasOrcStr = reader["Total Horas Orc"].ToString().Replace("h", "").Trim();
-                            string totalHorasRealStr = reader["Total Horas Real"].ToString().Replace("h", "").Trim();
-
-                            bool podeConverterOrc = double.TryParse(totalHorasOrcStr, out totalHorasOrc);
-                            bool podeConverterReal = double.TryParse(totalHorasRealStr, out totalHorasReal);
-
-
-                            if (podeConverterOrc)
-                            {
-                                chartTotalHoras1.Series["Orçamentação"].Points.AddY(totalHorasOrc);
-                            }
-                            else
-                            {
-                                chartTotalHoras1.Series["Orçamentação"].Points.AddY(0);
-                            }
-
-                            if (podeConverterReal)
-                            {
-                                chartTotalHoras1.Series["Real"].Points.AddY(totalHorasReal);
-                            }
-                            else
-                            {
-                                chartTotalHoras1.Series["Real"].Points.AddY(0);
-                            }
-                        }
-                    }
-                }
-            }
-            BD.DesonectarBD();
-        }
-
-        public void CarregarGraficoObras2()
-        {            
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-
-            string queryOrc = @"
-                                SELECT [Total Horas], [Numero da Obra]
-                                FROM dbo.Orçamentação
-                                ORDER BY ID ASC"; 
-
-            string queryReal = @"
-                                SELECT [Total Horas], [Numero da Obra]
-                                FROM dbo.RealObras
-                                ORDER BY ID ASC";
-
-            
-
-            chartObrasHoras.Series["Orçamentação"].Points.Clear();
-            chartObrasHoras.Series["Real"].Points.Clear();
-            using (SqlCommand cmd = new SqlCommand(queryOrc, BD.GetConnection()))
-            {
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalHorasOrc;
-                            string totalHorasOrcStr = reader["Total Horas"].ToString().Replace("h", "").Trim();
-
-                            totalHorasOrcStr = totalHorasOrcStr.Replace(".", ",");
-
-                            bool podeConverterOrc = double.TryParse(totalHorasOrcStr, out totalHorasOrc);
-                            string numeroDaObraOrc = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterOrc)
-                            {
-                                chartObrasHoras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalHorasOrc);
-                            }
-                            else
-                            {
-                                chartObrasHoras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
-
-                            }
-                        }
-                    }
-                }
-            }
-
-            using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
-            {
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalHorasReal;
-                            string totalHorasRealStr = reader["Total Horas"].ToString().Replace("h", "").Trim();
-
-                            totalHorasRealStr = totalHorasRealStr.Replace(".", ",");
-
-                            bool podeConverterReal = double.TryParse(totalHorasRealStr, out totalHorasReal);
-                            string numeroDaObraReal = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterReal)
-                            {
-                                chartObrasHoras.Series["Real"].Points.AddXY(numeroDaObraReal, totalHorasReal);
-                            }
-                            else
-                            {
-                                MessageBox.Show($"Erro na conversão de Total Horas Real: {totalHorasRealStr}");
-                                chartObrasHoras.Series["Real"].Points.AddXY(numeroDaObraReal, 0); 
-                            }
-                        }
-                    }
-                }
-            }
-
-            BD.DesonectarBD();
-        }
-
-        public void CarregarGraficoObrasvalor()
-        {
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-
-            string queryOrc = @"
-                        SELECT [Total Valor], [Numero da Obra]
-                        FROM dbo.Orçamentação
-                        ORDER BY ID ASC";
-
-            string queryReal = @"
-                        SELECT [Total Valor], [Numero da Obra]
-                        FROM dbo.RealObras
-                        ORDER BY ID ASC";
-
-            chartTotalValorObras.Series["Orçamentação"].Points.Clear();
-            chartTotalValorObras.Series["Real"].Points.Clear();
-            using (SqlCommand cmd = new SqlCommand(queryOrc, BD.GetConnection()))
-            {
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalValorOrc;
-                            string totalValorOrcStr = reader["Total Valor"].ToString().Replace("€", "").Trim();
-
-                            totalValorOrcStr = totalValorOrcStr.Replace(".", ",");
-
-                            bool podeConverterOrc = double.TryParse(totalValorOrcStr, out totalValorOrc);
-                            string numeroDaObraOrc = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterOrc)
-                            {
-                                chartTotalValorObras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalValorOrc);
-                            }
-                            else
-                            {
-                                chartTotalValorObras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
-                            }
-                        }
-                    }
-                }
-            }
-
-            using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
-            {
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalValorReal;
-                            string totalValorRealStr = reader["Total Valor"].ToString().Replace("€", "").Trim();
-
-                            totalValorRealStr = totalValorRealStr.Replace(".", ",");
-
-                            bool podeConverterReal = double.TryParse(totalValorRealStr, out totalValorReal);
-                            string numeroDaObraReal = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterReal)
-                            {
-                                chartTotalValorObras.Series["Real"].Points.AddXY(numeroDaObraReal, totalValorReal);
-                            }
-                            else
-                            {
-                                MessageBox.Show($"Erro na conversão de Total Horas Real: {totalValorRealStr}");
-                                chartTotalValorObras.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
-                            }
-                        }
-                    }
-                }
-            }
-
-            BD.DesonectarBD();
-        }
-
-        public void CarregarGraficoObrasPercentagem()
-        {
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-                        
-            string queryReal = @"
-                        SELECT [Percentagem Total], [Numero da Obra]
-                        FROM dbo.ConclusaoObras
-                        ORDER BY ID ASC";
-
-            chartTotalPercentagem.Series["% Total"].Points.Clear();            
-            using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
-            {
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalValorPercentagem;
-                            string totalValorPercentagemStr = reader["Percentagem Total"].ToString().Replace("%", "").Trim();
-
-                            totalValorPercentagemStr = totalValorPercentagemStr.Replace(".", ",");
-
-                            bool podeConverterReal = double.TryParse(totalValorPercentagemStr, out totalValorPercentagem);
-                            string numeroDaObraReal = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterReal)
-                            {
-                                chartTotalPercentagem.Series["% Total"].Points.AddXY(numeroDaObraReal, totalValorPercentagem);
-                            }
-                            else
-                            {
-                                MessageBox.Show($"Erro na conversão de Total Horas Real: {totalValorPercentagemStr}");
-                                chartTotalPercentagem.Series["% Total"].Points.AddXY(numeroDaObraReal, 0);
-                            }
-                        }
-                    }
-                }
-            }
-
-            BD.DesonectarBD();
-        }
-
-        public void CarregarGraficoPiePercentagem()
-        {
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-
-            string queryReal = @"
-            SELECT [Percentagem Estrutura Real], [Percentagem Revestimentos Real], [Percentagem Aprovacao Real],
-                   [Percentagem Alteracoes Real], [Percentagem Fabrico Real], [Percentagem Soldadura Real], 
-                   [Percentagem Montagem Real], [Percentagem Diversos Real]
-            FROM dbo.TotalObras";
-
-            chartCircle.Series["Percentagens"].Points.Clear();
-
-            chartCircle.Series["Percentagens"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
-
-            chartCircle.Series["Percentagens"].IsValueShownAsLabel = true; 
-
-            chartCircle.Legends["Legend1"].Enabled = true;
-            chartCircle.Legends["Legend1"].Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-
-            using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
-            {
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double estruturaReal, revestimentosReal, aprovacaoReal, alteracoesReal, fabricoReal, soldaduraReal, montagemReal, diversosReal;
-
-                            string estruturaRealStr = reader["Percentagem Estrutura Real"].ToString().Replace("%", "").Trim();
-                            string revestimentosRealStr = reader["Percentagem Revestimentos Real"].ToString().Replace("%", "").Trim();
-                            string aprovacaoRealStr = reader["Percentagem Aprovacao Real"].ToString().Replace("%", "").Trim();
-                            string alteracoesRealStr = reader["Percentagem Alteracoes Real"].ToString().Replace("%", "").Trim();
-                            string fabricoRealStr = reader["Percentagem Fabrico Real"].ToString().Replace("%", "").Trim();
-                            string soldaduraRealStr = reader["Percentagem Soldadura Real"].ToString().Replace("%", "").Trim();
-                            string montagemRealStr = reader["Percentagem Montagem Real"].ToString().Replace("%", "").Trim();
-                            string diversosRealStr = reader["Percentagem Diversos Real"].ToString().Replace("%", "").Trim();
-
-                            bool podeConverterEstrutura = double.TryParse(estruturaRealStr, out estruturaReal);
-                            bool podeConverterRevestimentos = double.TryParse(revestimentosRealStr, out revestimentosReal);
-                            bool podeConverterAprovacao = double.TryParse(aprovacaoRealStr, out aprovacaoReal);
-                            bool podeConverterAlteracoes = double.TryParse(alteracoesRealStr, out alteracoesReal);
-                            bool podeConverterFabrico = double.TryParse(fabricoRealStr, out fabricoReal);
-                            bool podeConverterSoldadura = double.TryParse(soldaduraRealStr, out soldaduraReal);
-                            bool podeConverterMontagem = double.TryParse(montagemRealStr, out montagemReal);
-                            bool podeConverterDiversos = double.TryParse(diversosRealStr, out diversosReal);
-
-                            if (podeConverterEstrutura)
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(estruturaReal);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Estrutura";
-                            }
-                            else
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Estrutura";
-                            }
-
-                            if (podeConverterRevestimentos)
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(revestimentosReal);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Revestimentos";
-                            }
-                            else
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Revestimentos";
-                            }
-
-                            if (podeConverterAprovacao)
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(aprovacaoReal);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Aprovação";
-                            }
-                            else
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Aprovação";
-                            }
-
-                            if (podeConverterAlteracoes)
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(alteracoesReal);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Alterações";
-                            }
-                            else
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Alterações";
-                            }
-
-                            if (podeConverterFabrico)
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(fabricoReal);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Fabrico";
-                            }
-                            else
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Fabrico";
-                            }
-
-                            if (podeConverterSoldadura)
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(soldaduraReal);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Soldadura";
-                            }
-                            else
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Soldadura";
-                            }
-
-                            if (podeConverterMontagem)
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(montagemReal);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Montagem";
-                            }
-                            else
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Montagem";
-                            }
-
-                            if (podeConverterDiversos)
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(diversosReal);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Diversos";
-                            }
-                            else
-                            {
-                                chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Diversos";
-                            }
-                        }
-                    }
-                }
-            }
-            BD.DesonectarBD();
-        }
-
+               
         public void CarregarPastasNaComboBoxAno()
         {
             string caminhoPasta = @"\\marconi\COMPANY SHARED FOLDER\OFELIZ\OFM\2.AN\2.CM\DP\1 Obras";
@@ -2903,13 +2246,13 @@ namespace OfelizCM
         private void ButtonIniciarTarefa_Click(object sender, EventArgs e)
         {
             FiltrarTipologia();
-            CarregarGraficoObras();
+            VisualizarGraficoTotalHoras();
             AdicionarSufixosNasColunas();
             CarregarGraficoObras2Tipologia();
             CarregarGraficoObrasvalorTipologia();
             CarregarGraficoObrasPercentagemTipologia();
             CarregarGraficoHorasTipologiaeAno();
-            CarregarGraficoPiePercentagemTipologiaeAno();
+            VisualizarGraficoPiePercentagemTipologiaeAno();
         }
 
         private void FiltrarTipologia()
@@ -3062,7 +2405,7 @@ namespace OfelizCM
             FiltrarPorAno();
             AdicionarSufixosNasColunas();
             CarregarGraficoHorasTipologiaeAno();
-            CarregarGraficoPiePercentagemTipologiaeAno();
+            VisualizarGraficoPiePercentagemTipologiaeAno();
             CarregarGraficoObras2Ano();
             CarregarGraficoObrasvalorAno();
             CarregarGraficoObrasPercentagemAno();
@@ -3070,34 +2413,25 @@ namespace OfelizCM
 
         private void guna2ImageButton1_Click(object sender, EventArgs e)
         {
-            panel1.Visible = !panel1.Visible;
-            ComunicarTabelas();
-            AdicionarSufixosNasColunas();
-            if (panel1.Visible == false)
-            {
-                CarregarGraficos();
-            }            
+           
         }
 
         private void guna2ImageButton2_Click(object sender, EventArgs e)
         {
             RemoverSufixosNasColunasOracamentacao();
             VerificarEAtualizarOuSalvar();
-            ComunicaBDparaTabelaOrcamentacao();
-            ComunicaBDparaTabelaReal();
-            ComunicaBDparaTabelaConcluido();
-            ComunicaBDparaTabelaOrcamentacao();
+            VisualizarTabelaOrcamentacao();
+            VisualizarTabelaReal();
+            VisualizarTabelaConcluido();
             AdicionarSufixosNasColunas();
         }
 
         private void guna2ImageButton4_Click(object sender, EventArgs e)
         {
-            guna2Panel3.Visible = !guna2Panel3.Visible;
         }
 
         private void guna2ImageButton3_Click(object sender, EventArgs e)
         {
-            panel2.Visible = !panel2.Visible;
         }
 
         private void guna2ImageButton5_Click(object sender, EventArgs e)
@@ -3314,7 +2648,6 @@ namespace OfelizCM
 
         private void guna2ImageButton6_Click(object sender, EventArgs e)
         {
-            panel3.Visible = !panel3.Visible;
         }
 
         private void guna2Button7_Click(object sender, EventArgs e)
@@ -4218,79 +3551,7 @@ namespace OfelizCM
 
         }
 
-        public void CarregarGraficoPiePercentagemTipologiaeAno()
-        {
-            chartCircle.Series["Percentagens"].Points.Clear();
-            chartCircle.Series["Percentagens"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
-            chartCircle.Series["Percentagens"].IsValueShownAsLabel = true;
-            chartCircle.Legends["Legend1"].Enabled = true;
-            chartCircle.Legends["Legend1"].Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-
-            double somaEstrutura = 0, somaRevestimentos = 0, somaAprovacao = 0;
-            double somaAlteracoes = 0, somaFabrico = 0, somaSoldadura = 0;
-            double somaMontagem = 0, somaDiversos = 0;
-            int count = 0;
-
-            foreach (DataGridViewRow row in DataGridViewRealObras.Rows)
-            {
-                if (row.IsNewRow) continue;
-
-                double estruturaReal = 0, revestimentosReal = 0, aprovacaoReal = 0, alteracoesReal = 0;
-                double fabricoReal = 0, soldaduraReal = 0, montagemReal = 0, diversosReal = 0;
-
-                bool podeConverterEstrutura = double.TryParse(row.Cells["Percentagem Estrutura"].Value.ToString().Replace("%", "").Trim(), out estruturaReal);
-                bool podeConverterRevestimentos = double.TryParse(row.Cells["Percentagem Revestimentos"].Value.ToString().Replace("%", "").Trim(), out revestimentosReal);
-                bool podeConverterAprovacao = double.TryParse(row.Cells["Percentagem Aprovação"].Value.ToString().Replace("%", "").Trim(), out aprovacaoReal);
-                bool podeConverterAlteracoes = double.TryParse(row.Cells["Percentagem Alterações"].Value.ToString().Replace("%", "").Trim(), out alteracoesReal);
-                bool podeConverterFabrico = double.TryParse(row.Cells["Percentagem Fabrico"].Value.ToString().Replace("%", "").Trim(), out fabricoReal);
-                bool podeConverterSoldadura = double.TryParse(row.Cells["Percentagem Soldadura"].Value.ToString().Replace("%", "").Trim(), out soldaduraReal);
-                bool podeConverterMontagem = double.TryParse(row.Cells["Percentagem Montagem"].Value.ToString().Replace("%", "").Trim(), out montagemReal);
-                bool podeConverterDiversos = double.TryParse(row.Cells["Percentagem Diversos"].Value.ToString().Replace("%", "").Trim(), out diversosReal);
-
-                if (podeConverterEstrutura) somaEstrutura += estruturaReal;
-                if (podeConverterRevestimentos) somaRevestimentos += revestimentosReal;
-                if (podeConverterAprovacao) somaAprovacao += aprovacaoReal;
-                if (podeConverterAlteracoes) somaAlteracoes += alteracoesReal;
-                if (podeConverterFabrico) somaFabrico += fabricoReal;
-                if (podeConverterSoldadura) somaSoldadura += soldaduraReal;
-                if (podeConverterMontagem) somaMontagem += montagemReal;
-                if (podeConverterDiversos) somaDiversos += diversosReal;
-
-                count++;
-            }
-
-            if (count > 0)
-            {
-                chartCircle.Series["Percentagens"].Points.AddY(somaEstrutura / count);
-                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Estrutura";
-
-                chartCircle.Series["Percentagens"].Points.AddY(somaRevestimentos / count);
-                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Revestimentos";
-
-                chartCircle.Series["Percentagens"].Points.AddY(somaAprovacao / count);
-                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Aprovação";
-
-                chartCircle.Series["Percentagens"].Points.AddY(somaAlteracoes / count);
-                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Alterações";
-
-                chartCircle.Series["Percentagens"].Points.AddY(somaFabrico / count);
-                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Fabrico";
-
-                chartCircle.Series["Percentagens"].Points.AddY(somaSoldadura / count);
-                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Soldadura";
-
-                chartCircle.Series["Percentagens"].Points.AddY(somaMontagem / count);
-                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Montagem";
-
-                chartCircle.Series["Percentagens"].Points.AddY(somaDiversos / count);
-                chartCircle.Series["Percentagens"].Points[chartCircle.Series["Percentagens"].Points.Count - 1].LegendText = "Diversos";
-            }
-            else
-            {
-                MessageBox.Show("Não há dados válidos no DataGridView.");
-            }
-        }
-
+       
         public void CarregarGraficoObras2Tipologia()
         {
             string Tipologia = ComboBoxTipologiaFiltro.SelectedItem?.ToString();
@@ -4316,8 +3577,8 @@ namespace OfelizCM
 
 
 
-            chartObrasHoras.Series["Orçamentação"].Points.Clear();
-            chartObrasHoras.Series["Real"].Points.Clear();
+            chartObrasHoras1.Series["Orçamentação"].Points.Clear();
+            chartObrasHoras1.Series["Real"].Points.Clear();
 
             using (SqlCommand cmd = new SqlCommand(queryOrc, BD.GetConnection()))
             {
@@ -4339,11 +3600,11 @@ namespace OfelizCM
 
                             if (podeConverterOrc)
                             {
-                                chartObrasHoras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalHorasOrc);
+                                chartObrasHoras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalHorasOrc);
                             }
                             else
                             {
-                                chartObrasHoras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
+                                chartObrasHoras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
 
                             }
                         }
@@ -4371,12 +3632,12 @@ namespace OfelizCM
 
                             if (podeConverterReal)
                             {
-                                chartObrasHoras.Series["Real"].Points.AddXY(numeroDaObraReal, totalHorasReal);
+                                chartObrasHoras1.Series["Real"].Points.AddXY(numeroDaObraReal, totalHorasReal);
                             }
                             else
                             {
                                 MessageBox.Show($"Erro na conversão de Total Horas Real: {totalHorasRealStr}");
-                                chartObrasHoras.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
+                                chartObrasHoras1.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
                             }
                         }
                     }
@@ -4404,8 +3665,8 @@ namespace OfelizCM
                         WHERE Tipologia = @Tipologia";
 
 
-            chartTotalValorObras.Series["Orçamentação"].Points.Clear();
-            chartTotalValorObras.Series["Real"].Points.Clear();
+            chartTotalValorObras1.Series["Orçamentação"].Points.Clear();
+            chartTotalValorObras1.Series["Real"].Points.Clear();
 
             using (SqlCommand cmd = new SqlCommand(queryOrc, BD.GetConnection()))
             {
@@ -4427,11 +3688,11 @@ namespace OfelizCM
 
                             if (podeConverterOrc)
                             {
-                                chartTotalValorObras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalValorOrc);
+                                chartTotalValorObras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalValorOrc);
                             }
                             else
                             {
-                                chartTotalValorObras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
+                                chartTotalValorObras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
                             }
                         }
                     }
@@ -4458,12 +3719,12 @@ namespace OfelizCM
 
                             if (podeConverterReal)
                             {
-                                chartTotalValorObras.Series["Real"].Points.AddXY(numeroDaObraReal, totalValorReal);
+                                chartTotalValorObras1.Series["Real"].Points.AddXY(numeroDaObraReal, totalValorReal);
                             }
                             else
                             {
                                 MessageBox.Show($"Erro na conversão de Total Horas Real: {totalValorRealStr}");
-                                chartTotalValorObras.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
+                                chartTotalValorObras1.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
                             }
                         }
                     }
@@ -4549,8 +3810,8 @@ namespace OfelizCM
 
 
 
-            chartObrasHoras.Series["Orçamentação"].Points.Clear();
-            chartObrasHoras.Series["Real"].Points.Clear();
+            chartObrasHoras1.Series["Orçamentação"].Points.Clear();
+            chartObrasHoras1.Series["Real"].Points.Clear();
 
             using (SqlCommand cmd = new SqlCommand(queryOrc, BD.GetConnection()))
             {
@@ -4572,11 +3833,11 @@ namespace OfelizCM
 
                             if (podeConverterOrc)
                             {
-                                chartObrasHoras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalHorasOrc);
+                                chartObrasHoras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalHorasOrc);
                             }
                             else
                             {
-                                chartObrasHoras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
+                                chartObrasHoras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
 
                             }
                         }
@@ -4604,12 +3865,12 @@ namespace OfelizCM
 
                             if (podeConverterReal)
                             {
-                                chartObrasHoras.Series["Real"].Points.AddXY(numeroDaObraReal, totalHorasReal);
+                                chartObrasHoras1.Series["Real"].Points.AddXY(numeroDaObraReal, totalHorasReal);
                             }
                             else
                             {
                                 MessageBox.Show($"Erro na conversão de Total Horas Real: {totalHorasRealStr}");
-                                chartObrasHoras.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
+                                chartObrasHoras1.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
                             }
                         }
                     }
@@ -4637,8 +3898,8 @@ namespace OfelizCM
                         WHERE [Ano de fecho] = @anofecho";
 
 
-            chartTotalValorObras.Series["Orçamentação"].Points.Clear();
-            chartTotalValorObras.Series["Real"].Points.Clear();
+            chartTotalValorObras1.Series["Orçamentação"].Points.Clear();
+            chartTotalValorObras1.Series["Real"].Points.Clear();
 
             using (SqlCommand cmd = new SqlCommand(queryOrc, BD.GetConnection()))
             {
@@ -4660,11 +3921,11 @@ namespace OfelizCM
 
                             if (podeConverterOrc)
                             {
-                                chartTotalValorObras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalValorOrc);
+                                chartTotalValorObras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalValorOrc);
                             }
                             else
                             {
-                                chartTotalValorObras.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
+                                chartTotalValorObras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
                             }
                         }
                     }
@@ -4691,12 +3952,12 @@ namespace OfelizCM
 
                             if (podeConverterReal)
                             {
-                                chartTotalValorObras.Series["Real"].Points.AddXY(numeroDaObraReal, totalValorReal);
+                                chartTotalValorObras1.Series["Real"].Points.AddXY(numeroDaObraReal, totalValorReal);
                             }
                             else
                             {
                                 MessageBox.Show($"Erro na conversão de Total Horas Real: {totalValorRealStr}");
-                                chartTotalValorObras.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
+                                chartTotalValorObras1.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
                             }
                         }
                     }
@@ -4758,17 +4019,329 @@ namespace OfelizCM
 
         private void chartObrasHoras_Click(object sender, EventArgs e)
         {
-            chartObrasHoras.ChartAreas[0].AxisX.ScaleView.Size = 10;
+            chartObrasHoras1.ChartAreas[0].AxisX.ScaleView.Size = 10;
 
-            chartObrasHoras.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
-            chartObrasHoras.ChartAreas[0].AxisX.ScrollBar.IsPositionedInside = true;
+            chartObrasHoras1.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
+            chartObrasHoras1.ChartAreas[0].AxisX.ScrollBar.IsPositionedInside = true;
 
-            chartObrasHoras.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
+            chartObrasHoras1.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
 
-            chartObrasHoras.ChartAreas[0].CursorX.IsUserEnabled = true;
-            chartObrasHoras.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+            chartObrasHoras1.ChartAreas[0].CursorX.IsUserEnabled = true;
+            chartObrasHoras1.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
 
         }
+
+        /// <summary>
+        /// /////////////////////////////////////////////////////////////////////////////////////////////// Ja Melhorado //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// </summary>
+        /// 
+        public class ChamarX
+        {
+            public bool IsActive { get; private set; }
+
+            public void Start()
+            {
+                // lógica de iniciar
+                IsActive = true;
+            }
+
+            public void Stop()
+            {
+                // lógica de parar
+                IsActive = false;
+            }
+        }
+        private void MudarTabelaGrafico_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_hook.IsActive)
+            {
+                _hook.Start();
+                PanelTabelas.Visible = false;
+                labeltabelagraficos.Text = "Gráficos Controlo das Obra";
+                CarregarGraficos();
+                PanelTotalObras.Visible = true;
+                PanelChartControlo.Visible = true;
+                PanelchartTotalHoras.Visible = true;
+                PanelchartObrasHoras.Visible = true;
+                PanelchartTotalValorObras.Visible = true;
+            }
+            else
+            {
+                _hook.Stop();
+                PanelTabelas.Visible = true;
+                labeltabelagraficos.Text = "Tabela Controlo das Obra";
+                PanelTotalObras.Visible = false;
+                PanelChartControlo.Visible = false;
+                PanelchartTotalHoras.Visible = false;
+                PanelchartObrasHoras.Visible = false;
+                PanelchartTotalValorObras.Visible = false;
+            }
+        }
+        private void VisualizarTabelaOrcamentacao()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaOrcamentacao();
+
+            DataGridViewOrcamentacaoObras.DataSource = dataTable;
+            DataGridViewOrcamentacaoObras.ClearSelection();
+            DataGridViewOrcamentacaoObras.ScrollBars = ScrollBars.Horizontal;
+            DataGridViewOrcamentacaoObras.Columns["Id"].Visible = false;
+            DataGridViewOrcamentacaoObras.Columns["Ano de fecho"].Width = 40;
+            DataGridViewOrcamentacaoObras.Columns["Numero da Obra"].Width = 60;
+            DataGridViewOrcamentacaoObras.Columns["Nome da Obra"].Width = 120;
+            DataGridViewOrcamentacaoObras.Columns["Preparador Responsavel"].Width = 70;
+            DataGridViewOrcamentacaoObras.Columns["Tipologia"].Width = 65;
+            DataGridViewOrcamentacaoObras.Columns["KG Estrutura"].Width = 70;
+            DataGridViewOrcamentacaoObras.Columns["Horas Estrutura"].Width = 50;
+            DataGridViewOrcamentacaoObras.Columns["Valor Estrutura"].Width = 75;
+            DataGridViewOrcamentacaoObras.Columns["KG/Euro Estrutura"].Width = 40;
+            DataGridViewOrcamentacaoObras.Columns["Horas Revestimentos"].Width = 50;
+            DataGridViewOrcamentacaoObras.Columns["Valor Revestimentos"].Width = 50;
+            DataGridViewOrcamentacaoObras.Columns["Total Horas"].Width = 50;
+            DataGridViewOrcamentacaoObras.Columns["Total Valor"].Width = 90;
+        }
+        private void VisualizarTabelaReal()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaReal();
+
+            DataGridViewRealObras.DataSource = dataTable;
+            DataGridViewRealObras.ClearSelection();
+            DataGridViewRealObras.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            DataGridViewRealObras.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            DataGridViewRealObras.Columns["Id"].Visible = false;
+            DataGridViewRealObras.Columns["Numero da Obra"].Visible = false;
+            DataGridViewRealObras.Columns["Ano de fecho"].Visible = false;
+            DataGridViewRealObras.Columns["Tipologia"].Visible = false;
+            DataGridViewRealObras.ReadOnly = true;
+            DataGridViewRealObras.Columns["KG Estrutura"].Width = 90;
+            DataGridViewRealObras.ScrollBars = ScrollBars.Horizontal;
+            ApplyColumnColors();
+        }
+        private void VisualizarTabelaConcluido()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaConclusao();
+
+            DataGridViewConclusaoObras.DataSource = dataTable;
+            DataGridViewConclusaoObras.ClearSelection();
+            DataGridViewConclusaoObras.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            DataGridViewConclusaoObras.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            DataGridViewConclusaoObras.Columns["Id"].Visible = false;
+            DataGridViewConclusaoObras.Columns["Numero da Obra"].Visible = false;
+            DataGridViewConclusaoObras.Columns["Ano de fecho"].Visible = false;
+            DataGridViewConclusaoObras.Columns["Tipologia"].Visible = false;
+            DataGridViewConclusaoObras.ReadOnly = true;
+            DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
+            DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
+            DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
+            DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
+        }
+        private void VisualizarTabelaOrcamentacaoTotal()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaOrçamentacaoTotal(); 
+
+            DataGridViewOrcamentacaoObrasTotal.DataSource = dataTable;
+            DataGridViewOrcamentacaoObrasTotal.ClearSelection();
+            DataGridViewOrcamentacaoObrasTotal.Columns["Id"].Visible = false;
+            DataGridViewOrcamentacaoObrasTotal.ReadOnly = true;
+            DataGridViewOrcamentacaoObrasTotal.ColumnHeadersVisible = false;
+
+        }
+        private void VisualizarTabelaRealTotais()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaRealTotal();
+
+            DataGridViewRealObrasTotal.DataSource = dataTable;
+            DataGridViewRealObrasTotal.ClearSelection();
+            DataGridViewRealObrasTotal.Columns["Id"].Visible = false;
+            DataGridViewRealObrasTotal.ReadOnly = true;
+            DataGridViewRealObrasTotal.ColumnHeadersVisible = false;
+            DataGridViewRealObrasTotal.ScrollBars = ScrollBars.Horizontal;
+        }
+        private void VisualizarTabelaConclusaoTotal()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaConclusaoTotal();
+
+            DataGridViewConclusaoObrasTotal.DataSource = dataTable;
+            DataGridViewConclusaoObrasTotal.ClearSelection();
+            DataGridViewConclusaoObrasTotal.Columns["Id"].Visible = false;
+            DataGridViewConclusaoObrasTotal.ReadOnly = true;
+            DataGridViewConclusaoObrasTotal.ColumnHeadersVisible = false;
+            DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
+            DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
+            DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
+            DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
+        }
+        public void VisualizarGraficoPiePercentagem()
+        {
+            MostarGraficos grafico = new MostarGraficos();
+
+            var pieChart = pieChartControlo.Child as LiveCharts.Wpf.PieChart;
+
+            if (pieChart != null)
+            {
+                pieChart.Series = grafico.CarregarGraficoRedondo();
+                pieChart.LegendLocation = LegendLocation.Top;
+            }
+        }
+        public void VisualizarGraficoPiePercentagemTipologiaeAno()
+        {
+            var grafico = new MostarGraficos();
+            DataTable tabela = DataGridViewRealObras.DataSource as DataTable;
+
+            var pieChart = pieChartControlo.Child as LiveCharts.Wpf.PieChart;
+
+            if (pieChart != null)
+            {
+                pieChart.Series = grafico.CalcularPercentagemTipologia(tabela);
+                pieChart.LegendLocation = LiveCharts.LegendLocation.Top;
+            }
+        }
+        private void VisualizarGraficoObrasPercentagem()
+        {
+            var chartWpf = ChartTotalObras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarPercentagemTodasObras();
+
+            chartWpf.Series = series;
+            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
+            {
+                s.MaxColumnWidth = 30;   
+                s.ColumnPadding = 10;    
+            }
+
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Número da Obra",
+                FontSize = 15,
+                Labels = labels,
+                LabelsRotation = 45,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1},
+            });
+
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+             {
+                Title = "Percentagem (%)",
+                LabelFormatter = value => value.ToString("N1") + " %",
+                Sections = new SectionsCollection
+             {
+            new AxisSection
+             {
+                Value = 100,
+                Stroke = Cor.Brushes.Red,
+                StrokeThickness = 2,
+                StrokeDashArray = new DoubleCollection { 4 }
+             }
+            }
+            });
+            chartWpf.LegendLocation = LegendLocation.Top;
+        }
+        private void VisualizarGraficoTotalHoras()
+        {
+            var chartWpf = chartTotalHoras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarTotalTodasObras();
+
+            chartWpf.Series = series;
+
+            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
+            {
+                s.MaxColumnWidth = 30;
+                s.ColumnPadding = 10;
+            }
+
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Obra",
+                FontSize = 15,
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1},
+
+                LabelsRotation = 45
+            });
+
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Horas",
+                FontSize = 15,
+                LabelFormatter = value => value + "h"
+            });
+
+            chartWpf.LegendLocation = LegendLocation.Top;
+        }
+        private void VisualizarGraficoObrasHoras()
+        {
+            var chartWpf = chartObrasHoras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarGraficoObrasHoras();
+            chartWpf.Series = series;
+            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
+            {
+                s.MaxColumnWidth = 30;
+                s.ColumnPadding = 10;
+            }
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Número da Obra",
+                FontSize = 15,
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1},                
+                LabelsRotation = 45
+            });
+
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Horas",
+                FontSize = 15,
+                LabelFormatter = value => value + " h"
+            });
+            chartWpf.LegendLocation = LegendLocation.Top;
+        }
+        private void VisualizarGraficoObrasValor()
+        {
+            var chartWpf = chartTotalValorObras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarGraficoObrasValor();
+            chartWpf.Series = series;
+            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
+            {
+                s.MaxColumnWidth = 30;
+                s.ColumnPadding = 10;
+            }
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Número da Obra",
+                FontSize = 15,
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1},
+                LabelsRotation = 45
+            });
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Valor (€)",
+                FontSize = 15,
+                LabelFormatter = value => "€" + value.ToString("N0")  
+            });
+            chartWpf.LegendLocation = LegendLocation.Top;
+        }
+
 
     }
 }
