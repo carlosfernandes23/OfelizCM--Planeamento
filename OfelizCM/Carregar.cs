@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Media;
 
 namespace OfelizCM
@@ -360,20 +361,29 @@ namespace OfelizCM
                     }
                 }
 
-                var series = new SeriesCollection
-            {
-                new ColumnSeries
+                var nomesObras = new Dictionary<string, string>();
+                foreach (var numeroObra in labels)
                 {
-                    Title = "% Total",
-                    Values = valores,
-                    DataLabels = true,
-                    Fill = Brushes.Yellow,
-                    Stroke = Brushes.Black,
-                    StrokeThickness = 0.5,             
-                    FontSize = 12,
-                    LabelPoint = point => point.Y.ToString("N1") + " %"
-                  }
-                };
+                    nomesObras[numeroObra] = ObterNomeObra(numeroObra); 
+                }
+
+                var series = new SeriesCollection
+                    {
+                        new ColumnSeries
+                        {
+                            Title = "% Total",
+                            Values = valores,
+                            DataLabels = true,
+                            Fill = Brushes.Yellow,
+                            Stroke = Brushes.Black,
+                            StrokeThickness = 0.5,
+                            FontSize = 12,
+                            LabelPoint = point =>
+                            {
+                              return $"{point.Y:N1} %";
+                            }
+                        }
+                    };               
 
                 return (series, labels);
             }
@@ -422,7 +432,7 @@ namespace OfelizCM
             {
                 new ColumnSeries
                 {
-                    Title = "Orçamentação",
+                    Title = "Orçamentadas",
                     Values = orcValues,
                     DataLabels = true,
                     Fill = Brushes.LightBlue,
@@ -504,7 +514,7 @@ namespace OfelizCM
                 {
                         new ColumnSeries
                         {
-                            Title = "Orçamentação",
+                            Title = "Orçamentadas",
                             Values = orcValues,
                             DataLabels = true,
                             Fill = Brushes.LightBlue,
@@ -584,7 +594,7 @@ namespace OfelizCM
                     {
                         new ColumnSeries
                         {
-                            Title = "Orçamentação",
+                            Title = "Orçamentadas",
                             Values = orcValues,
                             DataLabels = true,
                             Fill = Brushes.LightBlue,
@@ -611,7 +621,395 @@ namespace OfelizCM
                 _conectarbd.DesonectarBD();
             }
         }
+        public (SeriesCollection series, List<string> labels) CarregarGraficoObrasValor(string campoFiltro, string valorFiltro)
+        {
+            _conectarbd.ConectarBD();
+            string queryOrc = $@"SELECT [Total Valor], [Numero da Obra]
+                                 FROM dbo.Orçamentação
+                                 WHERE {campoFiltro} = @valor
+                                 ORDER BY ID ASC";
 
+            string queryReal = $@"SELECT [Total Valor], [Numero da Obra]
+                                  FROM dbo.RealObras
+                                  WHERE {campoFiltro} = @valor
+                                  ORDER BY ID ASC";
+
+            var orcValues = new ChartValues<double>();
+            var realValues = new ChartValues<double>();
+            var labels = new List<string>();
+            try
+            {
+                using (var cmd = new SqlCommand(queryOrc, _conectarbd.GetConnection()))
+                {
+                    cmd.Parameters.AddWithValue("@valor", valorFiltro);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string numeroDaObra = reader["Numero da Obra"].ToString();
+                            string totalValorStr = reader["Total Valor"].ToString().Replace("€", "").Trim();
+                            totalValorStr = totalValorStr.Replace(".", ",");
+
+                            if (!labels.Contains(numeroDaObra))
+                                labels.Add(numeroDaObra);
+
+                            if (!double.TryParse(totalValorStr, out double totalValorOrc))
+                                totalValorOrc = 0;
+
+                            orcValues.Add(totalValorOrc);
+                        }
+                    }
+                }
+                using (var cmd = new SqlCommand(queryReal, _conectarbd.GetConnection()))
+                {
+                    cmd.Parameters.AddWithValue("@valor", valorFiltro);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string totalValorStr = reader["Total Valor"].ToString().Replace("€", "").Trim();
+                            totalValorStr = totalValorStr.Replace(".", ",");
+
+                            if (!double.TryParse(totalValorStr, out double totalValorReal))
+                                totalValorReal = 0;
+
+                            realValues.Add(totalValorReal);
+                        }
+                    }
+                }
+                var series = new SeriesCollection
+                        {
+                            new ColumnSeries
+                            {
+                                Title = "Orçamentadas",
+                                Values = orcValues,
+                                DataLabels = true,
+                                Fill = Brushes.LightBlue,
+                                Stroke = Brushes.Black,
+                                StrokeThickness = 0.5,
+                                LabelPoint = point => "€" + point.Y
+                            },
+                            new ColumnSeries
+                            {
+                                Title = "Real",
+                                Values = realValues,
+                                DataLabels = true,
+                                Fill = Brushes.Orange,
+                                Stroke = Brushes.Black,
+                                StrokeThickness = 0.5,
+                                LabelPoint = point => "€" + point.Y
+                            }
+                        };
+
+                return (series, labels);
+            }
+            finally
+            {
+                _conectarbd.DesonectarBD();
+            }
+        }
+        public (ChartValues<double> values, List<string> labels) CarregarGraficoObrasPercentagemAno(string anoFecho)
+        {
+            _conectarbd.ConectarBD();
+            string queryReal = @"
+            SELECT [Percentagem Total], [Numero da Obra]
+            FROM dbo.ConclusaoObras
+            WHERE [Ano de fecho] = @anoFecho";
+            var values = new ChartValues<double>();
+            var labels = new List<string>();
+            try
+            {
+                using (var cmd = new SqlCommand(queryReal, _conectarbd.GetConnection()))
+                {
+                    cmd.Parameters.AddWithValue("@anoFecho", anoFecho);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string numeroDaObra = reader["Numero da Obra"].ToString();
+                            string valorStr = reader["Percentagem Total"].ToString().Replace("%", "").Trim();
+                            valorStr = valorStr.Replace(".", ",");
+
+                            if (!double.TryParse(valorStr, out double valor))
+                                valor = 0;
+
+                            values.Add(valor);
+
+                            if (!labels.Contains(numeroDaObra))
+                                labels.Add(numeroDaObra);
+                        }
+                    }
+                }
+                return (values, labels);
+            }
+            finally
+            {
+                _conectarbd.DesonectarBD();
+            }
+        }
+        public (ChartValues<double> orcValues, ChartValues<double> realValues, List<string> labels) CarregarGraficoObrasHorasAno(string anoFecho)
+        {
+            _conectarbd.ConectarBD();
+            string queryOrc = @"SELECT [Total Horas], [Numero da Obra]
+                                FROM dbo.Orçamentação
+                                WHERE [Ano de fecho] = @anoFecho";
+
+            string queryReal = @"SELECT [Total Horas], [Numero da Obra]
+                                 FROM dbo.RealObras
+                                 WHERE [Ano de fecho] = @anoFecho";
+
+            var orcValues = new ChartValues<double>();
+            var realValues = new ChartValues<double>();
+            var labels = new List<string>();
+
+            try
+            {
+                using (var cmd = new SqlCommand(queryOrc, _conectarbd.GetConnection()))
+                {
+                    cmd.Parameters.AddWithValue("@anoFecho", anoFecho);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string numeroDaObra = reader["Numero da Obra"].ToString();
+                            string valorStr = reader["Total Horas"].ToString().Replace("h", "").Trim();
+                            valorStr = valorStr.Replace(".", ",");
+
+                            if (!double.TryParse(valorStr, out double valor))
+                                valor = 0;
+
+                            orcValues.Add(valor);
+                            if (!labels.Contains(numeroDaObra))
+                                labels.Add(numeroDaObra);
+                        }
+                    }
+                }
+                using (var cmd = new SqlCommand(queryReal, _conectarbd.GetConnection()))
+                {
+                    cmd.Parameters.AddWithValue("@anoFecho", anoFecho);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string valorStr = reader["Total Horas"].ToString().Replace("h", "").Trim();
+                            valorStr = valorStr.Replace(".", ",");
+
+                            if (!double.TryParse(valorStr, out double valor))
+                                valor = 0;
+
+                            realValues.Add(valor);
+                        }
+                    }
+                }
+                return (orcValues, realValues, labels);
+            }
+            finally
+            {
+                _conectarbd.DesonectarBD();
+            }
+    }
+        public (ChartValues<double> values, List<string> labels) CarregarGraficoObrasPercentagemTipologia(string tipologia)
+        {
+            _conectarbd.ConectarBD();
+            string queryReal = @"SELECT [Percentagem Total], [Numero da Obra]
+                                FROM dbo.ConclusaoObras
+                                WHERE Tipologia = @tipologia";
+
+            var values = new ChartValues<double>();
+            var labels = new List<string>();
+
+            try
+            {
+                using (var cmd = new SqlCommand(queryReal, _conectarbd.GetConnection()))
+                {
+                    cmd.Parameters.AddWithValue("@tipologia", tipologia);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string numeroDaObra = reader["Numero da Obra"].ToString();
+                            string valorStr = reader["Percentagem Total"].ToString().Replace("%", "").Trim();
+                            valorStr = valorStr.Replace(".", ",");
+
+                            if (!double.TryParse(valorStr, out double valor))
+                                valor = 0;
+
+                            values.Add(valor);
+                            if (!labels.Contains(numeroDaObra))
+                                labels.Add(numeroDaObra);
+                        }
+                    }
+                }
+                return (values, labels);
+            }
+            finally
+            {
+                _conectarbd.DesonectarBD();
+            }
+        }
+        public (SeriesCollection series, List<string> labels) CarregarGraficoObrasHorasTipologia(string tipologia)
+        {
+            _conectarbd.ConectarBD();
+            string queryOrc = @"SELECT [Total Horas], [Numero da Obra]
+                                FROM dbo.Orçamentação
+                                WHERE Tipologia = @Tipologia
+                                ORDER BY ID ASC";
+
+            string queryReal = @"SELECT [Total Horas], [Numero da Obra]
+                                FROM dbo.RealObras
+                                WHERE Tipologia = @Tipologia
+                                ORDER BY ID ASC";
+
+            var orcValues = new ChartValues<double>();
+            var realValues = new ChartValues<double>();
+            var labels = new List<string>();
+
+            try
+            {
+                using (var cmd = new SqlCommand(queryOrc, _conectarbd.GetConnection()))
+                {
+                    cmd.Parameters.AddWithValue("@Tipologia", tipologia);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string numeroDaObra = reader["Numero da Obra"].ToString();
+                            string totalHorasStr = reader["Total Horas"].ToString().Replace("h", "").Trim();
+                            totalHorasStr = totalHorasStr.Replace(".", ",");
+
+                            if (!double.TryParse(totalHorasStr, out double totalHorasOrc))
+                                totalHorasOrc = 0;
+
+                            orcValues.Add(totalHorasOrc);
+                            if (!labels.Contains(numeroDaObra))
+                                labels.Add(numeroDaObra);
+                        }
+                    }
+                }
+                using (var cmd = new SqlCommand(queryReal, _conectarbd.GetConnection()))
+                {
+                    cmd.Parameters.AddWithValue("@Tipologia", tipologia);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string totalHorasStr = reader["Total Horas"].ToString().Replace("h", "").Trim();
+                            totalHorasStr = totalHorasStr.Replace(".", ",");
+
+                            if (!double.TryParse(totalHorasStr, out double totalHorasReal))
+                                totalHorasReal = 0;
+
+                            realValues.Add(totalHorasReal);
+                        }
+                    }
+                }
+                var series = new SeriesCollection
+                    {
+                        new ColumnSeries
+                        {
+                            Title = "Orçamentadas",
+                            Values = orcValues,
+                            DataLabels = true,
+                            Fill = Brushes.LightBlue,
+                            Stroke = Brushes.Black,
+                            StrokeThickness = 0.5,
+                            LabelPoint = point => point.Y + "h"
+                        },
+                        new ColumnSeries
+                        {
+                            Title = "Real",
+                            Values = realValues,
+                            DataLabels = true,
+                            Fill = Brushes.Orange,
+                            Stroke = Brushes.Black,
+                            StrokeThickness = 0.5,
+                            LabelPoint = point => point.Y + "h"
+                        }
+                    };
+
+                return (series, labels);
+            }
+            finally
+            {
+                _conectarbd.DesonectarBD();
+            }
+        }
+        public (SeriesCollection series, List<string> labels) CarregarGraficoHorasTotais(DataGridView dgvOrcamento, DataGridView dgvReal)
+            {
+                double totalHorasOrcamento = 0;
+                double totalHorasReal = 0;
+                foreach (DataGridViewRow row in dgvOrcamento.Rows)
+                {
+                    if (row.Cells["Total Horas"].Value != null)
+                    {
+                        string totalHorasOrcStr = row.Cells["Total Horas"].Value.ToString()
+                            .Replace("h", "").Trim().Replace(".", ",");
+                        if (!double.TryParse(totalHorasOrcStr, out double totalHorasOrc))
+                            totalHorasOrc = 0;
+                        totalHorasOrcamento += totalHorasOrc;
+                    }
+                }
+                foreach (DataGridViewRow row in dgvReal.Rows)
+                {
+                    if (row.Cells["Total Horas"].Value != null)
+                    {
+                        string totalHorasRealStr = row.Cells["Total Horas"].Value.ToString()
+                            .Replace("h", "").Trim().Replace(".", ",");
+                        if (!double.TryParse(totalHorasRealStr, out double totalHorasRealAux))
+                            totalHorasRealAux = 0;
+                        totalHorasReal += totalHorasRealAux;
+                    }
+                }
+                var series = new SeriesCollection
+                        {
+                            new ColumnSeries
+                            {
+                                Title = "Orçamentadas",
+                                Values = new ChartValues<double> { totalHorasOrcamento },
+                                DataLabels = true,
+                                LabelPoint = point => point.Y + "h",
+                                Fill = Brushes.LightBlue
+                            },
+                            new ColumnSeries
+                            {
+                                Title = "Real",
+                                Values = new ChartValues<double> { totalHorasReal },
+                                DataLabels = true,
+                                LabelPoint = point => point.Y + "h",
+                                Fill = Brushes.Orange
+                            }
+                        };
+
+                var labels = new List<string> { "Total Horas" }; 
+
+                return (series, labels);
+        }
+
+        public string ObterNomeObra(string numeroObra) 
+        {
+            try
+            {
+                _conectarbd.ConectarBD();
+                string query = @"SELECT [Nome da Obra] 
+                         FROM dbo.[Orçamentação] 
+                         WHERE [Numero da Obra] = @numeroObra";
+
+                using (SqlCommand cmd = new SqlCommand(query, _conectarbd.GetConnection()))
+                {
+                    cmd.Parameters.AddWithValue("@numeroObra", numeroObra);
+                    object result = cmd.ExecuteScalar();
+                    return result?.ToString() ?? "";
+                }
+            }
+            finally
+            {
+                _conectarbd.DesonectarBD();
+            }
+        }
 
     }
 }

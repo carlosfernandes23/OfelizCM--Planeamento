@@ -1,5 +1,6 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
+using MaterialSkin;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using ServiceStack.Script;
@@ -20,8 +21,9 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Media;
 using static ServiceStack.Script.Lisp;
-using Cor = System.Windows.Media;
 using Color = System.Drawing.Color;
+using Cor = System.Windows.Media;
+using MaterialSkin.Controls;
 
 namespace OfelizCM
 {
@@ -33,17 +35,23 @@ namespace OfelizCM
             InitializeComponent();
             _hook = new ChamarX();
         }
-
+        public class ChamarX
+        {
+            public bool IsActive { get; private set; }
+            public void Start()
+            {
+                IsActive = true;
+            }
+            public void Stop()
+            {
+                IsActive = false;
+            }
+        }
         private void Frm_TodasObras_Load(object sender, EventArgs e)
         {
-            this.WindowState = FormWindowState.Maximized;
-            //this.Size = new Size(2565, 1200);
-            //this.MaximumSize = new Size(2565, 1200);
-            //this.MinimumSize = new Size(2565, 1200);
-
-            PanelTabelas.Location = new Point(495, 100); 
-            PanelTabelas.Size = new Size(2055, 1275);
-
+            this.WindowState = FormWindowState.Maximized;         
+            PanelTabelas.Location = new Point(215, 60); 
+            PanelTabelas.Size = new Size(2342, 1395); 
             this.totalObrasTableAdapter.Fill(this.tempoPreparacaoDataSet.TotalObras);
             ComunicarTabelas();
             AtualizarDados();
@@ -64,47 +72,9 @@ namespace OfelizCM
             VerificarUsuario();
             InicializarSincronizacaoDeRolagem();
             CarregarPastasNaComboBoxAno();
-            FormatacaodosGraficos();
             AdicionarSufixosNasColunas();
             CarregarTipologiaNaComboBox();           
-        }
-
-        private void ComunicarTabelas()
-        {
-            VisualizarTabelaOrcamentacao();
-            VisualizarTabelaReal();
-            VisualizarTabelaConcluido();
-            VisualizarTabelaOrcamentacaoTotal();
-            VisualizarTabelaRealTotais();
-            VisualizarTabelaConclusaoTotal();
-        }
-
-        private void AtualizarDados()
-        {
-            AtualizarTabelaRealnaBd();
-            AtualizarTabelaRealnaBd2();
-            AtualizarTabelaRealnaBd3();
-            AtualizarTabelaConclusaoBD();
-            AtualizarTabelaConclusaoBD2();
-        }
-
-        private void CalcularTabelas()
-        {
-            CalcularTotaisEInserirNaBaseDeDados();
-            CalcularTotaisReal();
-            CalcularTotaisRealPercentagem();
-            CalcularTotaisConclusao();
-        }
-
-        private void CarregarGraficos()
-        {
-            VisualizarGraficoTotalHoras();
-            VisualizarGraficoObrasHoras();
-            VisualizarGraficoObrasValor();
-            VisualizarGraficoObrasPercentagem();
-            VisualizarGraficoPiePercentagem();
-        }
-
+        }                  
         public void VerificarUsuario()
         {
             string nomeUsuario = Environment.UserName.ToLower();
@@ -112,65 +82,20 @@ namespace OfelizCM
             try
             {
                 BD.ConectarBD();
-
                 string query = "SELECT AutorizacaoPreparador FROM dbo.nPreparadores1 WHERE [nome.sigla] = @nomeUsuario";
-
                 using (SqlCommand cmd = new SqlCommand(query, BD.GetConnection()))
                 {
                     cmd.Parameters.AddWithValue("@nomeUsuario", nomeUsuario);
-
                     object result = cmd.ExecuteScalar();
+                    bool autorizado = false;
 
                     if (result != null)
-                    {
-                        bool autorizacao = Convert.ToBoolean(result);
+                        autorizado = Convert.ToBoolean(result);
 
-                        if (autorizacao)
-                        {
-                            guna2ImageButton7.Visible = true;
-                            ButtonExportExcelTodas.Visible = true;
-                            guna2ImageButton5.Visible = true;
-                            guna2ImageButton4.Visible = true;
-                            guna2ImageButton3.Visible = true;
-                            guna2ImageButton6.Visible = true;
-                            guna2ImageButton2.Visible = true;
-
-                        }
-                        else
-                        {
-                            guna2ImageButton7.Visible = false;
-                            ButtonExportExcelTodas.Visible = false;
-                            guna2ImageButton5.Visible = false;
-                            guna2ImageButton4.Visible = false;
-                            guna2ImageButton3.Visible = false;
-                            guna2ImageButton6.Visible = false;
-                            guna2ImageButton2.Visible = false;
-
-                        }
-                    }
-                    else
-                    {
-
-                        guna2ImageButton7.Visible = false;
-                        ButtonExportExcelTodas.Visible = false;
-                        guna2ImageButton5.Visible = false;
-                        guna2ImageButton4.Visible = false;
-                        guna2ImageButton3.Visible = false;
-                        guna2ImageButton6.Visible = false;
-                        guna2ImageButton2.Visible = false;
-                    }
                     string nomeUsuario2 = Properties.Settings.Default.NomeUsuario;
-
                     if (nomeUsuario2 == "ofelizcmadmin" || nomeUsuario2 == "helder.silva")
-                    {
-                        guna2ImageButton7.Visible = true;
-                        ButtonExportExcelTodas.Visible = true;
-                        guna2ImageButton5.Visible = true;
-                        guna2ImageButton4.Visible = true;
-                        guna2ImageButton3.Visible = true;
-                        guna2ImageButton6.Visible = true;
-                        guna2ImageButton2.Visible = true;
-                    }
+                        autorizado = true;
+                    DefinirVisibilidadeBotoes(autorizado);
                 }
             }
             catch (Exception ex)
@@ -182,17 +107,1058 @@ namespace OfelizCM
                 BD.DesonectarBD();
             }
         }
+        private void DefinirVisibilidadeBotoes(bool visivel)
+        {
+        }
+        private void ComunicarTabelas()
+        {
+            VisualizarTabelaOrcamentacao();
+            VisualizarTabelaReal();
+            VisualizarTabelaConcluido();
+            VisualizarTabelaOrcamentacaoTotal();
+            VisualizarTabelaRealTotais();
+            VisualizarTabelaConclusaoTotal();
+        }
+        private void AtualizarDados()
+        {
+            AtualizarTabelaRealnaBd();
+            AtualizarTabelaRealnaBd2();
+            AtualizarTabelaRealnaBd3();
+            AtualizarTabelaConclusaoBD();
+            AtualizarTabelaConclusaoBD2();
+        }
+        private void CalcularTabelas()
+        {
+            CalcularTotaisEInserirNaBaseDeDados();
+            CalcularTotaisReal();
+            CalcularTotaisRealPercentagem();
+            CalcularTotaisConclusao();
+        }
+        private void CarregarGraficos()
+        {
+            VisualizarGraficoTotalHoras();
+            VisualizarGraficoObrasHoras();
+            VisualizarGraficoObrasValor();
+            VisualizarGraficoObrasPercentagem();
+            VisualizarGraficoPiePercentagem();
+        }
+        private void FiltrarTipologia()
+        {
+            string Tipologia = ComboBoxTipologiaFiltro.SelectedItem.ToString();
+            ComunicaBD BD = new ComunicaBD();
+            {
+                try
+                {
+                    BD.ConectarBD();
+                    string queryorçamentacao = "SELECT * FROM dbo.Orçamentação WHERE (Tipologia) = @Tipologia";
+                    string queryreal = "SELECT * FROM dbo.RealObras WHERE (Tipologia) = @Tipologia";
+                    string queryconclusao = "SELECT * FROM dbo.ConclusaoObras WHERE (Tipologia) = @Tipologia";
+                    using (var command = new SqlCommand(queryorçamentacao, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
+                        DataTable dataTable = new DataTable();
+                        using (var adapter = new SqlDataAdapter(command))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                        DataGridViewOrcamentacaoObras.DataSource = dataTable;
+                        DataGridViewOrcamentacaoObras.ClearSelection();
+                    }
+                    using (var command = new SqlCommand(queryreal, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
 
-        private void FormatacaodosGraficos()
-        {                        
-             foreach (var point in chartTotalPercentagem.Series["% Total"].Points)
-                  {
-                    point.Label = point.YValues[0].ToString("F1"); 
-                  }
+                        DataTable dataTable = new DataTable();
+
+                        using (var adapter = new SqlDataAdapter(command))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                        DataGridViewRealObras.DataSource = dataTable;
+                        DataGridViewRealObras.Columns["Nome da Obra"].Visible = false;
+                        DataGridViewRealObras.Columns["Preparador Responsavel"].Visible = false;
+                        DataGridViewRealObras.ClearSelection();
+                    }
+                    using (var command = new SqlCommand(queryconclusao, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
+
+                        DataTable dataTable = new DataTable();
+
+                        using (var adapter = new SqlDataAdapter(command))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                        DataGridViewConclusaoObras.DataSource = dataTable;
+                        DataGridViewConclusaoObras.Columns["Nome da Obra"].Visible = false;
+                        DataGridViewConclusaoObras.Columns["Preparador Responsavel"].Visible = false;
+                        DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
+                        DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
+                        DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
+                        DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
+                        DataGridViewConclusaoObras.ClearSelection();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
+                }
+            }
+        }
+        private void FiltrarPorAno()
+        {
+            string anoSelecionado = ComboBoxAnoAdd.SelectedItem.ToString();
+            ComunicaBD BD = new ComunicaBD();
+            {
+                try
+                {
+                    BD.ConectarBD();
+                    string queryorçamentacao = "SELECT * FROM dbo.Orçamentação WHERE YEAR([Ano de fecho]) = @AnoFecho";
+                    string queryreal = "SELECT * FROM dbo.RealObras WHERE YEAR([Ano de fecho]) = @AnoFecho";
+                    string queryconclusao = "SELECT * FROM dbo.ConclusaoObras WHERE YEAR([Ano de fecho]) = @AnoFecho";
+
+                    using (var command = new SqlCommand(queryorçamentacao, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
+
+                        DataTable dataTable = new DataTable();
+
+                        using (var adapter = new SqlDataAdapter(command))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                        DataGridViewOrcamentacaoObras.DataSource = dataTable;
+                        DataGridViewOrcamentacaoObras.ClearSelection();
+                    }
+                    using (var command = new SqlCommand(queryreal, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
+                        DataTable dataTable = new DataTable();
+                        using (var adapter = new SqlDataAdapter(command))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                        DataGridViewRealObras.DataSource = dataTable;
+                        DataGridViewRealObras.Columns["Nome da Obra"].Visible = false;
+                        DataGridViewRealObras.Columns["Preparador Responsavel"].Visible = false;
+                        DataGridViewRealObras.ClearSelection();
+                    }
+                    using (var command = new SqlCommand(queryconclusao, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
+                        DataTable dataTable = new DataTable();
+                        using (var adapter = new SqlDataAdapter(command))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                        DataGridViewConclusaoObras.DataSource = dataTable;
+                        DataGridViewConclusaoObras.Columns["Nome da Obra"].Visible = false;
+                        DataGridViewConclusaoObras.Columns["Preparador Responsavel"].Visible = false;
+                        DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
+                        DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
+                        DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
+                        DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
+                        DataGridViewConclusaoObras.ClearSelection();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
+                }
+            }
+        }
+        private void InserirAnofecho()
+        {
+            if (DataGridViewOrcamentacaoObras.SelectedRows.Count > 0)
+            {
+                string NumeroObra = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["Numero da Obra"].Value.ToString();
+                string anoSelecionado = ComboBoxAnoAdd2.SelectedItem?.ToString();
+                if (anoSelecionado == null)
+                {
+                    MessageBox.Show("Selecione um ano.");
+                    return;
+                }
+                ComunicaBD BD = new ComunicaBD();
+                try
+                {
+                    BD.ConectarBD();
+
+                    string queryorcamentacao = "UPDATE dbo.Orçamentação SET [Ano de fecho] = @AnoFecho " +
+                                               "WHERE [Numero da Obra] = @NumeroObra";
+
+                    string queryreal = "UPDATE dbo.RealObras SET [Ano de fecho] = @AnoFecho " +
+                                       "WHERE [Numero da Obra] = @NumeroObra";
+
+                    string queryconclusao = "UPDATE dbo.ConclusaoObras SET [Ano de fecho] = @AnoFecho " +
+                                            "WHERE [Numero da Obra] = @NumeroObra";
+
+                    using (var command = new SqlCommand(queryorcamentacao, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
+                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
+                        command.ExecuteNonQuery();
+                    }
+                    using (var command = new SqlCommand(queryreal, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
+                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
+                        command.ExecuteNonQuery();
+                    }
+                    using (var command = new SqlCommand(queryconclusao, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
+                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
+                        command.ExecuteNonQuery();
+                    }
+                    DataGridViewOrcamentacaoObras.ClearSelection();
+                    DataGridViewRealObras.ClearSelection();
+                    DataGridViewConclusaoObras.ClearSelection();
+                    MessageBox.Show("Ano de fecho Inserido com Sucesso");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erro ao inserir o Ano de fecho na base de dados: " + ex.Message);
+                }
+                finally
+                {
+                    BD.DesonectarBD();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Nenhuma obra selecionada.");
+            }
+        }
+        private void LimparAnoFecho()
+        {
+            if (DataGridViewOrcamentacaoObras.SelectedRows.Count > 0)
+            {
+                string NumeroObra = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["Numero da Obra"].Value.ToString();
+                ComunicaBD BD = new ComunicaBD();
+                try
+                {
+                    BD.ConectarBD();
+
+                    string queryorcamentacao = "UPDATE dbo.Orçamentação SET [Ano de fecho] = ' ' " +
+                                               "WHERE [Numero da Obra] = @NumeroObra";
+
+                    string queryreal = "UPDATE dbo.RealObras SET [Ano de fecho] =  ' ' " +
+                                       "WHERE [Numero da Obra] = @NumeroObra";
+
+                    string queryconclusao = "UPDATE dbo.ConclusaoObras SET [Ano de fecho] = ' ' " +
+                                            "WHERE [Numero da Obra] = @NumeroObra";
+
+                    using (var command = new SqlCommand(queryorcamentacao, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
+                        command.ExecuteNonQuery();
+                    }
+
+                    using (var command = new SqlCommand(queryreal, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
+                        command.ExecuteNonQuery();
+                    }
+
+                    using (var command = new SqlCommand(queryconclusao, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
+                        command.ExecuteNonQuery();
+                    }
+                    DataGridViewOrcamentacaoObras.ClearSelection();
+                    DataGridViewRealObras.ClearSelection();
+                    DataGridViewConclusaoObras.ClearSelection();
+
+                    MessageBox.Show("Ano de fecho removido com sucesso.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erro ao remover o Ano de fecho na base de dados: " + ex.Message);
+                }
+                finally
+                {
+                    BD.DesonectarBD();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Nenhuma obra selecionada.");
+            }
+        }
+        private void InserirTipologia()
+        {
+            if (DataGridViewOrcamentacaoObras.SelectedRows.Count > 0)
+            {
+                string NumeroObra = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["Numero da Obra"].Value.ToString();
+                string Tipologia = ComboBoxTipologiaInserir.SelectedItem?.ToString();
+
+                if (Tipologia == null)
+                {
+                    MessageBox.Show("Selecione uma Tipologia");
+                    return;
+                }
+                ComunicaBD BD = new ComunicaBD();
+                try
+                {
+                    BD.ConectarBD();
+                    string queryorcamentacao = "UPDATE dbo.Orçamentação SET Tipologia = @Tipologia " +
+                                               "WHERE [Numero da Obra] = @NumeroObra";
+                    string queryreal = "UPDATE dbo.RealObras SET Tipologia = @Tipologia " +
+                                       "WHERE [Numero da Obra] = @NumeroObra";
+                    string queryconclusao = "UPDATE dbo.ConclusaoObras SET Tipologia = @Tipologia " +
+                                            "WHERE [Numero da Obra] = @NumeroObra";
+
+                    using (var command = new SqlCommand(queryorcamentacao, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
+                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
+                        command.ExecuteNonQuery();
+                    }
+                    using (var command = new SqlCommand(queryreal, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
+                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
+                        command.ExecuteNonQuery();
+                    }
+                    using (var command = new SqlCommand(queryconclusao, BD.GetConnection()))
+                    {
+                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
+                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
+                        command.ExecuteNonQuery();
+                    }
+                    DataGridViewOrcamentacaoObras.ClearSelection();
+                    DataGridViewRealObras.ClearSelection();
+                    DataGridViewConclusaoObras.ClearSelection();
+                    MessageBox.Show("Tipologia da obra Inserida com Sucesso");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erro ao inserir a Tipologia da obra na base de dados: " + ex.Message);
+                }
+                finally
+                {
+                    BD.DesonectarBD();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Tipologia selecionada.");
+            }
+        }
+        private void MudarTabelaGrafico_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_hook.IsActive)
+            {
+                _hook.Start();
+                PanelTabelas.Visible = false;
+                labeltabelagraficos.Text = "Gráficos Controlo das Obra";
+                labelgraficostabela.Text = "Gráficos";
+                CarregarGraficos();
+                PanelTotalObras.Visible = true;
+                PanelChartControlo.Visible = true;
+                PanelchartTotalHoras.Visible = true;
+                PanelchartObrasHoras.Visible = true;
+                PanelchartTotalValorObras.Visible = true;
+            }
+            else
+            {
+                _hook.Stop();
+                PanelTabelas.Visible = true;
+                labeltabelagraficos.Text = "Tabela Controlo das Obra";
+                labelgraficostabela.Text = "Tabela";
+                PanelTotalObras.Visible = false;
+                PanelChartControlo.Visible = false;
+                PanelchartTotalHoras.Visible = false;
+                PanelchartObrasHoras.Visible = false;
+                PanelchartTotalValorObras.Visible = false;
+            }
+        }
+        
+        private void VisualizarTabelaOrcamentacao()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaOrcamentacao();
+
+            DataGridViewOrcamentacaoObras.DataSource = dataTable;
+            DataGridViewOrcamentacaoObras.ClearSelection();
+            DataGridViewOrcamentacaoObras.ScrollBars = ScrollBars.Horizontal;
+            DataGridViewOrcamentacaoObras.Columns["Id"].Visible = false;
+            DataGridViewOrcamentacaoObras.Columns["Ano de fecho"].Width = 40;
+            DataGridViewOrcamentacaoObras.Columns["Numero da Obra"].Width = 60;
+            DataGridViewOrcamentacaoObras.Columns["Nome da Obra"].Width = 120;
+            DataGridViewOrcamentacaoObras.Columns["Preparador Responsavel"].Width = 70;
+            DataGridViewOrcamentacaoObras.Columns["Tipologia"].Width = 65;
+            DataGridViewOrcamentacaoObras.Columns["KG Estrutura"].Width = 70;
+            DataGridViewOrcamentacaoObras.Columns["Horas Estrutura"].Width = 50;
+            DataGridViewOrcamentacaoObras.Columns["Valor Estrutura"].Width = 75;
+            DataGridViewOrcamentacaoObras.Columns["KG/Euro Estrutura"].Width = 40;
+            DataGridViewOrcamentacaoObras.Columns["Horas Revestimentos"].Width = 50;
+            DataGridViewOrcamentacaoObras.Columns["Valor Revestimentos"].Width = 50;
+            DataGridViewOrcamentacaoObras.Columns["Total Horas"].Width = 50;
+            DataGridViewOrcamentacaoObras.Columns["Total Valor"].Width = 90;
+        }
+        private void VisualizarTabelaReal()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaReal();
+
+            DataGridViewRealObras.DataSource = dataTable;
+            DataGridViewRealObras.ClearSelection();
+            DataGridViewRealObras.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            DataGridViewRealObras.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            DataGridViewRealObras.Columns["Id"].Visible = false;
+            DataGridViewRealObras.Columns["Numero da Obra"].Visible = false;
+            DataGridViewRealObras.Columns["Ano de fecho"].Visible = false;
+            DataGridViewRealObras.Columns["Tipologia"].Visible = false;
+            DataGridViewRealObras.ReadOnly = true;
+            DataGridViewRealObras.Columns["KG Estrutura"].Width = 90;
+            DataGridViewRealObras.ScrollBars = ScrollBars.Horizontal;
+        }
+        private void VisualizarTabelaConcluido()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaConclusao();
+
+            DataGridViewConclusaoObras.DataSource = dataTable;
+            DataGridViewConclusaoObras.ClearSelection();
+            DataGridViewConclusaoObras.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            DataGridViewConclusaoObras.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            DataGridViewConclusaoObras.Columns["Id"].Visible = false;
+            DataGridViewConclusaoObras.Columns["Numero da Obra"].Visible = false;
+            DataGridViewConclusaoObras.Columns["Ano de fecho"].Visible = false;
+            DataGridViewConclusaoObras.Columns["Tipologia"].Visible = false;
+            DataGridViewConclusaoObras.ReadOnly = true;
+            DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
+            DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
+            DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
+            DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
+        }
+        private void VisualizarTabelaOrcamentacaoTotal()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaOrçamentacaoTotal(); 
+
+            DataGridViewOrcamentacaoObrasTotal.DataSource = dataTable;
+            DataGridViewOrcamentacaoObrasTotal.ClearSelection();
+            DataGridViewOrcamentacaoObrasTotal.Columns["Id"].Visible = false;
+            DataGridViewOrcamentacaoObrasTotal.ReadOnly = true;
+            DataGridViewOrcamentacaoObrasTotal.ColumnHeadersVisible = false;
 
         }
-                
+        private void VisualizarTabelaRealTotais()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaRealTotal();
 
+            DataGridViewRealObrasTotal.DataSource = dataTable;
+            DataGridViewRealObrasTotal.ClearSelection();
+            DataGridViewRealObrasTotal.Columns["Id"].Visible = false;
+            DataGridViewRealObrasTotal.ReadOnly = true;
+            DataGridViewRealObrasTotal.ColumnHeadersVisible = false;
+            DataGridViewRealObrasTotal.ScrollBars = ScrollBars.Horizontal;
+        }
+        private void VisualizarTabelaConclusaoTotal()
+        {
+            var tabela = new Mostartabelas();
+            DataTable dataTable = tabela.TabelaConclusaoTotal();
+
+            DataGridViewConclusaoObrasTotal.DataSource = dataTable;
+            DataGridViewConclusaoObrasTotal.ClearSelection();
+            DataGridViewConclusaoObrasTotal.Columns["Id"].Visible = false;
+            DataGridViewConclusaoObrasTotal.ReadOnly = true;
+            DataGridViewConclusaoObrasTotal.ColumnHeadersVisible = false;
+            DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
+            DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
+            DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
+            DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
+        }
+        public void VisualizarGraficoPiePercentagem()
+        {
+            MostarGraficos grafico = new MostarGraficos();
+
+            var pieChart = pieChartControlo.Child as LiveCharts.Wpf.PieChart;
+
+            if (pieChart != null)
+            {
+                pieChart.Series = grafico.CarregarGraficoRedondo();
+                pieChart.LegendLocation = LegendLocation.Top;
+            }
+        }
+        public void VisualizarGraficoPiePercentagemTipologiaeAno()
+        {
+            var grafico = new MostarGraficos();
+            DataTable tabela = DataGridViewRealObras.DataSource as DataTable;
+
+            var pieChart = pieChartControlo.Child as LiveCharts.Wpf.PieChart;
+
+            if (pieChart != null)
+            {
+                pieChart.Series = grafico.CalcularPercentagemTipologia(tabela);
+                pieChart.LegendLocation = LiveCharts.LegendLocation.Top;
+            }
+        }
+        private void VisualizarGraficoObrasPercentagem()
+        {
+            var chartWpf = ChartTotalObrasPercentagem.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarPercentagemTodasObras();
+
+            chartWpf.Series = series;
+            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
+            {
+                s.MaxColumnWidth = 30;   
+                s.ColumnPadding = 10;
+                s.DataLabels = true;
+                s.LabelPoint = point => $"{point.Y:N1} %";
+            }
+
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Número da Obra",
+                FontSize = 15,
+                Labels = labels,
+                LabelsRotation = 45,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1},
+            });
+
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+             {
+                Title = "Percentagem (%)",
+                LabelFormatter = value => value.ToString("N1") + " %",
+                Sections = new SectionsCollection
+             {
+            new AxisSection
+             {
+                Value = 100,
+                Stroke = Cor.Brushes.Red,
+                StrokeThickness = 1,
+                StrokeDashArray = new DoubleCollection { 4 }
+             }
+            }
+            });
+            chartWpf.Hoverable = true;
+            chartWpf.DataTooltip = new DefaultTooltip(); 
+            chartWpf.DataHover += (sender, chartPoint) =>
+            {
+                int index = (int)chartPoint.X;
+                string numeroObra = labels[index];
+                string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
+                double percentagem = chartPoint.Y;
+
+                labelobra.Text = $"{nomeObra} | {percentagem:N1} %";
+            };
+        }
+        private void VisualizarGraficoTotalHoras()
+        {
+            var chartWpf = chartTotalHoras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarTotalTodasObras();
+
+            chartWpf.Series = series;
+
+            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
+            {
+                s.MaxColumnWidth = 30;
+                s.ColumnPadding = 10;
+            }
+
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Obra",
+                FontSize = 15,
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1},
+
+                LabelsRotation = 45
+            });
+
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Horas",
+                FontSize = 15,
+                LabelFormatter = value => value + "h"
+            });
+
+            chartWpf.LegendLocation = LegendLocation.Top;
+        }
+        private void VisualizarGraficoObrasHoras()
+        {
+            var chartWpf = chartObrasHoras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarGraficoObrasHoras();
+            chartWpf.Series = series;
+            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
+            {
+                s.MaxColumnWidth = 30;
+                s.ColumnPadding = 10;
+            }
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Número da Obra",
+                FontSize = 15,
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1},                
+                LabelsRotation = 45
+            });
+
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Horas",
+                FontSize = 15,
+                LabelFormatter = value => value + " h"
+            });
+            chartWpf.LegendLocation = LegendLocation.Top;
+            chartWpf.Hoverable = true;
+            chartWpf.DataTooltip = new DefaultTooltip();
+            chartWpf.DataHover += (sender, chartPoint) =>
+            {
+                int index = (int)chartPoint.X;
+                string numeroObra = labels[index];
+                string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
+                double percentagem = chartPoint.Y;
+
+                labelobrasHoras.Text = $"{nomeObra} | {percentagem:N1} h";
+            };
+        }
+        private void VisualizarGraficoObrasValor()
+        {
+            var chartWpf = chartTotalValorObras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarGraficoObrasValor();
+            chartWpf.Series = series;
+            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
+            {
+                s.MaxColumnWidth = 30;
+                s.ColumnPadding = 10;
+            }
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Número da Obra",
+                FontSize = 15,
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1},
+                LabelsRotation = 45
+            });
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Valor (€)",
+                FontSize = 15,
+                LabelFormatter = value => "€" + value.ToString("N0")  
+            });
+            chartWpf.LegendLocation = LegendLocation.Top;
+            chartWpf.Hoverable = true;
+            chartWpf.DataTooltip = new DefaultTooltip();
+            chartWpf.DataHover += (sender, chartPoint) =>
+            {
+                int index = (int)chartPoint.X;
+                string numeroObra = labels[index];
+                string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
+                double percentagem = chartPoint.Y;
+
+                labelobraeuros.Text = $"{nomeObra} |  {percentagem:N1} €";
+            };
+        }
+        private void VisualizarGraficoObrasValorTipologia()
+        {
+            string tipologia = ComboBoxTipologiaFiltro.SelectedItem?.ToString();
+            string campofiltro = "Tipologia";
+            if (string.IsNullOrEmpty(tipologia))
+            {
+                MessageBox.Show("Selecione uma Tipologia para filtrar o gráfico.");
+                return;
+            }
+            var chartWpf = chartTotalValorObras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarGraficoObrasValor(campofiltro, tipologia);
+
+            chartWpf.Series = series;
+
+            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
+            {
+                s.MaxColumnWidth = 30;
+                s.ColumnPadding = 10;
+            }
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Número da Obra",
+                FontSize = 15,
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1 },
+                LabelsRotation = 45
+            });
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Valor (€)",
+                FontSize = 15,
+                LabelFormatter = value => "€" + value.ToString("N0")
+            });
+
+            chartWpf.LegendLocation = LegendLocation.Top;
+            chartWpf.Hoverable = true;
+            chartWpf.DataTooltip = new DefaultTooltip();
+            chartWpf.DataHover += (sender, chartPoint) =>
+            {
+                int index = (int)chartPoint.X;
+                string numeroObra = labels[index];
+                string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
+                double percentagem = chartPoint.Y;
+
+                labelobraeuros.Text = $"{nomeObra} |  {percentagem:N1} €";
+            };
+        }
+        private void VisualizarGraficoObrasValorAno()
+        {
+            string anofecho = ComboBoxAnoAdd.SelectedItem?.ToString();
+            string campofiltro = "[Ano de fecho]";
+            if (string.IsNullOrEmpty(anofecho))
+            {
+                MessageBox.Show("Selecione uma Tipologia para filtrar o gráfico.");
+                return;
+            }
+            var chartWpf = chartTotalValorObras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarGraficoObrasValor(campofiltro, anofecho);
+
+            chartWpf.Series = series;
+
+            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
+            {
+                s.MaxColumnWidth = 30;
+                s.ColumnPadding = 10;
+            }
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Número da Obra",
+                FontSize = 15,
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1 },
+                LabelsRotation = 45
+            });
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Valor (€)",
+                FontSize = 15,
+                LabelFormatter = value => "€" + value.ToString("N0")
+            });
+
+            chartWpf.LegendLocation = LegendLocation.Top;
+            chartWpf.Hoverable = true;
+            chartWpf.DataTooltip = new DefaultTooltip();
+            chartWpf.DataHover += (sender, chartPoint) =>
+            {
+                int index = (int)chartPoint.X;
+                string numeroObra = labels[index];
+                string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
+                double percentagem = chartPoint.Y;
+
+                labelobraeuros.Text = $"{nomeObra} |  {percentagem:N1} €";
+            };
+        }
+        private void VisualizarGraficoObrasPercentagemAno()
+        {
+            string anoFecho = ComboBoxAnoAdd.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(anoFecho))
+            {
+                MessageBox.Show("Selecione um ano para filtrar o gráfico.");
+                return;
+            }
+
+            var chartWpf = ChartTotalObrasPercentagem.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+
+            var service = new MostarGraficos();
+            var (values, labels) = service.CarregarGraficoObrasPercentagemAno(anoFecho);
+
+            chartWpf.Series = new LiveCharts.SeriesCollection
+                {
+                    new ColumnSeries
+                    {
+                        Title = "% Total",
+                        Values = values,
+                        DataLabels = true,
+                        Fill = Cor.Brushes.Yellow,
+                        Stroke = Cor.Brushes.Black,
+                        StrokeThickness = 0.5,
+                        LabelPoint = point => point.Y + "%"
+                    }
+                };
+
+                chartWpf.AxisX.Clear();
+                chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+                {
+                    Title = "Número da Obra",
+                    FontSize = 15,
+                    Labels = labels,
+                    Separator = new LiveCharts.Wpf.Separator { Step = 1 },
+                    LabelsRotation = 45
+                });
+
+                chartWpf.AxisY.Clear();
+                chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+                     {
+                        Title = "Percentagem (%)",
+                        LabelFormatter = value => value.ToString("N1") + " %",
+                        Sections = new SectionsCollection
+                     {
+                    new AxisSection
+                     {
+                        Value = 100,
+                        Stroke = Cor.Brushes.Red,
+                        StrokeThickness = 1,
+                        StrokeDashArray = new DoubleCollection { 4 }
+                     }
+                }
+            });
+            chartWpf.LegendLocation = LegendLocation.Top;
+            chartWpf.Hoverable = true;
+            chartWpf.DataTooltip = new DefaultTooltip();
+            chartWpf.DataHover += (sender, chartPoint) =>
+            {
+                int index = (int)chartPoint.X;
+                string numeroObra = labels[index];
+                string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
+                double percentagem = chartPoint.Y;
+
+                labelobra.Text = $"{nomeObra} | {percentagem:N1} %";
+            };
+        }
+        private void VisualizarGraficoObrasHorasAno()
+        {
+            string anoFecho = ComboBoxAnoAdd.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(anoFecho))
+            {
+                MessageBox.Show("Selecione um ano para filtrar o gráfico.");
+                return;
+            }
+
+            var chartWpf = chartObrasHoras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+
+            var service = new MostarGraficos();
+            var (orcValues, realValues, labels) = service.CarregarGraficoObrasHorasAno(anoFecho);
+
+            chartWpf.Series = new LiveCharts.SeriesCollection
+                    {
+                        new ColumnSeries
+                        {
+                            Title = "Orçamentação",
+                            Values = orcValues,
+                            DataLabels = true,
+                            Fill = Cor.Brushes.LightBlue,
+                            Stroke = Cor.Brushes.Black,
+                            StrokeThickness = 0.5,
+                            LabelPoint = point => point.Y + "h"
+                        },
+                        new ColumnSeries
+                        {
+                            Title = "Real",
+                            Values = realValues,
+                            DataLabels = true,
+                            Fill = Cor.Brushes.Orange,
+                            Stroke = Cor.Brushes.Black,
+                            StrokeThickness = 0.5,
+                            LabelPoint = point => point.Y + "h"
+                        }
+                    };
+
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Número da Obra",
+                FontSize = 15,
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1 },
+                LabelsRotation = 45
+            });
+
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Horas (h)",
+                FontSize = 15,
+                LabelFormatter = value => value.ToString("N1") + "h"
+            });
+
+            chartWpf.LegendLocation = LegendLocation.Top;
+            chartWpf.Hoverable = true;
+            chartWpf.DataTooltip = new DefaultTooltip();
+            chartWpf.DataHover += (sender, chartPoint) =>
+            {
+                int index = (int)chartPoint.X;
+                string numeroObra = labels[index];
+                string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
+                double percentagem = chartPoint.Y;
+
+                labelobrasHoras.Text = $"{nomeObra} | {percentagem:N1} h";
+            };
+        }
+        private void VisualizarGraficoObrasPercentagemTipologia()
+        {
+            string tipologia = ComboBoxTipologiaFiltro.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(tipologia))
+            {
+                MessageBox.Show("Selecione uma Tipologia para filtrar o gráfico.");
+                return;
+            }
+
+            var chartWpf = ChartTotalObrasPercentagem.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+
+            var service = new MostarGraficos();
+            var (values, labels) = service.CarregarGraficoObrasPercentagemTipologia(tipologia);
+
+            chartWpf.Series = new LiveCharts.SeriesCollection
+                        {
+                            new ColumnSeries
+                            {
+                                Title = "% Total",
+                                Values = values,
+                                DataLabels = true,
+                                Fill = Cor.Brushes.Yellow,
+                                Stroke = Cor.Brushes.Black,
+                                StrokeThickness = 0.5,
+                                LabelPoint = point => point.Y + "%"
+                            }
+                        };
+
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Número da Obra",
+                FontSize = 15,
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1 },
+                LabelsRotation = 45
+            });
+
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Percentagem (%)",
+                LabelFormatter = value => value.ToString("N1") + " %",
+                Sections = new SectionsCollection
+                     {
+                    new AxisSection
+                     {
+                        Value = 100,
+                        Stroke = Cor.Brushes.Red,
+                        StrokeThickness = 1,
+                        StrokeDashArray = new DoubleCollection { 4 }
+                     }
+                }
+            });
+            chartWpf.LegendLocation = LegendLocation.Top;
+            chartWpf.Hoverable = true;
+            chartWpf.DataTooltip = new DefaultTooltip();
+            chartWpf.DataHover += (sender, chartPoint) =>
+            {
+                int index = (int)chartPoint.X;
+                string numeroObra = labels[index];
+                string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
+                double percentagem = chartPoint.Y;
+
+                labelobra.Text = $"{nomeObra} | {percentagem:N1} %";
+            };
+        }
+        private void VisualizarGraficoObrasHorasTipologia()
+        {
+            string tipologia = ComboBoxTipologiaFiltro.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(tipologia))
+            {
+                MessageBox.Show("Por favor, selecione uma tipologia.");
+                return;
+            }
+            var chartWpf = chartObrasHoras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarGraficoObrasHorasTipologia(tipologia);
+
+            chartWpf.Series = series;
+
+            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
+            {
+                s.MaxColumnWidth = 30;
+                s.ColumnPadding = 10;
+            }
+
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Número da Obra",
+                FontSize = 15,
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator { Step = 1 },
+                LabelsRotation = 45
+            });
+
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Horas (h)",
+                FontSize = 15,
+                LabelFormatter = value => value + "h"
+            });
+
+            chartWpf.LegendLocation = LegendLocation.Top;
+            chartWpf.Hoverable = true;
+            chartWpf.DataTooltip = new DefaultTooltip();
+            chartWpf.DataHover += (sender, chartPoint) =>
+            {
+                int index = (int)chartPoint.X;
+                string numeroObra = labels[index];
+                string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
+                double percentagem = chartPoint.Y;
+
+                labelobrasHoras.Text = $"{nomeObra} | {percentagem:N1} h";
+            };
+        }
+        private void VisualizarGraficoHorasTipologiaeAno()
+        {
+            var service = new MostarGraficos();
+            var (series, labels) = service.CarregarGraficoHorasTotais(
+                DataGridViewOrcamentacaoObras, DataGridViewRealObras);
+
+            var chartWpf = chartTotalHoras.Child as LiveCharts.Wpf.CartesianChart;
+            if (chartWpf == null) return;
+
+            chartWpf.Series = series;
+
+            chartWpf.AxisX.Clear();
+            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Total",
+                Labels = labels
+            });
+
+            chartWpf.AxisY.Clear();
+            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
+            {
+                Title = "Horas (h)",
+                LabelFormatter = value => value + "h"
+            });
+
+            chartWpf.LegendLocation = LegendLocation.Top;
+        }        
         private void SalvarOrcamentacaoBD()
         {
             if (DataGridViewOrcamentacaoObras.SelectedRows.Count > 0)
@@ -205,33 +1171,26 @@ namespace OfelizCM
                 string HorasEstrutura = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["Horas Estrutura"].Value.ToString();
                 string HorasRevestimentos = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["Horas Revestimentos"].Value.ToString();
 
-                //Preço da hora 
                 string LabelPrecoOrcamen = LabelPrecoOrcamentado.Text;
                 double precoOrcamentadoDouble = Convert.ToDouble(LabelPrecoOrcamen);
 
-                //Horas Estrutura 
                 double horasEstruturaDouble = Convert.ToDouble(HorasEstrutura);
                 string horasEstruturaString = horasEstruturaDouble.ToString("F1");
                 double horasEstruturaDouble2 = Convert.ToDouble(horasEstruturaString);
                 double ValorEstrutura = horasEstruturaDouble2 * precoOrcamentadoDouble;
 
-                //Valor da Estrutura
                 string valorEstruturaString = ValorEstrutura.ToString("F2");
                 double valorEstruturaDouble = Convert.ToDouble(valorEstruturaString);
 
-                //Valor da KG/Estrutura
                 double kgEstruturaDouble = Convert.ToDouble(KgEstrutura);
                 double kgEuroEstrutura = valorEstruturaDouble / kgEstruturaDouble;
                 double kgEuroEstruturaArredondado = Math.Round(kgEuroEstrutura, 2);
                 string KgEuroEstruturaString = kgEuroEstruturaArredondado.ToString("F2");
 
-                //Horas dos Revestimentos
                 double HorasRevestimentosDouble = Convert.ToDouble(HorasRevestimentos);
                 double ValorRevestimentos = HorasRevestimentosDouble * precoOrcamentadoDouble;
                 double ValorRevestimentosArredondado = Math.Round(ValorRevestimentos, 2);
                 string valorRevestimentosString = ValorRevestimentosArredondado.ToString("F2");
-
-                //Total
                 double TotalHoras = horasEstruturaDouble + HorasRevestimentosDouble;
 
                 double TotalValor = valorEstruturaDouble + ValorRevestimentos;
@@ -252,7 +1211,6 @@ namespace OfelizCM
                 try
                 {
                     BD.ConectarBD();
-
                     using (SqlCommand cmd = new SqlCommand(queryOrcamentacao, BD.GetConnection()))
                     {
                         cmd.Parameters.AddWithValue("@NumeroObra", NumeroObra);
@@ -267,11 +1225,8 @@ namespace OfelizCM
                         cmd.Parameters.AddWithValue("@ValorRevestimentos", valorRevestimentosString);
                         cmd.Parameters.AddWithValue("@TotalHoras", TotalHoras);
                         cmd.Parameters.AddWithValue("@TotalValor", TotalValorString);
-
-
                         cmd.ExecuteNonQuery();
                     }
-
                     using (SqlCommand cmdRealObras = new SqlCommand(queryRealObras, BD.GetConnection()))
                     {
                         cmdRealObras.Parameters.AddWithValue("@NumeroObra", NumeroObra);
@@ -280,22 +1235,17 @@ namespace OfelizCM
                         cmdRealObras.Parameters.AddWithValue("@Tipologia", Tipologia);
                         cmdRealObras.Parameters.AddWithValue("@KGEstrutura", KgEstrutura);
                         cmdRealObras.Parameters.AddWithValue("@KGEuroEstrutura", KgEuroEstruturaString);
-
                         cmdRealObras.ExecuteNonQuery();
                     }
-
                     using (SqlCommand cmdConclusaoObras = new SqlCommand(queryConclusaoObras, BD.GetConnection()))
                     {
                         cmdConclusaoObras.Parameters.AddWithValue("@NumeroObra", NumeroObra);
                         cmdConclusaoObras.Parameters.AddWithValue("@NomeObra", NomeObra);
                         cmdConclusaoObras.Parameters.AddWithValue("@PreparadorResponsavel", Preparador);
                         cmdConclusaoObras.Parameters.AddWithValue("@Tipologia", Tipologia);
-
                         cmdConclusaoObras.ExecuteNonQuery();
                     }
-
                     MessageBox.Show("Valores registrados com sucesso em todas as tabelas ( Real / Conclusão ).");
-
                 }
                 catch (Exception ex)
                 {
@@ -307,7 +1257,6 @@ namespace OfelizCM
                 }
             }
         }
-
         private void AtualizarOrcamentoNaBD()
         {
             if (DataGridViewOrcamentacaoObras.SelectedRows.Count > 0)
@@ -321,49 +1270,39 @@ namespace OfelizCM
                 string HorasEstrutura = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["Horas Estrutura"].Value.ToString();
                 string HorasRevestimentos = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["Horas Revestimentos"].Value.ToString();
 
-                //Preço da hora 
                 string LabelPrecoOrcamen = LabelPrecoOrcamentado.Text;
                 double precoOrcamentadoDouble = Convert.ToDouble(LabelPrecoOrcamen);
-
-                //Valor da Estrutura
                 double horasEstruturaDouble = Convert.ToDouble(HorasEstrutura);
                 double ValorEstrutura = horasEstruturaDouble * precoOrcamentadoDouble;
                 string valorEstruturaString = ValorEstrutura.ToString("F2");
-
-                //Valor da KG/Estrutura
                 double valorEstruturaDouble = Convert.ToDouble(valorEstruturaString);
                 double kgEstruturaDouble = Convert.ToDouble(KgEstrutura);
                 double kgEuroEstrutura = valorEstruturaDouble / kgEstruturaDouble;
                 double kgEuroEstruturaArredondado = Math.Round(kgEuroEstrutura, 2);
                 string KgEuroEstruturaString = kgEuroEstruturaArredondado.ToString("F2");
-
-                //Horas dos Revestimentos
                 double HorasRevestimentosDouble = Convert.ToDouble(HorasRevestimentos);
                 double ValorRevestimentos = HorasRevestimentosDouble * precoOrcamentadoDouble;
                 double ValorRevestimentosArredondado = Math.Round(ValorRevestimentos, 2);
                 string valorRevestimentosString = ValorRevestimentosArredondado.ToString("F2");
-
-                //Total
                 double TotalHoras = horasEstruturaDouble + HorasRevestimentosDouble;
-
                 double TotalValor = valorEstruturaDouble + ValorRevestimentos;
                 double TotalValorArredondado = Math.Round(TotalValor, 2);
                 string TotalValorString = TotalValorArredondado.ToString("F2");
 
                 string query = "UPDATE dbo.Orçamentação " +
-               "SET [Numero da Obra] = @NumeroObra, " +
-               "[Nome da Obra] = @NomeObra, " +
-               "[Preparador Responsavel] = @PreparadorResponsavel, " +
-               "Tipologia = @Tipologia, " +
-               "[KG Estrutura] = @KGEstrutura, " +
-               "[Horas Estrutura] = @HorasEstrutura, " +
-               "[Valor Estrutura] = @ValorEstrutura, " +
-               "[KG/Euro Estrutura] = @KGEuroEstrutura, " +
-               "[Horas Revestimentos] = @HorasRevestimentos, " +
-               "[Valor Revestimentos] = @ValorRevestimentos, " +
-               "[Total Horas] = @TotalHoras, " +
-               "[Total Valor] = @TotalValor " +
-               "WHERE ID = @ID";
+                               "SET [Numero da Obra] = @NumeroObra, " +
+                               "[Nome da Obra] = @NomeObra, " +
+                               "[Preparador Responsavel] = @PreparadorResponsavel, " +
+                               "Tipologia = @Tipologia, " +
+                               "[KG Estrutura] = @KGEstrutura, " +
+                               "[Horas Estrutura] = @HorasEstrutura, " +
+                               "[Valor Estrutura] = @ValorEstrutura, " +
+                               "[KG/Euro Estrutura] = @KGEuroEstrutura, " +
+                               "[Horas Revestimentos] = @HorasRevestimentos, " +
+                               "[Valor Revestimentos] = @ValorRevestimentos, " +
+                               "[Total Horas] = @TotalHoras, " +
+                               "[Total Valor] = @TotalValor " +
+                               "WHERE ID = @ID";
 
                 ComunicaBD BD = new ComunicaBD();
                 try
@@ -401,473 +1340,6 @@ namespace OfelizCM
                 }
             }
         }
-               
-
-        private string SubstituirSeparadorDecimal(string valor)
-        {
-            return valor.Replace(",", ".");
-        }
-              
-       
-
-        private void ApplyColumnColors()
-        {
-            string[] colunasEstrutura = new string[] { "KG Estrutura", "Horas Estrutura", "Valor Estrutura", "KG/Euro Estrutura", "Percentagem Estrutura" };
-            Color estruturaColor = Color.FromArgb(105, 105, 105);
-
-            string[] colunasRevestimento = new string[] { "Horas Revestimentos", "Valor Revestimentos", "Percentagem Revestimentos" };
-            Color revestimentoColor = Color.FromArgb(128, 128, 128);
-
-            string[] colunasAprovação = new string[] { "Horas Aprovação", "Valor Aprovação", "Percentagem Aprovação" };
-            Color aprovacaoColor = Color.FromArgb(169, 169, 169);
-
-            string[] colunasAlterações = new string[] { "Horas Alterações", "Valor Alterações", "Percentagem Alterações" };
-            Color alteracoesColor = Color.FromArgb(105, 105, 105);
-
-            string[] colunasFabrico = new string[] { "Horas Fabrico", "Valor Fabrico", "Percentagem Fabrico" };
-            Color fabricoColor = Color.FromArgb(128, 128, 128);
-
-            string[] colunasSoldadura = new string[] { "Horas Soldadura", "Valor Soldadura", "Percentagem Soldadura" };
-            Color soldaduraColor = Color.FromArgb(169, 169, 169);
-
-            string[] colunasMontagem = new string[] { "Horas Montagem", "Valor Montagem", "Percentagem Montagem" };
-            Color montagemColor = Color.FromArgb(105, 105, 105);
-
-            string[] colunasDiversos = new string[] { "Horas Diversos", "Valor Diversos", "Percentagem Diversos", "Comentario Diversos" };
-            Color diversosColor = Color.FromArgb(128, 128, 128);
-
-            string[] colunasTotal = new string[] { "Total Horas", "Total Valor" };
-            Color totalColor = Color.FromArgb(169, 169, 169);
-
-            ApplyColumnStyle(colunasEstrutura, estruturaColor);
-            ApplyColumnStyle(colunasRevestimento, revestimentoColor);
-            ApplyColumnStyle(colunasAprovação, aprovacaoColor);
-            ApplyColumnStyle(colunasAlterações, alteracoesColor);
-            ApplyColumnStyle(colunasFabrico, fabricoColor);
-            ApplyColumnStyle(colunasSoldadura, soldaduraColor);
-            ApplyColumnStyle(colunasMontagem, montagemColor);
-            ApplyColumnStyle(colunasDiversos, diversosColor);
-            ApplyColumnStyle(colunasTotal, totalColor);
-        }
-
-        private void ApplyColumnStyle(string[] columns, Color headerColor)
-        {
-            foreach (var coluna in columns)
-            {
-                if (DataGridViewRealObras.Columns[coluna] != null)
-                {
-                    DataGridViewRealObras.Columns[coluna].HeaderCell.Style.BackColor = headerColor;
-                    DataGridViewRealObras.Columns[coluna].HeaderCell.Style.ForeColor = Color.Black;
-
-                    DataGridViewRealObras.Columns[coluna].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                }
-            }
-        }
-              
-       private void DataGridViewRealObras_CellEnter(object sender, DataGridViewCellEventArgs e)
-        {
-            var columnName = DataGridViewRealObras.Columns[e.ColumnIndex].Name;
-
-            string[] colunasEstrutura = new string[] { "KG Estrutura", "Horas Estrutura", "Valor Estrutura", "KG/Euro Estrutura", "Percentagem Estrutura" };
-            string[] colunasRevestimento = new string[] { "Horas Revestimentos", "Valor Revestimentos", "Percentagem Revestimentos" };
-            string[] colunasAprovação = new string[] { "Horas Aprovação", "Valor Aprovação", "Percentagem Aprovação" };
-            string[] colunasAlterações = new string[] { "Horas Alterações", "Valor Alterações", "Percentagem Alterações" };
-            string[] colunasFabrico = new string[] { "Horas Fabrico", "Valor Fabrico", "Percentagem Fabrico" };
-            string[] colunasSoldadura = new string[] { "Horas Soldadura", "Valor Soldadura", "Percentagem Soldadura" };
-            string[] colunasMontagem = new string[] { "Horas Montagem", "Valor Montagem", "Percentagem Montagem" };
-            string[] colunasDiversos = new string[] { "Horas Diversos", "Valor Diversos", "Percentagem Diversos", "Comentario Diversos" };
-            string[] colunasTotal = new string[] { "Total Horas", "Total Valor" };
-
-            if (colunasEstrutura.Contains(columnName)) ApplyColumnStyle(colunasEstrutura, Color.FromArgb(244, 164, 96));
-            else if (colunasRevestimento.Contains(columnName)) ApplyColumnStyle(colunasRevestimento, Color.FromArgb(250, 128, 114));
-            else if (colunasAprovação.Contains(columnName)) ApplyColumnStyle(colunasAprovação, Color.FromArgb(250, 250, 210));
-            else if (colunasAlterações.Contains(columnName)) ApplyColumnStyle(colunasAlterações, Color.FromArgb(135, 206, 235));
-            else if (colunasFabrico.Contains(columnName)) ApplyColumnStyle(colunasFabrico, Color.FromArgb(107, 142, 35));
-            else if (colunasSoldadura.Contains(columnName)) ApplyColumnStyle(colunasSoldadura, Color.FromArgb(189, 83, 107));
-            else if (colunasMontagem.Contains(columnName)) ApplyColumnStyle(colunasMontagem, Color.FromArgb(169, 169, 169));
-            else if (colunasDiversos.Contains(columnName)) ApplyColumnStyle(colunasDiversos, Color.FromArgb(30, 144, 255));
-            else if (colunasTotal.Contains(columnName)) ApplyColumnStyle(colunasTotal, Color.FromArgb(112, 128, 144));
-        }
-               
-        
-
-        private void VerificarEAtualizarOuSalvar()
-        {
-            if (DataGridViewOrcamentacaoObras.SelectedRows.Count > 0)
-            {
-                string idSelecionado = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["ID"].Value.ToString();
-
-                if (!string.IsNullOrEmpty(idSelecionado))
-                {
-                    AtualizarOrcamentoNaBD();
-                }
-                else
-                {
-                    SalvarOrcamentacaoBD();
-                }
-            }
-            else
-            {
-                MessageBox.Show("Selecione uma linha.");
-            }
-        }
-
-        private void guna2Button1_Click_1(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(TextBoxTarefaAdd.Text))
-            {
-                MessageBox.Show("Por favor, insira um valor.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                try
-                {
-                    double precoOrcamentado = Convert.ToDouble(TextBoxTarefaAdd.Text);
-
-                    LabelPrecoOrcamentado.Text = precoOrcamentado.ToString("F2");
-                }
-                catch (FormatException)
-                {
-                    MessageBox.Show("Por favor, insira um valor válido numérico. é com \",\" e nao com \". \"", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        private bool isSynchronizingSelection = false;
-
-        private void DataGridViewRealObras_SelectionChanged(object sender, EventArgs e)
-        {
-            if (isSynchronizingSelection) return;
-
-            if (DataGridViewRealObras.SelectedRows.Count > 0)
-            {
-                int selectedIndex = DataGridViewRealObras.SelectedRows[0].Index;
-
-                isSynchronizingSelection = true;
-
-                if (DataGridViewOrcamentacaoObras.Rows.Count > selectedIndex)
-                {
-                    DataGridViewOrcamentacaoObras.ClearSelection();
-                    DataGridViewOrcamentacaoObras.Rows[selectedIndex].Selected = true;
-                }
-
-                if (DataGridViewConclusaoObras.Rows.Count > selectedIndex)
-                {
-                    DataGridViewConclusaoObras.ClearSelection();
-                    DataGridViewConclusaoObras.Rows[selectedIndex].Selected = true;
-                }
-
-                isSynchronizingSelection = false;
-            }
-        }
-
-        private void DataGridViewRealObrasNome_SelectionChanged(object sender, EventArgs e)
-        {
-            if (isSynchronizingSelection) return;
-
-            if (DataGridViewOrcamentacaoObras.SelectedRows.Count > 0)
-            {
-                int selectedIndex = DataGridViewOrcamentacaoObras.SelectedRows[0].Index;
-
-                isSynchronizingSelection = true;
-
-                if (DataGridViewRealObras.Rows.Count > selectedIndex)
-                {
-                    DataGridViewRealObras.ClearSelection();
-                    DataGridViewRealObras.Rows[selectedIndex].Selected = true;
-                }
-
-                if (DataGridViewConclusaoObras.Rows.Count > selectedIndex)
-                {
-                    DataGridViewConclusaoObras.ClearSelection();
-                    DataGridViewConclusaoObras.Rows[selectedIndex].Selected = true;
-                }
-
-                isSynchronizingSelection = false;
-            }
-        }
-
-        private void DataGridViewConclusaoObras_SelectionChanged(object sender, EventArgs e)
-        {
-            if (isSynchronizingSelection) return;
-
-            if (DataGridViewConclusaoObras.SelectedRows.Count > 0)
-            {
-                int selectedIndex = DataGridViewConclusaoObras.SelectedRows[0].Index;
-
-                isSynchronizingSelection = true;
-
-                if (DataGridViewRealObras.Rows.Count > selectedIndex)
-                {
-                    DataGridViewRealObras.ClearSelection();
-                    DataGridViewRealObras.Rows[selectedIndex].Selected = true;
-                }
-
-                if (DataGridViewOrcamentacaoObras.Rows.Count > selectedIndex)
-                {
-                    DataGridViewOrcamentacaoObras.ClearSelection();
-                    DataGridViewOrcamentacaoObras.Rows[selectedIndex].Selected = true;
-                }
-
-                isSynchronizingSelection = false;
-            }
-        }
-
-        private bool isSynchronizingScroll = false;
-
-        private void Guna2VScrollBar_Scroll(object sender, ScrollEventArgs e)
-        {
-            int newValue = e.NewValue;
-
-            if (DataGridViewRealObras.FirstDisplayedScrollingRowIndex != newValue)
-            {
-                DataGridViewRealObras.FirstDisplayedScrollingRowIndex = newValue;
-            }
-
-            if (DataGridViewOrcamentacaoObras.FirstDisplayedScrollingRowIndex != newValue)
-            {
-                DataGridViewOrcamentacaoObras.FirstDisplayedScrollingRowIndex = newValue;
-            }
-
-            if (DataGridViewConclusaoObras.FirstDisplayedScrollingRowIndex != newValue)
-            {
-                DataGridViewConclusaoObras.FirstDisplayedScrollingRowIndex = newValue;
-            }
-        }
-
-        private void DataGridViewRealObras_Scroll(object sender, ScrollEventArgs e)
-        {
-            if (isSynchronizingScroll) return;
-
-            isSynchronizingScroll = true;
-
-            guna2VScrollBar1.Value = DataGridViewRealObras.FirstDisplayedScrollingRowIndex;
-
-            isSynchronizingScroll = false;
-        }
-
-        private void DataGridViewOrcamentacaoObras_Scroll(object sender, ScrollEventArgs e)
-        {
-            if (isSynchronizingScroll) return;
-
-            isSynchronizingScroll = true;
-
-            guna2VScrollBar1.Value = DataGridViewOrcamentacaoObras.FirstDisplayedScrollingRowIndex;
-
-            isSynchronizingScroll = false;
-        }
-
-        private void DataGridViewConclusaoObras_Scroll(object sender, ScrollEventArgs e)
-        {
-            if (isSynchronizingScroll) return;
-
-            isSynchronizingScroll = true;
-
-            guna2VScrollBar1.Value = DataGridViewConclusaoObras.FirstDisplayedScrollingRowIndex;
-
-            isSynchronizingScroll = false;
-        }
-
-        private void DataGridViewRealObras_ScrollHorizontal(object sender, ScrollEventArgs e)
-        {
-            if (isSynchronizingScroll) return;
-
-            isSynchronizingScroll = true;
-
-            guna2HScrollBar1.Value = DataGridViewRealObras.HorizontalScrollingOffset;
-
-            isSynchronizingScroll = false;
-        }
-
-        private void DataGridViewRealObrasTotal_ScrollHorizontal(object sender, ScrollEventArgs e)
-        {
-            if (isSynchronizingScroll) return;
-
-            isSynchronizingScroll = true;
-
-            guna2HScrollBar1.Value = DataGridViewRealObrasTotal.HorizontalScrollingOffset;
-
-            isSynchronizingScroll = false;
-        }
-
-        private void Guna2HScrollBar_Scroll(object sender, ScrollEventArgs e)
-        {
-            DataGridViewRealObras.HorizontalScrollingOffset = e.NewValue;
-            DataGridViewRealObrasTotal.HorizontalScrollingOffset = e.NewValue;
-        }
-
-        private void InicializarSincronizacaoDeRolagem()
-        {
-            DataGridViewRealObras.Scroll += DataGridViewRealObras_Scroll;
-            DataGridViewOrcamentacaoObras.Scroll += DataGridViewOrcamentacaoObras_Scroll;
-            DataGridViewConclusaoObras.Scroll += DataGridViewConclusaoObras_Scroll;
-
-            DataGridViewRealObras.Scroll += DataGridViewRealObras_ScrollHorizontal;
-            DataGridViewRealObrasTotal.Scroll += DataGridViewRealObrasTotal_ScrollHorizontal;
-
-            guna2HScrollBar1.Scroll += Guna2HScrollBar_Scroll;
-
-            guna2VScrollBar1.Scroll += Guna2VScrollBar_Scroll;
-
-            guna2HScrollBar1.Maximum = Math.Max(DataGridViewRealObras.HorizontalScrollingOffset, DataGridViewRealObrasTotal.HorizontalScrollingOffset);
-        }
-
-        private void ConfigurarComboBoxTipologia()
-        {
-            if (DataGridViewOrcamentacaoObras.Columns["Tipologia"] == null)
-            {
-                DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn
-                {
-                    Name = "Tipologia",
-                    HeaderText = "Tipologia",
-                    DataPropertyName = "Tipologia",
-                    FlatStyle = FlatStyle.Popup
-                };
-
-                comboBoxColumn.Items.AddRange("Porticado", "Treliçado", "Revestimentos");
-
-                DataGridViewOrcamentacaoObras.Columns.Add(comboBoxColumn);
-            }
-        }
-
-        private void ConfigurarComboBoxPreparadorResponsavel()
-        {
-            if (DataGridViewOrcamentacaoObras.Columns["Preparador Responsavel"] == null)
-            {
-                DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn
-                {
-                    Name = "Preparador Responsavel",
-                    HeaderText = "Preparador Responsavel",
-                    DataPropertyName = "PreparadorResponsavel",
-                    FlatStyle = FlatStyle.Popup
-                };
-
-                foreach (var item in ComboBoxPreparadorAdd.Items)
-                {
-                    comboBoxColumn.Items.Add(item);
-                }
-
-                DataGridViewOrcamentacaoObras.Columns.Add(comboBoxColumn);
-            }
-        }
-
-        public void CarregarPreparadoresNaComboBox()
-        {
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-            string query = "SELECT Nome FROM dbo.nPreparadores1";
-            List<string> list = BD.Procurarbdlist(query);
-            BD.DesonectarBD();
-
-            ComboBoxPreparadorAdd.Items.Clear();
-            if (list.Count > 0)
-            {
-                foreach (string nome in list)
-                {
-                    ComboBoxPreparadorAdd.Items.Add(nome);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Nenhum preparador encontrado na base de dados.");
-
-            }
-        }
-
-        public void CarregarTipologiaNaComboBox()
-        {
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-            string query = "SELECT Tipologia FROM dbo.Tipologia";
-            List<string> list = BD.Procurarbdlist(query);
-            BD.DesonectarBD();
-
-            ComboBoxTipologiaInserir.Items.Clear();
-            ComboBoxTipologiaFiltro.Items.Clear();
-            if (list.Count > 0)
-            {
-                foreach (string nome in list)
-                {
-                    ComboBoxTipologiaInserir.Items.Add(nome);
-                    ComboBoxTipologiaFiltro.Items.Add(nome);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Nenhuma Tipologia encontrado na base de dados.");
-
-            }
-        }
-
-        private void DataGridViewOrcamentacaoObras_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
-        {
-            if (e.ColumnIndex == DataGridViewOrcamentacaoObras.Columns["Tipologia"]?.Index)
-            {
-                DataGridViewComboBoxCell comboBoxCell = new DataGridViewComboBoxCell();
-                comboBoxCell.Items.Add("Porticado");
-                comboBoxCell.Items.Add("Treliçado");
-                comboBoxCell.Items.Add("Revestimentos");
-
-                var currentValue = DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex].Value;
-                if (currentValue != null && comboBoxCell.Items.Contains(currentValue))
-                {
-                    comboBoxCell.Value = currentValue;
-                }
-                else
-                {
-                    comboBoxCell.Value = "Porticado";
-                }
-
-                DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex] = comboBoxCell;
-            }
-
-            if (e.ColumnIndex == DataGridViewOrcamentacaoObras.Columns["Preparador Responsavel"]?.Index)
-            {
-                DataGridViewComboBoxCell comboBoxCell = new DataGridViewComboBoxCell();
-
-                foreach (var item in ComboBoxPreparadorAdd.Items)
-                {
-                    comboBoxCell.Items.Add(item);
-                }
-
-                var currentValue = DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex].Value;
-                if (currentValue != null && comboBoxCell.Items.Contains(currentValue))
-                {
-                    comboBoxCell.Value = currentValue;
-                }
-                else
-                {
-                    comboBoxCell.Value = ComboBoxPreparadorAdd.Items[0]; 
-                }
-
-                DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex] = comboBoxCell;
-            }
-        }
-
-        private void DataGridViewOrcamentacaoObras_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.ColumnIndex == DataGridViewOrcamentacaoObras.Columns["Tipologia"]?.Index)
-            {
-                var selectedValue = DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex].Value.ToString();
-                DataGridViewTextBoxCell textCell = new DataGridViewTextBoxCell();
-                textCell.Value = selectedValue;
-                DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex] = textCell;
-            }
-
-            if (e.ColumnIndex == DataGridViewOrcamentacaoObras.Columns["Preparador Responsavel"]?.Index)
-            {
-                var selectedValue = DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex].Value.ToString();
-                DataGridViewTextBoxCell textCell = new DataGridViewTextBoxCell();
-                textCell.Value = selectedValue;
-                DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex] = textCell;
-            }
-        }
-
-        private void guna2Button1_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void AtualizarTabelaRealnaBd()
         {
             if (DataGridViewRealObras.Rows.Count > 0)
@@ -900,7 +1372,7 @@ namespace OfelizCM
                             horasFabricoTotal1 = ObterHoras(NumeroObra, 403, BD);
                             horasSoldaduraTotal1 = ObterHoras(NumeroObra, 404, BD);
                             horasMontagemTotal1 = ObterHoras(NumeroObra, 413, BD);
-                            horasDiversasTotal1 = ObterHoras(NumeroObra, 408, BD);                                                      
+                            horasDiversasTotal1 = ObterHoras(NumeroObra, 408, BD);
 
                             int horasEstruturaTotal = Convert.ToInt32(Math.Floor(horasEstruturaTotal1 / 60));
                             int horasRevestimentosTotal = Convert.ToInt32(Math.Floor(horasRevestimentosTotal1 / 60));
@@ -946,7 +1418,6 @@ namespace OfelizCM
                             }
                         }
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -958,7 +1429,6 @@ namespace OfelizCM
                 }
             }
         }
-
         private double ObterHoras(string numeroObra, int codigoTarefa, ComunicaBD BD)
         {
             string query = @"
@@ -969,15 +1439,14 @@ namespace OfelizCM
                             WHERE 
                                 [Numero da Obra] = @NumeroObra
                                 AND [Codigo da Tarefa] = @CodigoTarefa";
-            
+
             using (SqlCommand cmd = new SqlCommand(query, BD.GetConnection()))
             {
                 cmd.Parameters.AddWithValue("@NumeroObra", numeroObra);
                 cmd.Parameters.AddWithValue("@CodigoTarefa", codigoTarefa);
                 return cmd.ExecuteScalar() == DBNull.Value ? 0 : Convert.ToDouble(cmd.ExecuteScalar());
             }
-        }   
-
+        }
         private void AtualizarTabelaRealnaBd2()
         {
             if (DataGridViewRealObras.Rows.Count > 0)
@@ -986,14 +1455,11 @@ namespace OfelizCM
                 try
                 {
                     BD.ConectarBD();
-
                     foreach (DataGridViewRow row in DataGridViewRealObras.Rows)
                     {
                         if (row.IsNewRow) continue;
-
                         string ID = row.Cells["ID"].Value.ToString();
                         string NumeroObra = row.Cells["Numero da Obra"].Value.ToString();
-
                         string HorasEstrutura = row.Cells["Horas Estrutura"].Value.ToString().Replace(",", ".").Trim();
                         string HorasRevestimentos = row.Cells["Horas Revestimentos"].Value.ToString().Replace(",", ".").Trim();
                         string HorasAprovacao = row.Cells["Horas Aprovação"].Value.ToString().Replace(",", ".").Trim();
@@ -1124,7 +1590,6 @@ namespace OfelizCM
                             cmd.ExecuteNonQuery();
                         }
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -1140,7 +1605,6 @@ namespace OfelizCM
                 MessageBox.Show("Não há dados na tabela.");
             }
         }
-
         private void AtualizarTabelaRealnaBd3()
         {
             if (DataGridViewRealObras.Rows.Count > 0)
@@ -1166,7 +1630,7 @@ namespace OfelizCM
                         string HorasMontagem = row.Cells["Horas Montagem"].Value.ToString();
                         string HorasDiversos = row.Cells["Horas Diversos"].Value.ToString();
                         string HorasHoras = row.Cells["Total Horas"].Value.ToString();
-                                               
+
                         double HorasHorasP = 0;
                         double HorasEstruturaP = 0;
                         double HorasRevestimentosP = 0;
@@ -1184,7 +1648,7 @@ namespace OfelizCM
                         double PercentagemFabrico = 0;
                         double PercentagemSoldadura = 0;
                         double PercentagemMontagem = 0;
-                        double PercentagemDiversos = 0;                      
+                        double PercentagemDiversos = 0;
 
                         HorasHorasP = double.Parse(HorasHoras, CultureInfo.InvariantCulture);
                         HorasEstruturaP = double.Parse(HorasEstrutura, CultureInfo.InvariantCulture);
@@ -1196,47 +1660,38 @@ namespace OfelizCM
                         HorasMontagemP = double.Parse(HorasMontagem, CultureInfo.InvariantCulture);
                         HorasDiversosP = double.Parse(HorasDiversos, CultureInfo.InvariantCulture);
 
-
-                         if (HorasHorasP != 0)
-                         {
-                           PercentagemEstrutura = (HorasEstruturaP / HorasHorasP) * 100;
-                         }
-                        
-                         if (HorasHorasP != 0)
-                         {
-                           PercentagemRevestimentos = (HorasRevestimentosP / HorasHorasP) * 100;
-                         }
-                                                                     
-                         if (HorasHorasP != 0)
-                         {
-                           PercentagemAprovacao = (HorasAprovacaoP / HorasHorasP) * 100;
-                         }                   
-                                             
-                         if (HorasHorasP != 0)
-                         {
-                           PercentagemAlteracoes = (HorasAlteracoesP / HorasHorasP) * 100;
-                         }
-                        
-                         if (HorasHorasP != 0)
-                         {
-                           PercentagemFabrico = (HorasFabricoP / HorasHorasP) * 100;
-                         }
-                                               
-                         if (HorasHorasP != 0)
-                         {
-                           PercentagemSoldadura = (HorasSoldaduraP / HorasHorasP) * 100;
-                         }                   
-                        
-                         if (HorasHorasP != 0)
-                         {
-                           PercentagemMontagem = (HorasMontagemP / HorasHorasP) * 100;
-                         }
-                        
-                         if (HorasHorasP != 0)
-                         {
-                           PercentagemDiversos = (HorasDiversosP / HorasHorasP) * 100;
-                         }
-                        
+                        if (HorasHorasP != 0)
+                        {
+                            PercentagemEstrutura = (HorasEstruturaP / HorasHorasP) * 100;
+                        }
+                        if (HorasHorasP != 0)
+                        {
+                            PercentagemRevestimentos = (HorasRevestimentosP / HorasHorasP) * 100;
+                        }
+                        if (HorasHorasP != 0)
+                        {
+                            PercentagemAprovacao = (HorasAprovacaoP / HorasHorasP) * 100;
+                        }
+                        if (HorasHorasP != 0)
+                        {
+                            PercentagemAlteracoes = (HorasAlteracoesP / HorasHorasP) * 100;
+                        }
+                        if (HorasHorasP != 0)
+                        {
+                            PercentagemFabrico = (HorasFabricoP / HorasHorasP) * 100;
+                        }
+                        if (HorasHorasP != 0)
+                        {
+                            PercentagemSoldadura = (HorasSoldaduraP / HorasHorasP) * 100;
+                        }
+                        if (HorasHorasP != 0)
+                        {
+                            PercentagemMontagem = (HorasMontagemP / HorasHorasP) * 100;
+                        }
+                        if (HorasHorasP != 0)
+                        {
+                            PercentagemDiversos = (HorasDiversosP / HorasHorasP) * 100;
+                        }
 
                         PercentagemEstrutura = Math.Round(PercentagemEstrutura, 1);
                         PercentagemRevestimentos = Math.Round(PercentagemRevestimentos, 1);
@@ -1255,7 +1710,6 @@ namespace OfelizCM
                         string PercentagemSoldaduraStr = PercentagemSoldadura.ToString("0.0") + "%";
                         string PercentagemMontagemStr = PercentagemMontagem.ToString("0.0") + "%";
                         string PercentagemDiversosStr = PercentagemDiversos.ToString("0.0") + "%";
-
 
                         string query = "UPDATE dbo.RealObras " +
                                        "SET [Numero da Obra] = @NumeroObra, " +
@@ -1281,12 +1735,9 @@ namespace OfelizCM
                             cmd.Parameters.AddWithValue("@PercentagemSoldadura", PercentagemSoldaduraStr);
                             cmd.Parameters.AddWithValue("@PercentagemMontagem", PercentagemMontagemStr);
                             cmd.Parameters.AddWithValue("@PercentagemDiversos", PercentagemDiversosStr);
-
                             cmd.ExecuteNonQuery();
                         }
-
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -1301,8 +1752,7 @@ namespace OfelizCM
             {
                 MessageBox.Show("Não há dados na tabela.");
             }
-        }      
-     
+        }
         private void AtualizarTabelaConclusaoBD()
         {
             if (DataGridViewConclusaoObras.Rows.Count > 0)
@@ -1337,7 +1787,7 @@ namespace OfelizCM
                                             string valorRealHoras = reader["Total Horas"].ToString();
 
                                             if (double.TryParse(valorRealHoras, NumberStyles.Any, CultureInfo.InvariantCulture, out TotalHorasReal))
-                                            {  }
+                                            { }
                                             else
                                             {
                                                 MessageBox.Show($"Erro ao converter o valor de 'Total Horas' para Número da Obra {NumeroObra}. Valor: {valorRealHoras}");
@@ -1354,7 +1804,6 @@ namespace OfelizCM
                                     }
                                 }
                             }
-
                             string queryOrcamentacao = "SELECT [Total Horas] FROM dbo.Orçamentação WHERE [Numero da Obra] = @NumeroObra";
                             using (SqlCommand cmd = new SqlCommand(queryOrcamentacao, BD.GetConnection()))
                             {
@@ -1386,12 +1835,11 @@ namespace OfelizCM
                                     }
                                 }
                             }
-
                             TotalHorasResultado = TotalHorasReal - TotalHorasOrcamentacao;
-                            PercentagemTotal = ( TotalHorasReal / TotalHorasOrcamentacao) * 100;
+                            PercentagemTotal = (TotalHorasReal / TotalHorasOrcamentacao) * 100;
                             PercentagemTotal = Math.Round(PercentagemTotal, 1);
                             string PercentagemT = PercentagemTotal.ToString("0.0") + "%";
-                            DiasPreparar = TotalHorasResultado / 8 ;
+                            DiasPreparar = TotalHorasResultado / 8;
                             int DiasPrepararInteiro = (int)Math.Round(DiasPreparar);
 
                             string updateQuery = "UPDATE dbo.ConclusaoObras " +
@@ -1407,10 +1855,10 @@ namespace OfelizCM
                                 updateCmd.Parameters.AddWithValue("@DiasP", DiasPrepararInteiro);
                                 updateCmd.Parameters.AddWithValue("@NumeroObra", NumeroObra);
 
-                                int rowsAffected = updateCmd.ExecuteNonQuery();                                
-                               
+                                int rowsAffected = updateCmd.ExecuteNonQuery();
+
                             }
-                        }                        
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -1427,7 +1875,6 @@ namespace OfelizCM
                 MessageBox.Show("Não há dados na tabela.");
             }
         }
-
         private void AtualizarTabelaConclusaoBD2()
         {
             if (DataGridViewConclusaoObras.Rows.Count > 0)
@@ -1459,7 +1906,7 @@ namespace OfelizCM
                                         {
                                             string valorRealvalor = reader["Total Valor"].ToString();
 
-                                            valorRealvalor = valorRealvalor.Trim(); 
+                                            valorRealvalor = valorRealvalor.Trim();
                                             if (valorRealvalor.Contains(","))
                                             {
                                                 valorRealvalor = valorRealvalor.Replace(",", ".");
@@ -1497,14 +1944,14 @@ namespace OfelizCM
                                         {
                                             string valorOrcamentoValor = reader["Total Valor"].ToString();
 
-                                            valorOrcamentoValor = valorOrcamentoValor.Trim(); 
+                                            valorOrcamentoValor = valorOrcamentoValor.Trim();
                                             if (valorOrcamentoValor.Contains(","))
                                             {
                                                 valorOrcamentoValor = valorOrcamentoValor.Replace(",", ".");
                                             }
 
                                             if (double.TryParse(valorOrcamentoValor, NumberStyles.Any, CultureInfo.InvariantCulture, out TotalValorOrcamentacao))
-                                            {        }
+                                            { }
                                             else
                                             {
                                                 MessageBox.Show($"Erro ao converter o valor de 'Total Valor' para Número da Obra {NumeroObra}. Valor: {valorOrcamentoValor}");
@@ -1550,7 +1997,6 @@ namespace OfelizCM
                 MessageBox.Show("Não há dados na tabela.");
             }
         }
-
         private void AtualizarTabelaRealnaBdManual()
         {
             if (DataGridViewRealObras.Rows.Count > 0)
@@ -1650,21 +2096,6 @@ namespace OfelizCM
                 }
             }
         }
-
-        private void guna2Button5_Click(object sender, EventArgs e)
-        {
-            AtualizarTabelaRealnaBdManual();
-            AtualizarDados();
-            CalcularTabelas();
-        }
-
-        private void guna2Button3_Click(object sender, EventArgs e)
-        {
-            ComunicarTabelas();
-            AtualizarDados();
-            CalcularTabelas();
-        }               
-
         private void CalcularTotaisEInserirNaBaseDeDados()
         {
             double totalKGEstrutura = 0;
@@ -1694,7 +2125,6 @@ namespace OfelizCM
                 totalKGEuroEstrutura += kgEuro;
                 if (kgEuro > 0) linhaCountKGEuro++;
             }
-
 
             double mediaKGEuroEstruturaReal = linhaCountKGEuro > 0 ? totalKGEuroEstrutura / linhaCountKGEuro : 0;
             int totalKGEstruturaInt = (int)Math.Round(totalKGEstrutura);
@@ -1757,75 +2187,6 @@ namespace OfelizCM
                 BD.DesonectarBD();
             }
         }
-
-        private double ProcessarValor(object value)
-        {
-            if (value == null || value == DBNull.Value)
-            {
-                return 0;
-            }
-
-            string strValue = value.ToString().Trim();
-
-            if (string.IsNullOrEmpty(strValue))
-            {
-                return 0;
-            }
-
-            strValue = strValue.Replace(",", ".");
-
-            double result = 0;
-
-            if (double.TryParse(strValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        private double CalcularPercentagem(string valorPercentagem)
-        {
-            if (string.IsNullOrEmpty(valorPercentagem))
-            {
-                return 0;
-            }
-
-            valorPercentagem = valorPercentagem.Replace("%", "").Trim();
-
-            valorPercentagem = valorPercentagem.Replace(",", ".");
-
-            double resultado;
-
-            if (double.TryParse(valorPercentagem, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out resultado))
-            {
-                return resultado;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        private void PontoporvirgulaOrcamentacao()
-        {
-            foreach (DataGridViewRow row in DataGridViewOrcamentacaoObras.Rows)
-            {
-                foreach (DataGridViewCell cell in row.Cells)
-                {
-                    if (cell.Value != null && cell.Value is string)
-                    {
-                        string cellValue = cell.Value.ToString();
-
-                        cell.Value = cellValue.Replace(",", ".");
-                    }
-                }
-            }
-
-        }
-
         private void CalcularTotaisReal()
         {
             double totalKGEstruturaReal = 0;
@@ -1860,7 +2221,7 @@ namespace OfelizCM
 
                 double kgEuro = ProcessarValor(row.Cells["KG/Euro Estrutura"].Value);
                 totalKGEuroEstruturaReal += kgEuro;
-                if (kgEuro > 0) linhaCountKGEuro++;  // Contar a linha se KG/Euro Estrutura for válido
+                if (kgEuro > 0) linhaCountKGEuro++;  
 
                 totalHorasRevestimentosReal += ProcessarValor(row.Cells["Horas Revestimentos"].Value);
                 totalValorRevestimentosReal += ProcessarValor(row.Cells["Valor Revestimentos"].Value);
@@ -1976,7 +2337,6 @@ namespace OfelizCM
                     cmd.Parameters.AddWithValue("@TotalHorasReal", totalHorasRealInt);
                     cmd.Parameters.AddWithValue("@TotalValorReal", totalValorReall);
                     cmd.Parameters.AddWithValue("@ObraId", obraId);
-
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -1989,7 +2349,6 @@ namespace OfelizCM
                 BD.DesonectarBD();
             }
         }
-
         private void CalcularTotaisRealPercentagem()
         {
             double totalPercentagemEstruturaReal = 0;
@@ -2000,8 +2359,7 @@ namespace OfelizCM
             double totalPercentagemSoldaduraReal = 0;
             double totalPercentagemMontagemReal = 0;
             double totalPercentagemDiversosReal = 0;
-            int linhaCount = 0;  
-
+            int linhaCount = 0;
             PontoporvirgulaReal();
 
             foreach (DataGridViewRow row in DataGridViewRealObras.Rows)
@@ -2011,43 +2369,35 @@ namespace OfelizCM
                     totalPercentagemEstruturaReal += CalcularPercentagem(row.Cells["Percentagem Estrutura"].Value.ToString());
                     linhaCount++;
                 }
-
                 if (row.Cells["Percentagem Revestimentos"].Value != null)
                 {
                     totalPercentagemRevestimentosReal += CalcularPercentagem(row.Cells["Percentagem Revestimentos"].Value.ToString());
                 }
-
                 if (row.Cells["Percentagem Aprovação"].Value != null)
                 {
                     totalPercentagemAprovacaoReal += CalcularPercentagem(row.Cells["Percentagem Aprovação"].Value.ToString());
                 }
-
                 if (row.Cells["Percentagem Alterações"].Value != null)
                 {
                     totalPercentagemAlteracoesReal += CalcularPercentagem(row.Cells["Percentagem Alterações"].Value.ToString());
                 }
-
                 if (row.Cells["Percentagem Fabrico"].Value != null)
                 {
                     totalPercentagemFabricoReal += CalcularPercentagem(row.Cells["Percentagem Fabrico"].Value.ToString());
                 }
-
                 if (row.Cells["Percentagem Soldadura"].Value != null)
                 {
                     totalPercentagemSoldaduraReal += CalcularPercentagem(row.Cells["Percentagem Soldadura"].Value.ToString());
                 }
-
                 if (row.Cells["Percentagem Montagem"].Value != null)
                 {
                     totalPercentagemMontagemReal += CalcularPercentagem(row.Cells["Percentagem Montagem"].Value.ToString());
                 }
-
                 if (row.Cells["Percentagem Diversos"].Value != null)
                 {
                     totalPercentagemDiversosReal += CalcularPercentagem(row.Cells["Percentagem Diversos"].Value.ToString());
                 }
             }
-
             double mediaPercentagemEstruturaReal = linhaCount > 0 ? totalPercentagemEstruturaReal / linhaCount : 0;
             double mediaPercentagemRevestimentosReal = linhaCount > 0 ? totalPercentagemRevestimentosReal / linhaCount : 0;
             double mediaPercentagemAprovacaoReal = linhaCount > 0 ? totalPercentagemAprovacaoReal / linhaCount : 0;
@@ -2095,7 +2445,6 @@ namespace OfelizCM
                     cmd.Parameters.AddWithValue("@PercentagemMontagemReal", percentualMontagemReal);
                     cmd.Parameters.AddWithValue("@PercentagemDiversosReal", percentualDiversosReal);
                     cmd.Parameters.AddWithValue("@ObraId", obraId);
-
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -2108,7 +2457,81 @@ namespace OfelizCM
                 BD.DesonectarBD();
             }
         }
-
+        public void CarregarPreparadoresNaComboBox()
+        {
+            ComunicaBD BD = new ComunicaBD();
+            BD.ConectarBD();
+            string query = "SELECT Nome FROM dbo.nPreparadores1";
+            List<string> list = BD.Procurarbdlist(query);
+            BD.DesonectarBD();
+            ComboBoxPreparadorAdd.Items.Clear();
+            if (list.Count > 0)
+            {
+                foreach (string nome in list)
+                {
+                    ComboBoxPreparadorAdd.Items.Add(nome);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Nenhum preparador encontrado na base de dados.");
+            }
+        }
+        public void CarregarTipologiaNaComboBox()
+        {
+            ComunicaBD BD = new ComunicaBD();
+            BD.ConectarBD();
+            string query = "SELECT Tipologia FROM dbo.Tipologia";
+            List<string> list = BD.Procurarbdlist(query);
+            BD.DesonectarBD();
+            ComboBoxTipologiaInserir.Items.Clear();
+            ComboBoxTipologiaFiltro.Items.Clear();
+            if (list.Count > 0)
+            {
+                foreach (string nome in list)
+                {
+                    ComboBoxTipologiaInserir.Items.Add(nome);
+                    ComboBoxTipologiaFiltro.Items.Add(nome);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Nenhuma Tipologia encontrado na base de dados.");
+            }
+        }
+        private void ConfigurarComboBoxTipologia()
+        {
+            if (DataGridViewOrcamentacaoObras.Columns["Tipologia"] == null)
+            {
+                DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn
+                {
+                    Name = "Tipologia",
+                    HeaderText = "Tipologia",
+                    DataPropertyName = "Tipologia",
+                    FlatStyle = FlatStyle.Popup
+                };
+                comboBoxColumn.Items.AddRange("Porticado", "Treliçado", "Revestimentos");
+                DataGridViewOrcamentacaoObras.Columns.Add(comboBoxColumn);
+            }
+        }
+        private void ConfigurarComboBoxPreparadorResponsavel()
+        {
+            if (DataGridViewOrcamentacaoObras.Columns["Preparador Responsavel"] == null)
+            {
+                DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn
+                {
+                    Name = "Preparador Responsavel",
+                    HeaderText = "Preparador Responsavel",
+                    DataPropertyName = "PreparadorResponsavel",
+                    FlatStyle = FlatStyle.Popup
+                };
+                foreach (var item in ComboBoxPreparadorAdd.Items)
+                {
+                    comboBoxColumn.Items.Add(item);
+                }
+                DataGridViewOrcamentacaoObras.Columns.Add(comboBoxColumn);
+            }
+        }
         private void PontoporvirgulaReal()
         {
             foreach (DataGridViewRow row in DataGridViewRealObras.Rows)
@@ -2123,28 +2546,22 @@ namespace OfelizCM
                     }
                 }
             }
-
         }
-
         private void CalcularTotaisConclusao()
         {
             double totalPercentagemTotal = 0;
-            int linhaCount = 0;  
-
+            int linhaCount = 0;
             PontoporvirgulaReal();
-
             foreach (DataGridViewRow row in DataGridViewConclusaoObras.Rows)
             {
                 if (row.Cells["Percentagem Total"].Value != null)
                 {
                     totalPercentagemTotal += CalcularPercentagem(row.Cells["Percentagem Total"].Value.ToString());
-                    linhaCount++; 
+                    linhaCount++;
                 }
             }
-
             double mediaPercentagemTotal = linhaCount > 0 ? totalPercentagemTotal / linhaCount : 0;
-            string percentualComSimbolo = mediaPercentagemTotal.ToString("F2") + " %"; 
-
+            string percentualComSimbolo = mediaPercentagemTotal.ToString("F2") + " %";
             double totalHoras = 0;
             double totalValor = 0;
 
@@ -2159,7 +2576,6 @@ namespace OfelizCM
                     totalValor += ProcessarValor(row.Cells["Total Valor"].Value.ToString());
                 }
             }
-
             string totalValorr = totalValor.ToString() + " €";
             string totalHorass = totalHoras.ToString() + " h";
 
@@ -2195,7 +2611,6 @@ namespace OfelizCM
                 BD.DesonectarBD();
             }
         }
-               
         public void CarregarPastasNaComboBoxAno()
         {
             string caminhoPasta = @"\\marconi\COMPANY SHARED FOLDER\OFELIZ\OFM\2.AN\2.CM\DP\1 Obras";
@@ -2220,7 +2635,6 @@ namespace OfelizCM
             {
                 MessageBox.Show("O caminho especificado não existe.");
             }
-
             if (Directory.Exists(caminhoPasta))
             {
                 string[] subpastas = Directory.GetDirectories(caminhoPasta);
@@ -2242,492 +2656,724 @@ namespace OfelizCM
                 MessageBox.Show("O caminho especificado não existe.");
             }
         }
-
-        private void ButtonIniciarTarefa_Click(object sender, EventArgs e)
+        private void AdicionarSufixosNasColunas()
         {
-            FiltrarTipologia();
-            VisualizarGraficoTotalHoras();
-            AdicionarSufixosNasColunas();
-            CarregarGraficoObras2Tipologia();
-            CarregarGraficoObrasvalorTipologia();
-            CarregarGraficoObrasPercentagemTipologia();
-            CarregarGraficoHorasTipologiaeAno();
-            VisualizarGraficoPiePercentagemTipologiaeAno();
-        }
-
-        private void FiltrarTipologia()
-        {
-            string Tipologia = ComboBoxTipologiaFiltro.SelectedItem.ToString();
-            ComunicaBD BD = new ComunicaBD();
+            foreach (DataGridViewRow row in DataGridViewOrcamentacaoObras.Rows)
             {
-                try
+                if (row.Cells["KG Estrutura"].Value != DBNull.Value && row.Cells["KG Estrutura"].Value != null)
                 {
-                    BD.ConectarBD();
+                    double kgValue;
+                    bool isKgNumeric = Double.TryParse(row.Cells["KG Estrutura"].Value.ToString(), out kgValue);
 
-                    string queryorçamentacao = "SELECT * FROM dbo.Orçamentação WHERE (Tipologia) = @Tipologia";
-                    string queryreal = "SELECT * FROM dbo.RealObras WHERE (Tipologia) = @Tipologia";
-                    string queryconclusao = "SELECT * FROM dbo.ConclusaoObras WHERE (Tipologia) = @Tipologia";
-
-                    using (var command = new SqlCommand(queryorçamentacao, BD.GetConnection()))
+                    if (isKgNumeric)
                     {
-                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
-
-                        DataTable dataTable = new DataTable();
-
-                        using (var adapter = new SqlDataAdapter(command))
-                        {
-                            adapter.Fill(dataTable);
-                        }
-
-                        DataGridViewOrcamentacaoObras.DataSource = dataTable;
-
-                        DataGridViewOrcamentacaoObras.ClearSelection();
-                    }
-                    using (var command = new SqlCommand(queryreal, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
-
-                        DataTable dataTable = new DataTable();
-
-                        using (var adapter = new SqlDataAdapter(command))
-                        {
-                            adapter.Fill(dataTable);
-                        }
-
-                        DataGridViewRealObras.DataSource = dataTable;
-                        DataGridViewRealObras.Columns["Nome da Obra"].Visible = false;
-                        DataGridViewRealObras.Columns["Preparador Responsavel"].Visible = false;
-                        DataGridViewRealObras.ClearSelection();
-                    }
-
-                    using (var command = new SqlCommand(queryconclusao, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
-
-                        DataTable dataTable = new DataTable();
-
-                        using (var adapter = new SqlDataAdapter(command))
-                        {
-                            adapter.Fill(dataTable);
-                        }
-
-                        DataGridViewConclusaoObras.DataSource = dataTable;
-                        DataGridViewConclusaoObras.Columns["Nome da Obra"].Visible = false;
-                        DataGridViewConclusaoObras.Columns["Preparador Responsavel"].Visible = false;
-                        DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
-                        DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
-                        DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
-                        DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
-                        DataGridViewConclusaoObras.ClearSelection();
+                        row.Cells["KG Estrutura"].Value = $"{kgValue} kg";
                     }
                 }
-                catch (Exception ex)
+                if (row.Cells["Horas Estrutura"].Value != DBNull.Value && row.Cells["Horas Estrutura"].Value != null)
                 {
-                    MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Estrutura"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Estrutura"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Valor Estrutura"].Value != DBNull.Value && row.Cells["Valor Estrutura"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Estrutura"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Estrutura"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["KG/Euro Estrutura"].Value != DBNull.Value && row.Cells["KG/Euro Estrutura"].Value != null)
+                {
+                    string valorStr = row.Cells["KG/Euro Estrutura"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["KG/Euro Estrutura"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["Horas Revestimentos"].Value != DBNull.Value && row.Cells["Horas Revestimentos"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Revestimentos"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Revestimentos"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Valor Revestimentos"].Value != DBNull.Value && row.Cells["Valor Revestimentos"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Revestimentos"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Revestimentos"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["Total Horas"].Value != DBNull.Value && row.Cells["Total Horas"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Total Horas"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Total Horas"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Total Valor"].Value != DBNull.Value && row.Cells["Total Valor"].Value != null)
+                {
+                    string valorStr = row.Cells["Total Valor"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Total Valor"].Value = $"{valorValue:F2} €";
+                    }
+                }
+
+            }
+
+            foreach (DataGridViewRow row in DataGridViewRealObras.Rows)
+            {
+                if (row.Cells["KG Estrutura"].Value != DBNull.Value && row.Cells["KG Estrutura"].Value != null)
+                {
+                    double kgValue;
+                    bool isKgNumeric = Double.TryParse(row.Cells["KG Estrutura"].Value.ToString(), out kgValue);
+
+                    if (isKgNumeric)
+                    {
+                        row.Cells["KG Estrutura"].Value = $"{kgValue} kg";
+                    }
+                }
+                if (row.Cells["Horas Estrutura"].Value != DBNull.Value && row.Cells["Horas Estrutura"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Estrutura"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Estrutura"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Valor Estrutura"].Value != DBNull.Value && row.Cells["Valor Estrutura"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Estrutura"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Estrutura"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["KG/Euro Estrutura"].Value != DBNull.Value && row.Cells["KG/Euro Estrutura"].Value != null)
+                {
+                    string valorStr = row.Cells["KG/Euro Estrutura"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["KG/Euro Estrutura"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["Horas Revestimentos"].Value != DBNull.Value && row.Cells["Horas Revestimentos"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Revestimentos"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Revestimentos"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Valor Revestimentos"].Value != DBNull.Value && row.Cells["Valor Revestimentos"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Revestimentos"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Revestimentos"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["Horas Aprovação"].Value != DBNull.Value && row.Cells["Horas Aprovação"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Aprovação"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Aprovação"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Valor Aprovação"].Value != DBNull.Value && row.Cells["Valor Aprovação"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Aprovação"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Aprovação"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["Horas Alterações"].Value != DBNull.Value && row.Cells["Horas Alterações"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Alterações"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Alterações"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Valor Alterações"].Value != DBNull.Value && row.Cells["Valor Alterações"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Alterações"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Alterações"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["Horas Fabrico"].Value != DBNull.Value && row.Cells["Horas Fabrico"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Fabrico"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Fabrico"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Valor Fabrico"].Value != DBNull.Value && row.Cells["Valor Fabrico"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Fabrico"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Fabrico"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["Horas Soldadura"].Value != DBNull.Value && row.Cells["Horas Soldadura"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Soldadura"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Soldadura"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Valor Soldadura"].Value != DBNull.Value && row.Cells["Valor Soldadura"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Soldadura"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Soldadura"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["Horas Montagem"].Value != DBNull.Value && row.Cells["Horas Montagem"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Montagem"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Montagem"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Valor Montagem"].Value != DBNull.Value && row.Cells["Valor Montagem"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Montagem"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Montagem"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["Horas Diversos"].Value != DBNull.Value && row.Cells["Horas Diversos"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Diversos"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Diversos"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Valor Diversos"].Value != DBNull.Value && row.Cells["Valor Diversos"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Diversos"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Diversos"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["Total Horas"].Value != DBNull.Value && row.Cells["Total Horas"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Total Horas"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Total Horas"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Total Valor"].Value != DBNull.Value && row.Cells["Total Valor"].Value != null)
+                {
+                    string valorStr = row.Cells["Total Valor"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Total Valor"].Value = $"{valorValue:F2} €";
+                    }
+                }
+            }
+
+            foreach (DataGridViewRow row in DataGridViewConclusaoObras.Rows)
+            {
+                if (row.Cells["Total Horas"].Value != DBNull.Value && row.Cells["Total Horas"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Total Horas"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Total Horas"].Value = $"{horasValue} h";
+                    }
+                }
+                if (row.Cells["Total Valor"].Value != DBNull.Value && row.Cells["Total Valor"].Value != null)
+                {
+                    string valorStr = row.Cells["Total Valor"].Value.ToString();
+
+                    valorStr = valorStr.Replace('.', ',');
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Total Valor"].Value = $"{valorValue:F2} €";
+                    }
+                }
+                if (row.Cells["Dias de Preparação"].Value != DBNull.Value && row.Cells["Dias de Preparação"].Value != null)
+                {
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(row.Cells["Dias de Preparação"].Value.ToString(), out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Dias de Preparação"].Value = $"{horasValue} dias";
+                    }
                 }
             }
         }
-
-        private void FiltrarPorAno()
-        {       
-           string anoSelecionado = ComboBoxAnoAdd.SelectedItem.ToString();
-            ComunicaBD BD = new ComunicaBD();            
+        private string SubstituirSeparadorDecimal(string valor)
+        {
+            return valor.Replace(",", ".");
+        }
+        private void RemoverSufixosNasColunasOracamentacao()
+        {
+            foreach (DataGridViewRow row in DataGridViewOrcamentacaoObras.Rows)
             {
-                try
+                if (row.Cells["KG Estrutura"].Value != DBNull.Value && row.Cells["KG Estrutura"].Value != null)
                 {
-                    BD.ConectarBD();
-                    string queryorçamentacao = "SELECT * FROM dbo.Orçamentação WHERE YEAR([Ano de fecho]) = @AnoFecho";
-                    string queryreal = "SELECT * FROM dbo.RealObras WHERE YEAR([Ano de fecho]) = @AnoFecho";
-                    string queryconclusao = "SELECT * FROM dbo.ConclusaoObras WHERE YEAR([Ano de fecho]) = @AnoFecho";
+                    string kgValueStr = row.Cells["KG Estrutura"].Value.ToString();
+                    kgValueStr = kgValueStr.Replace(" kg", "").Trim(); // Remove " kg" e espaços extras
 
-                    using (var command = new SqlCommand(queryorçamentacao, BD.GetConnection()))
+                    double kgValue;
+                    bool isKgNumeric = Double.TryParse(kgValueStr, out kgValue);
+
+                    if (isKgNumeric)
                     {
-                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
-
-                        DataTable dataTable = new DataTable();
-
-                        using (var adapter = new SqlDataAdapter(command))
-                        {
-                            adapter.Fill(dataTable);
-                        }
-
-                        DataGridViewOrcamentacaoObras.DataSource = dataTable;
-                        
-                        DataGridViewOrcamentacaoObras.ClearSelection();
-                    }
-                    using (var command = new SqlCommand(queryreal, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
-
-                        DataTable dataTable = new DataTable();
-
-                        using (var adapter = new SqlDataAdapter(command))
-                        {
-                            adapter.Fill(dataTable);
-                        }
-
-                        DataGridViewRealObras.DataSource = dataTable;
-                        DataGridViewRealObras.Columns["Nome da Obra"].Visible = false;
-                        DataGridViewRealObras.Columns["Preparador Responsavel"].Visible = false;
-                        DataGridViewRealObras.ClearSelection();
-                    }
-
-                    using (var command = new SqlCommand(queryconclusao, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
-
-                        DataTable dataTable = new DataTable();
-
-                        using (var adapter = new SqlDataAdapter(command))
-                        {
-                            adapter.Fill(dataTable);
-                        }
-
-                        DataGridViewConclusaoObras.DataSource = dataTable;
-                        DataGridViewConclusaoObras.Columns["Nome da Obra"].Visible = false;
-                        DataGridViewConclusaoObras.Columns["Preparador Responsavel"].Visible = false;
-                        DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
-                        DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
-                        DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
-                        DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
-                        DataGridViewConclusaoObras.ClearSelection();
+                        row.Cells["KG Estrutura"].Value = kgValue; // Restaura o valor numérico
                     }
                 }
-                catch (Exception ex)
+
+                if (row.Cells["Horas Estrutura"].Value != DBNull.Value && row.Cells["Horas Estrutura"].Value != null)
                 {
-                    MessageBox.Show("Erro ao conectar à base de dados: " + ex.Message);
+                    string horasValueStr = row.Cells["Horas Estrutura"].Value.ToString();
+                    horasValueStr = horasValueStr.Replace(" h", "").Trim(); // Remove " h" e espaços extras
+
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(horasValueStr, out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Estrutura"].Value = horasValue; // Restaura o valor numérico
+                    }
+                }
+
+                if (row.Cells["Valor Estrutura"].Value != DBNull.Value && row.Cells["Valor Estrutura"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Estrutura"].Value.ToString();
+                    valorStr = valorStr.Replace(" €", "").Replace('.', ',').Trim(); // Remove " €", e troca a vírgula por ponto
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Estrutura"].Value = valorValue; // Restaura o valor numérico
+                    }
+                }
+
+                if (row.Cells["KG/Euro Estrutura"].Value != DBNull.Value && row.Cells["KG/Euro Estrutura"].Value != null)
+                {
+                    string valorStr = row.Cells["KG/Euro Estrutura"].Value.ToString();
+                    valorStr = valorStr.Replace(" €", "").Replace('.', ',').Trim(); // Remove " €", e troca a vírgula por ponto
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["KG/Euro Estrutura"].Value = valorValue; // Restaura o valor numérico
+                    }
+                }
+
+                if (row.Cells["Horas Revestimentos"].Value != DBNull.Value && row.Cells["Horas Revestimentos"].Value != null)
+                {
+                    string horasValueStr = row.Cells["Horas Revestimentos"].Value.ToString();
+                    horasValueStr = horasValueStr.Replace(" h", "").Trim(); // Remove " h" e espaços extras
+
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(horasValueStr, out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Horas Revestimentos"].Value = horasValue; // Restaura o valor numérico
+                    }
+                }
+
+                if (row.Cells["Valor Revestimentos"].Value != DBNull.Value && row.Cells["Valor Revestimentos"].Value != null)
+                {
+                    string valorStr = row.Cells["Valor Revestimentos"].Value.ToString();
+                    valorStr = valorStr.Replace(" €", "").Replace('.', ',').Trim(); // Remove " €", e troca a vírgula por ponto
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Valor Revestimentos"].Value = valorValue; // Restaura o valor numérico
+                    }
+                }
+
+                if (row.Cells["Total Horas"].Value != DBNull.Value && row.Cells["Total Horas"].Value != null)
+                {
+                    string horasValueStr = row.Cells["Total Horas"].Value.ToString();
+                    horasValueStr = horasValueStr.Replace(" h", "").Trim(); // Remove " h" e espaços extras
+
+                    double horasValue;
+                    bool isHorasNumeric = Double.TryParse(horasValueStr, out horasValue);
+
+                    if (isHorasNumeric)
+                    {
+                        row.Cells["Total Horas"].Value = horasValue; // Restaura o valor numérico
+                    }
+                }
+
+                if (row.Cells["Total Valor"].Value != DBNull.Value && row.Cells["Total Valor"].Value != null)
+                {
+                    string valorStr = row.Cells["Total Valor"].Value.ToString();
+                    valorStr = valorStr.Replace(" €", "").Replace('.', ',').Trim(); // Remove " €", e troca a vírgula por ponto
+
+                    double valorValue;
+                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
+
+                    if (isValorNumeric)
+                    {
+                        row.Cells["Total Valor"].Value = valorValue; // Restaura o valor numérico
+                    }
                 }
             }
         }
-
-        private void guna2Button3_Click_1(object sender, EventArgs e)
-        {
-            FiltrarPorAno();
-            AdicionarSufixosNasColunas();
-            CarregarGraficoHorasTipologiaeAno();
-            VisualizarGraficoPiePercentagemTipologiaeAno();
-            CarregarGraficoObras2Ano();
-            CarregarGraficoObrasvalorAno();
-            CarregarGraficoObrasPercentagemAno();
-        }
-
-        private void guna2ImageButton1_Click(object sender, EventArgs e)
-        {
-           
-        }
-
-        private void guna2ImageButton2_Click(object sender, EventArgs e)
-        {
-            RemoverSufixosNasColunasOracamentacao();
-            VerificarEAtualizarOuSalvar();
-            VisualizarTabelaOrcamentacao();
-            VisualizarTabelaReal();
-            VisualizarTabelaConcluido();
-            AdicionarSufixosNasColunas();
-        }
-
-        private void guna2ImageButton4_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void guna2ImageButton3_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void guna2ImageButton5_Click(object sender, EventArgs e)
-        {
-            guna2Panel1.Visible = !guna2Panel1.Visible;
-        }
-
-        private void InserirAnofecho()
+        private void VerificarEAtualizarOuSalvar()
         {
             if (DataGridViewOrcamentacaoObras.SelectedRows.Count > 0)
             {
-                string NumeroObra = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["Numero da Obra"].Value.ToString();
-                string anoSelecionado = ComboBoxAnoAdd2.SelectedItem?.ToString();
+                string idSelecionado = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["ID"].Value.ToString();
 
-                if (anoSelecionado == null)
+                if (!string.IsNullOrEmpty(idSelecionado))
                 {
-                    MessageBox.Show("Selecione um ano.");
-                    return;
+                    AtualizarOrcamentoNaBD();
                 }
-
-                ComunicaBD BD = new ComunicaBD();
-                try
+                else
                 {
-                    BD.ConectarBD();
-
-                    string queryorcamentacao = "UPDATE dbo.Orçamentação SET [Ano de fecho] = @AnoFecho " +
-                                               "WHERE [Numero da Obra] = @NumeroObra";
-
-                    string queryreal = "UPDATE dbo.RealObras SET [Ano de fecho] = @AnoFecho " +
-                                       "WHERE [Numero da Obra] = @NumeroObra";
-
-                    string queryconclusao = "UPDATE dbo.ConclusaoObras SET [Ano de fecho] = @AnoFecho " +
-                                            "WHERE [Numero da Obra] = @NumeroObra";
-
-                    using (var command = new SqlCommand(queryorcamentacao, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
-                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
-                        command.ExecuteNonQuery();
-                    }
-
-                    using (var command = new SqlCommand(queryreal, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
-                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
-                        command.ExecuteNonQuery();
-                    }
-
-                    using (var command = new SqlCommand(queryconclusao, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@AnoFecho", anoSelecionado);
-                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
-                        command.ExecuteNonQuery();
-                    }
-
-                    DataGridViewOrcamentacaoObras.ClearSelection();
-                    DataGridViewRealObras.ClearSelection();
-                    DataGridViewConclusaoObras.ClearSelection();
-
-                    MessageBox.Show("Ano de fecho Inserido com Sucesso");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Erro ao inserir o Ano de fecho na base de dados: " + ex.Message);
-                }
-                finally
-                {
-                    BD.DesonectarBD();
+                    SalvarOrcamentacaoBD();
                 }
             }
             else
             {
-                MessageBox.Show("Nenhuma obra selecionada.");
+                MessageBox.Show("Selecione uma linha.");
             }
         }
-
-        private void LimparAnoFecho()
+        private bool isSynchronizingSelection = false; private void DataGridViewRealObras_SelectionChanged(object sender, EventArgs e)
         {
+            if (isSynchronizingSelection) return;
+
+            if (DataGridViewRealObras.SelectedRows.Count > 0)
+            {
+                int selectedIndex = DataGridViewRealObras.SelectedRows[0].Index;
+
+                isSynchronizingSelection = true;
+
+                if (DataGridViewOrcamentacaoObras.Rows.Count > selectedIndex)
+                {
+                    DataGridViewOrcamentacaoObras.ClearSelection();
+                    DataGridViewOrcamentacaoObras.Rows[selectedIndex].Selected = true;
+                }
+
+                if (DataGridViewConclusaoObras.Rows.Count > selectedIndex)
+                {
+                    DataGridViewConclusaoObras.ClearSelection();
+                    DataGridViewConclusaoObras.Rows[selectedIndex].Selected = true;
+                }
+
+                isSynchronizingSelection = false;
+            }
+        }
+        private void DataGridViewRealObrasNome_SelectionChanged(object sender, EventArgs e)
+        {
+            if (isSynchronizingSelection) return;
+
             if (DataGridViewOrcamentacaoObras.SelectedRows.Count > 0)
             {
-                string NumeroObra = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["Numero da Obra"].Value.ToString();
+                int selectedIndex = DataGridViewOrcamentacaoObras.SelectedRows[0].Index;
 
-                ComunicaBD BD = new ComunicaBD();
-                try
+                isSynchronizingSelection = true;
+
+                if (DataGridViewRealObras.Rows.Count > selectedIndex)
                 {
-                    BD.ConectarBD();
-
-                    string queryorcamentacao = "UPDATE dbo.Orçamentação SET [Ano de fecho] = ' ' " +
-                                               "WHERE [Numero da Obra] = @NumeroObra";
-
-                    string queryreal = "UPDATE dbo.RealObras SET [Ano de fecho] =  ' ' " +
-                                       "WHERE [Numero da Obra] = @NumeroObra";
-
-                    string queryconclusao = "UPDATE dbo.ConclusaoObras SET [Ano de fecho] = ' ' " +
-                                            "WHERE [Numero da Obra] = @NumeroObra";
-
-                    using (var command = new SqlCommand(queryorcamentacao, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
-                        command.ExecuteNonQuery();
-                    }
-
-                    using (var command = new SqlCommand(queryreal, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
-                        command.ExecuteNonQuery();
-                    }
-
-                    using (var command = new SqlCommand(queryconclusao, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
-                        command.ExecuteNonQuery();
-                    }
-
-                    DataGridViewOrcamentacaoObras.ClearSelection();
                     DataGridViewRealObras.ClearSelection();
+                    DataGridViewRealObras.Rows[selectedIndex].Selected = true;
+                }
+
+                if (DataGridViewConclusaoObras.Rows.Count > selectedIndex)
+                {
                     DataGridViewConclusaoObras.ClearSelection();
+                    DataGridViewConclusaoObras.Rows[selectedIndex].Selected = true;
+                }
 
-                    MessageBox.Show("Ano de fecho removido com sucesso.");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Erro ao remover o Ano de fecho na base de dados: " + ex.Message);
-                }
-                finally
-                {
-                    BD.DesonectarBD();
-                }
+                isSynchronizingSelection = false;
             }
-            else
+        }
+        private bool isSynchronizingScroll = false; private void Guna2VScrollBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            int newValue = e.NewValue;
+
+            if (DataGridViewRealObras.FirstDisplayedScrollingRowIndex != newValue)
             {
-                MessageBox.Show("Nenhuma obra selecionada.");
+                DataGridViewRealObras.FirstDisplayedScrollingRowIndex = newValue;
+            }
+
+            if (DataGridViewOrcamentacaoObras.FirstDisplayedScrollingRowIndex != newValue)
+            {
+                DataGridViewOrcamentacaoObras.FirstDisplayedScrollingRowIndex = newValue;
+            }
+
+            if (DataGridViewConclusaoObras.FirstDisplayedScrollingRowIndex != newValue)
+            {
+                DataGridViewConclusaoObras.FirstDisplayedScrollingRowIndex = newValue;
             }
         }
-
-        private void InserirTipologia()
+        private void DataGridViewRealObras_Scroll(object sender, ScrollEventArgs e)
         {
-            if (DataGridViewOrcamentacaoObras.SelectedRows.Count > 0)
-            {
-                string NumeroObra = DataGridViewOrcamentacaoObras.SelectedRows[0].Cells["Numero da Obra"].Value.ToString();
-                string Tipologia = ComboBoxTipologiaInserir.SelectedItem?.ToString();
+            if (isSynchronizingScroll) return;
 
-                if (Tipologia == null)
+            isSynchronizingScroll = true;
+
+            guna2VScrollBar1.Value = DataGridViewRealObras.FirstDisplayedScrollingRowIndex;
+
+            isSynchronizingScroll = false;
+        }
+        private void DataGridViewOrcamentacaoObras_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (isSynchronizingScroll) return;
+
+            isSynchronizingScroll = true;
+
+            guna2VScrollBar1.Value = DataGridViewOrcamentacaoObras.FirstDisplayedScrollingRowIndex;
+
+            isSynchronizingScroll = false;
+        }
+        private void DataGridViewConclusaoObras_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (isSynchronizingScroll) return;
+
+            isSynchronizingScroll = true;
+
+            guna2VScrollBar1.Value = DataGridViewConclusaoObras.FirstDisplayedScrollingRowIndex;
+
+            isSynchronizingScroll = false;
+        }
+        private void DataGridViewRealObras_ScrollHorizontal(object sender, ScrollEventArgs e)
+        {
+            if (isSynchronizingScroll) return;
+
+            isSynchronizingScroll = true;
+
+            guna2HScrollBar1.Value = DataGridViewRealObras.HorizontalScrollingOffset;
+
+            isSynchronizingScroll = false;
+        }
+        private void DataGridViewRealObrasTotal_ScrollHorizontal(object sender, ScrollEventArgs e)
+        {
+            if (isSynchronizingScroll) return;
+
+            isSynchronizingScroll = true;
+
+            guna2HScrollBar1.Value = DataGridViewRealObrasTotal.HorizontalScrollingOffset;
+
+            isSynchronizingScroll = false;
+        }
+        private void Guna2HScrollBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            DataGridViewRealObras.HorizontalScrollingOffset = e.NewValue;
+            DataGridViewRealObrasTotal.HorizontalScrollingOffset = e.NewValue;
+        }
+        private void InicializarSincronizacaoDeRolagem()
+        {
+            DataGridViewRealObras.Scroll += DataGridViewRealObras_Scroll;
+            DataGridViewOrcamentacaoObras.Scroll += DataGridViewOrcamentacaoObras_Scroll;
+            DataGridViewConclusaoObras.Scroll += DataGridViewConclusaoObras_Scroll;
+            DataGridViewRealObras.Scroll += DataGridViewRealObras_ScrollHorizontal;
+            DataGridViewRealObrasTotal.Scroll += DataGridViewRealObrasTotal_ScrollHorizontal;
+            guna2HScrollBar1.Scroll += Guna2HScrollBar_Scroll;
+            guna2VScrollBar1.Scroll += Guna2VScrollBar_Scroll;
+            guna2HScrollBar1.Maximum = Math.Max(DataGridViewRealObras.HorizontalScrollingOffset, DataGridViewRealObrasTotal.HorizontalScrollingOffset);
+        }                      
+        private void DataGridViewOrcamentacaoObras_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            if (e.ColumnIndex == DataGridViewOrcamentacaoObras.Columns["Tipologia"]?.Index)
+            {
+                DataGridViewComboBoxCell comboBoxCell = new DataGridViewComboBoxCell();
+                comboBoxCell.Items.Add("Porticado");
+                comboBoxCell.Items.Add("Treliçado");
+                comboBoxCell.Items.Add("Revestimentos");
+
+                var currentValue = DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex].Value;
+                if (currentValue != null && comboBoxCell.Items.Contains(currentValue))
                 {
-                    MessageBox.Show("Selecione uma Tipologia");
-                    return;
+                    comboBoxCell.Value = currentValue;
+                }
+                else
+                {
+                    comboBoxCell.Value = "Porticado";
                 }
 
-                ComunicaBD BD = new ComunicaBD();
-                try
-                {
-                    BD.ConectarBD();
-
-                    string queryorcamentacao = "UPDATE dbo.Orçamentação SET Tipologia = @Tipologia " +
-                                               "WHERE [Numero da Obra] = @NumeroObra";
-                    string queryreal = "UPDATE dbo.RealObras SET Tipologia = @Tipologia " +
-                                       "WHERE [Numero da Obra] = @NumeroObra";
-                    string queryconclusao = "UPDATE dbo.ConclusaoObras SET Tipologia = @Tipologia " +
-                                            "WHERE [Numero da Obra] = @NumeroObra";
-
-                    using (var command = new SqlCommand(queryorcamentacao, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
-                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
-                        command.ExecuteNonQuery();
-                    }
-
-                    using (var command = new SqlCommand(queryreal, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
-                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
-                        command.ExecuteNonQuery();
-                    }
-
-                    using (var command = new SqlCommand(queryconclusao, BD.GetConnection()))
-                    {
-                        command.Parameters.AddWithValue("@Tipologia", Tipologia);
-                        command.Parameters.AddWithValue("@NumeroObra", NumeroObra);
-                        command.ExecuteNonQuery();
-                    }
-
-                    DataGridViewOrcamentacaoObras.ClearSelection();
-                    DataGridViewRealObras.ClearSelection();
-                    DataGridViewConclusaoObras.ClearSelection();
-
-                    MessageBox.Show("Tipologia da obra Inserida com Sucesso");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Erro ao inserir a Tipologia da obra na base de dados: " + ex.Message);
-                }
-                finally
-                {
-                    BD.DesonectarBD();
-                }
+                DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex] = comboBoxCell;
             }
-            else
+            if (e.ColumnIndex == DataGridViewOrcamentacaoObras.Columns["Preparador Responsavel"]?.Index)
             {
-                MessageBox.Show("Tipologia selecionada.");
-            }
-        }
-
-        private void guna2Button4_Click(object sender, EventArgs e)
-        {
-            InserirAnofecho();
-            ComunicarTabelas();
-        }
-
-        private void guna2Button6_Click(object sender, EventArgs e)
-        {
-            InserirTipologia();
-            ComunicarTabelas();
-        }
-
-        private void guna2ImageButton6_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void guna2Button7_Click(object sender, EventArgs e)
-        {
-            LimparAnoFecho();
-            ComunicarTabelas();
-        }
-
-        private void ButtonExportExcelTodas_Click(object sender, EventArgs e)
-        {
-            ExportExcelRegistodeTodos();
-        }
-
-        private void ExportExcelRegistodeTodos()
-        {
-            string query = @"
-                            SELECT [Numero da Obra], Preparador, [Data da Tarefa], [Qtd de Hora], [Hora Inicial], [Hora Final], Prioridade, Tarefa
-                            FROM dbo.RegistoTempo
-                            ORDER BY [Numero da Obra]";
-
-            ComunicaBD comunicaBD = new ComunicaBD();
-            ExcelExport excelExport = new ExcelExport();
-            SqlCommand command = new SqlCommand(query, comunicaBD.GetConnection());
-            comunicaBD.ConectarBD();
-            DataTable dataTable = comunicaBD.BuscarRegistros(command);
-            string filePath = $@"C:\r\Registros.xlsx";
-            excelExport.ExportarParaExcelTodos(dataTable, filePath);
-            comunicaBD.DesonectarBD();
-            try
-            {
-                System.Diagnostics.Process.Start(filePath);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao tentar abrir o arquivo Excel: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-
-        }
-
-        private void guna2ImageButton7_Click(object sender, EventArgs e)
-        {
-            ExportarTabelaValoresExcel();
-        }
-
-        public DataTable DataGridViewToDataTable(DataGridView dataGridView)
-        {
-            DataTable dataTable = new DataTable();
-
-            foreach (DataGridViewColumn column in dataGridView.Columns)
-            {
-                if (column.Visible)  
+                DataGridViewComboBoxCell comboBoxCell = new DataGridViewComboBoxCell();
+                foreach (var item in ComboBoxPreparadorAdd.Items)
                 {
-                    dataTable.Columns.Add(column.HeaderText);
+                    comboBoxCell.Items.Add(item);
                 }
-            }
-
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                if (!row.IsNewRow) 
+                var currentValue = DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex].Value;
+                if (currentValue != null && comboBoxCell.Items.Contains(currentValue))
                 {
-                    DataRow dataRow = dataTable.NewRow();
-                    int cellIndex = 0;
-
-                    foreach (DataGridViewCell cell in row.Cells)
-                    {
-                        if (cell.OwningColumn.Visible)  
-                        {
-                            dataRow[cellIndex] = cell.Value;
-                            cellIndex++;
-                        }
-                    }
-
-                    dataTable.Rows.Add(dataRow);
+                    comboBoxCell.Value = currentValue;
                 }
+                else
+                {
+                    comboBoxCell.Value = ComboBoxPreparadorAdd.Items[0];
+                }
+                DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex] = comboBoxCell;
             }
-
-            return dataTable;
         }
-
+        private void DataGridViewOrcamentacaoObras_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == DataGridViewOrcamentacaoObras.Columns["Tipologia"]?.Index)
+            {
+                var selectedValue = DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex].Value.ToString();
+                DataGridViewTextBoxCell textCell = new DataGridViewTextBoxCell();
+                textCell.Value = selectedValue;
+                DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex] = textCell;
+            }
+            if (e.ColumnIndex == DataGridViewOrcamentacaoObras.Columns["Preparador Responsavel"]?.Index)
+            {
+                var selectedValue = DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex].Value.ToString();
+                DataGridViewTextBoxCell textCell = new DataGridViewTextBoxCell();
+                textCell.Value = selectedValue;
+                DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex] = textCell;
+            }
+        }
         public DataTable DataGridViewToDataTable(DataGridView dataGridView, bool incluirCabecalho)
         {
             DataTable dataTable = new DataTable();
@@ -2736,7 +3382,6 @@ namespace OfelizCM
             {
                 throw new InvalidOperationException("O DataGridView não tem colunas.");
             }
-
             if (incluirCabecalho)
             {
                 foreach (DataGridViewColumn column in dataGridView.Columns)
@@ -2747,17 +3392,16 @@ namespace OfelizCM
                     }
                 }
             }
-
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                if (!row.IsNewRow) 
+                if (!row.IsNewRow)
                 {
                     DataRow dataRow = dataTable.NewRow();
                     int cellIndex = 0;
 
                     foreach (DataGridViewCell cell in row.Cells)
                     {
-                        if (cell.OwningColumn.Visible) 
+                        if (cell.OwningColumn.Visible)
                         {
                             if (cellIndex < dataTable.Columns.Count)
                             {
@@ -2770,10 +3414,8 @@ namespace OfelizCM
                     dataTable.Rows.Add(dataRow);
                 }
             }
-
             return dataTable;
         }
-
         public void ExportarTabelaValoresExcel()
         {
             string filePath = @"C:\r\RegistrosCompletos.xlsx";
@@ -2787,12 +3429,12 @@ namespace OfelizCM
 
             ExcelExport excelExport = new ExcelExport();
             DataTable dataTableOrcamentacaoObras = DataGridViewToDataTable(dataGridViewOrcamentacaoObras, true); // Cabeçalho incluído
-            DataTable dataTableRealObras = DataGridViewToDataTable(dataGridViewRealObras, true); 
-            DataTable dataTableConclusaoObras = DataGridViewToDataTable(dataGridViewConclusaoObras, true); 
+            DataTable dataTableRealObras = DataGridViewToDataTable(dataGridViewRealObras, true);
+            DataTable dataTableConclusaoObras = DataGridViewToDataTable(dataGridViewConclusaoObras, true);
 
             DataTable dataTableOrcamentacaoObrasTotal = DataGridViewToDataTable(DataGridViewOrcamentacaoObrasTotal, false); // Sem cabeçalho
-            DataTable dataTableRealObrasTotal = DataGridViewToDataTable(DataGridViewRealObras, false); 
-            DataTable dataTableConclusaoObrasTotal = DataGridViewToDataTable(DataGridViewConclusaoObrasTotal, false); 
+            DataTable dataTableRealObrasTotal = DataGridViewToDataTable(DataGridViewRealObras, false);
+            DataTable dataTableConclusaoObrasTotal = DataGridViewToDataTable(DataGridViewConclusaoObrasTotal, false);
 
             using (var package = new ExcelPackage())
             {
@@ -2819,9 +3461,7 @@ namespace OfelizCM
             {
                 MessageBox.Show("Erro ao tentar abrir o arquivo Excel: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
-
         public void ExportarParaExcelComTotais(string filePath, DataGridView DataGridViewOrcamentacaoObrasTotal, DataGridView DataGridViewRealObras, DataGridView DataGridViewConclusaoObrasTotal)
         {
             if (!File.Exists(filePath))
@@ -2829,24 +3469,17 @@ namespace OfelizCM
                 MessageBox.Show("Arquivo Excel não encontrado.");
                 return;
             }
-
             using (var package = new ExcelPackage(new FileInfo(filePath)))
             {
                 var worksheet = package.Workbook.Worksheets[0];
-
-                int lastRow = worksheet.Dimension.End.Row + 1; 
-
+                int lastRow = worksheet.Dimension.End.Row + 1;
                 ExportarTotaisParaExcel(worksheet, DataGridViewOrcamentacaoObrasTotal, lastRow, 7, 14);
-
                 ExportarTotaisParaExcel(worksheet, DataGridViewRealObras, lastRow, 14, 43);
-
                 ExportarTotaisParaExcel(worksheet, DataGridViewConclusaoObrasTotal, lastRow, 43, 47);
-
                 package.Save();
             }
             MessageBox.Show("Totais exportados com sucesso!");
         }
-
         private void ExportarTotaisParaExcel(ExcelWorksheet worksheet, DataGridView dataGridView, int startRow, int startColumn, int endColumn)
         {
             for (int col = startColumn; col <= endColumn; col++)
@@ -2866,7 +3499,6 @@ namespace OfelizCM
                         }
                     }
                 }
-
                 if (hasNumericData)
                 {
                     var cell = worksheet.Cells[startRow, col];
@@ -2880,7 +3512,30 @@ namespace OfelizCM
                 }
             }
         }
+        private void ExportExcelRegistodeTodos()
+        {
+            string query = @"
+                            SELECT [Numero da Obra], Preparador, [Data da Tarefa], [Qtd de Hora], [Hora Inicial], [Hora Final], Prioridade, Tarefa
+                            FROM dbo.RegistoTempo
+                            ORDER BY [Numero da Obra]";
 
+            ComunicaBD comunicaBD = new ComunicaBD();
+            ExcelExport excelExport = new ExcelExport();
+            SqlCommand command = new SqlCommand(query, comunicaBD.GetConnection());
+            comunicaBD.ConectarBD();
+            DataTable dataTable = comunicaBD.BuscarRegistros(command);
+            string filePath = $@"C:\r\Registros.xlsx";
+            excelExport.ExportarParaExcelTodos(dataTable, filePath);
+            comunicaBD.DesonectarBD();
+            try
+            {
+                System.Diagnostics.Process.Start(filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao tentar abrir o arquivo Excel: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void Calculartotais(string filePath)
         {
             try
@@ -2890,26 +3545,20 @@ namespace OfelizCM
                     MessageBox.Show("Caminho do arquivo inválido!", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-
                 FileInfo fileInfo = new FileInfo(filePath);
                 using (var package = new ExcelPackage(fileInfo))
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-
                     int ultimaLinha = worksheet.Dimension.End.Row;
-
                     double total = 0;
-                    int colunaValor = 1; 
-
+                    int colunaValor = 1;
                     for (int linha = 1; linha <= ultimaLinha; linha++)
                     {
                         string valorCelula = worksheet.Cells[linha, colunaValor].Text;
-
                         string valorLimpo = LimparValor(valorCelula);
-
                         if (double.TryParse(valorLimpo, out double valorNum))
                         {
-                            total += valorNum; 
+                            total += valorNum;
                         }
                     }
                     worksheet.Cells[ultimaLinha + 1, colunaValor].Value = total;
@@ -2921,1428 +3570,134 @@ namespace OfelizCM
                 MessageBox.Show("Erro ao processar o arquivo: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private string LimparValor(string valor)
         {
             return System.Text.RegularExpressions.Regex.Replace(valor, @"[^\d.,]", "");
         }
-
-        private void AdicionarSufixosNasColunas()
+        private double ProcessarValor(object value)
         {
-            foreach (DataGridViewRow row in DataGridViewOrcamentacaoObras.Rows)
+            if (value == null || value == DBNull.Value)
             {
-                // **Coluna KG Estrutura**
-                if (row.Cells["KG Estrutura"].Value != DBNull.Value && row.Cells["KG Estrutura"].Value != null)
-                {
-                    double kgValue;
-                    bool isKgNumeric = Double.TryParse(row.Cells["KG Estrutura"].Value.ToString(), out kgValue);
-
-                    if (isKgNumeric)
-                    {
-                        row.Cells["KG Estrutura"].Value = $"{kgValue} kg";
-                    }
-                }
-
-                // **Coluna Horas Estrutura**
-                if (row.Cells["Horas Estrutura"].Value != DBNull.Value && row.Cells["Horas Estrutura"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Estrutura"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Estrutura"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Valor Estrutura**
-                if (row.Cells["Valor Estrutura"].Value != DBNull.Value && row.Cells["Valor Estrutura"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Estrutura"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Estrutura"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna KG/Euro Estrutura**
-                if (row.Cells["KG/Euro Estrutura"].Value != DBNull.Value && row.Cells["KG/Euro Estrutura"].Value != null)
-                {
-                    string valorStr = row.Cells["KG/Euro Estrutura"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["KG/Euro Estrutura"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna Horas Revestimentos**
-                if (row.Cells["Horas Revestimentos"].Value != DBNull.Value && row.Cells["Horas Revestimentos"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Revestimentos"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Revestimentos"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Valor Revestimentos**
-                if (row.Cells["Valor Revestimentos"].Value != DBNull.Value && row.Cells["Valor Revestimentos"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Revestimentos"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Revestimentos"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna Total Horas**
-                if (row.Cells["Total Horas"].Value != DBNull.Value && row.Cells["Total Horas"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Total Horas"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Total Horas"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Total Valor**
-                if (row.Cells["Total Valor"].Value != DBNull.Value && row.Cells["Total Valor"].Value != null)
-                {
-                    string valorStr = row.Cells["Total Valor"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Total Valor"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
+                return 0;
             }
-
-            foreach (DataGridViewRow row in DataGridViewRealObras.Rows)
+            string strValue = value.ToString().Trim();
+            if (string.IsNullOrEmpty(strValue))
             {
-                // **Coluna KG Estrutura**
-                if (row.Cells["KG Estrutura"].Value != DBNull.Value && row.Cells["KG Estrutura"].Value != null)
-                {
-                    double kgValue;
-                    bool isKgNumeric = Double.TryParse(row.Cells["KG Estrutura"].Value.ToString(), out kgValue);
-
-                    if (isKgNumeric)
-                    {
-                        row.Cells["KG Estrutura"].Value = $"{kgValue} kg";
-                    }
-                }
-
-                // **Coluna Horas Estrutura**
-                if (row.Cells["Horas Estrutura"].Value != DBNull.Value && row.Cells["Horas Estrutura"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Estrutura"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Estrutura"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Valor Estrutura**
-                if (row.Cells["Valor Estrutura"].Value != DBNull.Value && row.Cells["Valor Estrutura"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Estrutura"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Estrutura"].Value = $"{valorValue:F2} €"; 
-                    }
-                }
-
-                // **Coluna KG/Euro Estrutura**
-                if (row.Cells["KG/Euro Estrutura"].Value != DBNull.Value && row.Cells["KG/Euro Estrutura"].Value != null)
-                {
-                    string valorStr = row.Cells["KG/Euro Estrutura"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["KG/Euro Estrutura"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna Horas Revestimentos**
-                if (row.Cells["Horas Revestimentos"].Value != DBNull.Value && row.Cells["Horas Revestimentos"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Revestimentos"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Revestimentos"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Valor Revestimentos**
-                if (row.Cells["Valor Revestimentos"].Value != DBNull.Value && row.Cells["Valor Revestimentos"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Revestimentos"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Revestimentos"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna Horas Aprovação**
-                if (row.Cells["Horas Aprovação"].Value != DBNull.Value && row.Cells["Horas Aprovação"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Aprovação"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Aprovação"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Valor Aprovação**
-                if (row.Cells["Valor Aprovação"].Value != DBNull.Value && row.Cells["Valor Aprovação"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Aprovação"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Aprovação"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna Horas Alterações**
-                if (row.Cells["Horas Alterações"].Value != DBNull.Value && row.Cells["Horas Alterações"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Alterações"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Alterações"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Valor Alterações**
-                if (row.Cells["Valor Alterações"].Value != DBNull.Value && row.Cells["Valor Alterações"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Alterações"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Alterações"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna Horas Fabrico**
-                if (row.Cells["Horas Fabrico"].Value != DBNull.Value && row.Cells["Horas Fabrico"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Fabrico"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Fabrico"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Valor Fabrico**
-                if (row.Cells["Valor Fabrico"].Value != DBNull.Value && row.Cells["Valor Fabrico"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Fabrico"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Fabrico"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna Horas Soldadura**
-                if (row.Cells["Horas Soldadura"].Value != DBNull.Value && row.Cells["Horas Soldadura"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Soldadura"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Soldadura"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Valor Soldadura**
-                if (row.Cells["Valor Soldadura"].Value != DBNull.Value && row.Cells["Valor Soldadura"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Soldadura"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Soldadura"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna Horas Montagem**
-                if (row.Cells["Horas Montagem"].Value != DBNull.Value && row.Cells["Horas Montagem"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Montagem"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Montagem"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Valor Montagem**
-                if (row.Cells["Valor Montagem"].Value != DBNull.Value && row.Cells["Valor Montagem"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Montagem"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Montagem"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna Horas Diversos**
-                if (row.Cells["Horas Diversos"].Value != DBNull.Value && row.Cells["Horas Diversos"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Horas Diversos"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Diversos"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Valor Diversos**
-                if (row.Cells["Valor Diversos"].Value != DBNull.Value && row.Cells["Valor Diversos"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Diversos"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Diversos"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna Total Horas**
-                if (row.Cells["Total Horas"].Value != DBNull.Value && row.Cells["Total Horas"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Total Horas"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Total Horas"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Total Valor**
-                if (row.Cells["Total Valor"].Value != DBNull.Value && row.Cells["Total Valor"].Value != null)
-                {
-                    string valorStr = row.Cells["Total Valor"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Total Valor"].Value = $"{valorValue:F2} €";
-                    }
-                }
+                return 0;
             }
-
-            foreach (DataGridViewRow row in DataGridViewConclusaoObras.Rows)
+            strValue = strValue.Replace(",", ".");
+            double result = 0;
+            if (double.TryParse(strValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out result))
             {
-                // **Coluna Total Horas**
-                if (row.Cells["Total Horas"].Value != DBNull.Value && row.Cells["Total Horas"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Total Horas"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Total Horas"].Value = $"{horasValue} h";
-                    }
-                }
-
-                // **Coluna Total Valor**
-                if (row.Cells["Total Valor"].Value != DBNull.Value && row.Cells["Total Valor"].Value != null)
-                {
-                    string valorStr = row.Cells["Total Valor"].Value.ToString();
-
-                    valorStr = valorStr.Replace('.', ',');
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Total Valor"].Value = $"{valorValue:F2} €";
-                    }
-                }
-
-                // **Coluna Dias de Preparação**
-                if (row.Cells["Dias de Preparação"].Value != DBNull.Value && row.Cells["Dias de Preparação"].Value != null)
-                {
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(row.Cells["Dias de Preparação"].Value.ToString(), out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Dias de Preparação"].Value = $"{horasValue} dias";
-                    }
-                }
-            }
-
-
-        }
-
-        private void RemoverSufixosNasColunasOracamentacao()
-        {
-            foreach (DataGridViewRow row in DataGridViewOrcamentacaoObras.Rows)
-            {
-                // **Coluna KG Estrutura**
-                if (row.Cells["KG Estrutura"].Value != DBNull.Value && row.Cells["KG Estrutura"].Value != null)
-                {
-                    string kgValueStr = row.Cells["KG Estrutura"].Value.ToString();
-                    kgValueStr = kgValueStr.Replace(" kg", "").Trim(); // Remove " kg" e espaços extras
-
-                    double kgValue;
-                    bool isKgNumeric = Double.TryParse(kgValueStr, out kgValue);
-
-                    if (isKgNumeric)
-                    {
-                        row.Cells["KG Estrutura"].Value = kgValue; // Restaura o valor numérico
-                    }
-                }
-
-                // **Coluna Horas Estrutura**
-                if (row.Cells["Horas Estrutura"].Value != DBNull.Value && row.Cells["Horas Estrutura"].Value != null)
-                {
-                    string horasValueStr = row.Cells["Horas Estrutura"].Value.ToString();
-                    horasValueStr = horasValueStr.Replace(" h", "").Trim(); // Remove " h" e espaços extras
-
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(horasValueStr, out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Estrutura"].Value = horasValue; // Restaura o valor numérico
-                    }
-                }
-
-                // **Coluna Valor Estrutura**
-                if (row.Cells["Valor Estrutura"].Value != DBNull.Value && row.Cells["Valor Estrutura"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Estrutura"].Value.ToString();
-                    valorStr = valorStr.Replace(" €", "").Replace('.', ',').Trim(); // Remove " €", e troca a vírgula por ponto
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Estrutura"].Value = valorValue; // Restaura o valor numérico
-                    }
-                }
-
-                // **Coluna KG/Euro Estrutura**
-                if (row.Cells["KG/Euro Estrutura"].Value != DBNull.Value && row.Cells["KG/Euro Estrutura"].Value != null)
-                {
-                    string valorStr = row.Cells["KG/Euro Estrutura"].Value.ToString();
-                    valorStr = valorStr.Replace(" €", "").Replace('.', ',').Trim(); // Remove " €", e troca a vírgula por ponto
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["KG/Euro Estrutura"].Value = valorValue; // Restaura o valor numérico
-                    }
-                }
-
-                // **Coluna Horas Revestimentos**
-                if (row.Cells["Horas Revestimentos"].Value != DBNull.Value && row.Cells["Horas Revestimentos"].Value != null)
-                {
-                    string horasValueStr = row.Cells["Horas Revestimentos"].Value.ToString();
-                    horasValueStr = horasValueStr.Replace(" h", "").Trim(); // Remove " h" e espaços extras
-
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(horasValueStr, out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Horas Revestimentos"].Value = horasValue; // Restaura o valor numérico
-                    }
-                }
-
-                // **Coluna Valor Revestimentos**
-                if (row.Cells["Valor Revestimentos"].Value != DBNull.Value && row.Cells["Valor Revestimentos"].Value != null)
-                {
-                    string valorStr = row.Cells["Valor Revestimentos"].Value.ToString();
-                    valorStr = valorStr.Replace(" €", "").Replace('.', ',').Trim(); // Remove " €", e troca a vírgula por ponto
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Valor Revestimentos"].Value = valorValue; // Restaura o valor numérico
-                    }
-                }
-
-                // **Coluna Total Horas**
-                if (row.Cells["Total Horas"].Value != DBNull.Value && row.Cells["Total Horas"].Value != null)
-                {
-                    string horasValueStr = row.Cells["Total Horas"].Value.ToString();
-                    horasValueStr = horasValueStr.Replace(" h", "").Trim(); // Remove " h" e espaços extras
-
-                    double horasValue;
-                    bool isHorasNumeric = Double.TryParse(horasValueStr, out horasValue);
-
-                    if (isHorasNumeric)
-                    {
-                        row.Cells["Total Horas"].Value = horasValue; // Restaura o valor numérico
-                    }
-                }
-
-                // **Coluna Total Valor**
-                if (row.Cells["Total Valor"].Value != DBNull.Value && row.Cells["Total Valor"].Value != null)
-                {
-                    string valorStr = row.Cells["Total Valor"].Value.ToString();
-                    valorStr = valorStr.Replace(" €", "").Replace('.', ',').Trim(); // Remove " €", e troca a vírgula por ponto
-
-                    double valorValue;
-                    bool isValorNumeric = Double.TryParse(valorStr, out valorValue);
-
-                    if (isValorNumeric)
-                    {
-                        row.Cells["Total Valor"].Value = valorValue; // Restaura o valor numérico
-                    }
-                }
-            }
-        }
-
-        public void CarregarGraficoHorasTipologiaeAno()
-        {
-            double totalHorasOrcamento = 0;
-            double totalHorasReal = 0;
-
-            foreach (DataGridViewRow row in DataGridViewOrcamentacaoObras.Rows)
-            {
-                if (row.Cells["Total Horas"].Value != null)
-                {
-                    string totalHorasOrcStr = row.Cells["Total Horas"].Value.ToString().Replace("h", "").Trim();
-                    totalHorasOrcStr = totalHorasOrcStr.Replace(".", ",");
-
-                    double totalHorasOrc;
-                    if (double.TryParse(totalHorasOrcStr, out totalHorasOrc))
-                    {
-                        totalHorasOrcamento += totalHorasOrc;
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Erro ao converter o valor de 'Total Horas' na Orçamentação para o número da obra: {row.Cells["Numero da Obra"].Value}");
-                    }
-                }
-            }
-
-            foreach (DataGridViewRow row in DataGridViewRealObras.Rows)
-            {
-                if (row.Cells["Total Horas"].Value != null)
-                {
-                    string totalHorasRealStr = row.Cells["Total Horas"].Value.ToString().Replace("h", "").Trim();
-                    totalHorasRealStr = totalHorasRealStr.Replace(".", ",");
-
-                    double totalHorasRealAux;
-                    if (double.TryParse(totalHorasRealStr, out totalHorasRealAux))
-                    {
-                        totalHorasReal += totalHorasRealAux;
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Erro ao converter o valor de 'Total Horas' na RealObras para o número da obra: {row.Cells["Numero da Obra"].Value}");
-                    }
-                }
-            }
-
-            chartTotalHoras1.Series["Orçamentação"].Points.Clear();
-            chartTotalHoras1.Series["Real"].Points.Clear();
-
-            chartTotalHoras1.Series["Orçamentação"].Points.AddY(totalHorasOrcamento);
-            chartTotalHoras1.Series["Real"].Points.AddY(totalHorasReal);
-
-        }
-
-       
-        public void CarregarGraficoObras2Tipologia()
-        {
-            string Tipologia = ComboBoxTipologiaFiltro.SelectedItem?.ToString();
-           
-             if (string.IsNullOrEmpty(Tipologia))
-            {
-                MessageBox.Show("Por favor, selecione uma tipologia.");
-                return;
-            }
-
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-
-            string queryOrc = @"
-                                SELECT [Total Horas], [Numero da Obra]
-                                FROM dbo.Orçamentação
-                                WHERE Tipologia = @Tipologia";
-
-            string queryReal = @"
-                                SELECT [Total Horas], [Numero da Obra]
-                                FROM dbo.RealObras
-                                WHERE Tipologia = @Tipologia";
-
-
-
-            chartObrasHoras1.Series["Orçamentação"].Points.Clear();
-            chartObrasHoras1.Series["Real"].Points.Clear();
-
-            using (SqlCommand cmd = new SqlCommand(queryOrc, BD.GetConnection()))
-            {
-                cmd.Parameters.AddWithValue("@Tipologia", Tipologia);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalHorasOrc;
-                            string totalHorasOrcStr = reader["Total Horas"].ToString().Replace("h", "").Trim();
-
-                            totalHorasOrcStr = totalHorasOrcStr.Replace(".", ",");
-
-                            bool podeConverterOrc = double.TryParse(totalHorasOrcStr, out totalHorasOrc);
-                            string numeroDaObraOrc = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterOrc)
-                            {
-                                chartObrasHoras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalHorasOrc);
-                            }
-                            else
-                            {
-                                chartObrasHoras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
-
-                            }
-                        }
-                    }
-                }
-            }
-
-            using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
-            {
-                cmd.Parameters.AddWithValue("@Tipologia", Tipologia);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalHorasReal;
-                            string totalHorasRealStr = reader["Total Horas"].ToString().Replace("h", "").Trim();
-
-                            totalHorasRealStr = totalHorasRealStr.Replace(".", ",");
-
-                            bool podeConverterReal = double.TryParse(totalHorasRealStr, out totalHorasReal);
-                            string numeroDaObraReal = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterReal)
-                            {
-                                chartObrasHoras1.Series["Real"].Points.AddXY(numeroDaObraReal, totalHorasReal);
-                            }
-                            else
-                            {
-                                MessageBox.Show($"Erro na conversão de Total Horas Real: {totalHorasRealStr}");
-                                chartObrasHoras1.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
-                            }
-                        }
-                    }
-                }
-            }
-
-            BD.DesonectarBD();
-        }
-
-        public void CarregarGraficoObrasvalorTipologia()
-        {
-            string Tipologia = ComboBoxTipologiaFiltro.SelectedItem?.ToString();
-
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-
-            string queryOrc = @"
-                        SELECT [Total Valor], [Numero da Obra]
-                        FROM dbo.Orçamentação
-                        WHERE Tipologia = @Tipologia";
-
-            string queryReal = @"
-                        SELECT [Total Valor], [Numero da Obra]
-                        FROM dbo.RealObras
-                        WHERE Tipologia = @Tipologia";
-
-
-            chartTotalValorObras1.Series["Orçamentação"].Points.Clear();
-            chartTotalValorObras1.Series["Real"].Points.Clear();
-
-            using (SqlCommand cmd = new SqlCommand(queryOrc, BD.GetConnection()))
-            {
-                cmd.Parameters.AddWithValue("@Tipologia", Tipologia);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalValorOrc;
-                            string totalValorOrcStr = reader["Total Valor"].ToString().Replace("€", "").Trim();
-
-                            totalValorOrcStr = totalValorOrcStr.Replace(".", ",");
-
-                            bool podeConverterOrc = double.TryParse(totalValorOrcStr, out totalValorOrc);
-                            string numeroDaObraOrc = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterOrc)
-                            {
-                                chartTotalValorObras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalValorOrc);
-                            }
-                            else
-                            {
-                                chartTotalValorObras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
-                            }
-                        }
-                    }
-                }
-            }
-
-            using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
-            {
-                cmd.Parameters.AddWithValue("@Tipologia", Tipologia);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalValorReal;
-                            string totalValorRealStr = reader["Total Valor"].ToString().Replace("€", "").Trim();
-
-                            totalValorRealStr = totalValorRealStr.Replace(".", ",");
-
-                            bool podeConverterReal = double.TryParse(totalValorRealStr, out totalValorReal);
-                            string numeroDaObraReal = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterReal)
-                            {
-                                chartTotalValorObras1.Series["Real"].Points.AddXY(numeroDaObraReal, totalValorReal);
-                            }
-                            else
-                            {
-                                MessageBox.Show($"Erro na conversão de Total Horas Real: {totalValorRealStr}");
-                                chartTotalValorObras1.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
-                            }
-                        }
-                    }
-                }
-            }
-
-            BD.DesonectarBD();
-        }
-
-        public void CarregarGraficoObrasPercentagemTipologia()
-        {
-            string Tipologia = ComboBoxTipologiaFiltro.SelectedItem?.ToString();
-
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-
-            string queryReal = @"
-                        SELECT [Percentagem Total], [Numero da Obra]
-                        FROM dbo.ConclusaoObras
-                        WHERE Tipologia = @Tipologia";
-
-
-            chartTotalPercentagem.Series["% Total"].Points.Clear();
-
-            using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
-            {
-                cmd.Parameters.AddWithValue("@Tipologia", Tipologia);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalValorPercentagem;
-                            string totalValorPercentagemStr = reader["Percentagem Total"].ToString().Replace("%", "").Trim();
-
-                            totalValorPercentagemStr = totalValorPercentagemStr.Replace(".", ",");
-
-                            bool podeConverterReal = double.TryParse(totalValorPercentagemStr, out totalValorPercentagem);
-                            string numeroDaObraReal = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterReal)
-                            {
-                                chartTotalPercentagem.Series["% Total"].Points.AddXY(numeroDaObraReal, totalValorPercentagem);
-                            }
-                            else
-                            {
-                                MessageBox.Show($"Erro na conversão de Total Horas Real: {totalValorPercentagemStr}");
-                                chartTotalPercentagem.Series["% Total"].Points.AddXY(numeroDaObraReal, 0);
-                            }
-                        }
-                    }
-                }
-            }
-
-            BD.DesonectarBD();
-        }
-              
-        public void CarregarGraficoObras2Ano()
-        {
-            string Anofecho = ComboBoxAnoAdd.SelectedItem?.ToString();
-
-            if (string.IsNullOrEmpty(Anofecho))
-            {
-                MessageBox.Show("Por favor, selecione uma Ano.");
-                return;
-            }
-
-
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-
-            string queryOrc = @"
-                                SELECT [Total Horas], [Numero da Obra]
-                                FROM dbo.Orçamentação
-                                WHERE [Ano de fecho] = @anofecho";
-
-            string queryReal = @"
-                                SELECT [Total Horas], [Numero da Obra]
-                                FROM dbo.RealObras
-                                WHERE [Ano de fecho] = @anofecho";
-
-
-
-            chartObrasHoras1.Series["Orçamentação"].Points.Clear();
-            chartObrasHoras1.Series["Real"].Points.Clear();
-
-            using (SqlCommand cmd = new SqlCommand(queryOrc, BD.GetConnection()))
-            {
-                cmd.Parameters.AddWithValue("@anofecho", Anofecho);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalHorasOrc;
-                            string totalHorasOrcStr = reader["Total Horas"].ToString().Replace("h", "").Trim();
-
-                            totalHorasOrcStr = totalHorasOrcStr.Replace(".", ",");
-
-                            bool podeConverterOrc = double.TryParse(totalHorasOrcStr, out totalHorasOrc);
-                            string numeroDaObraOrc = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterOrc)
-                            {
-                                chartObrasHoras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalHorasOrc);
-                            }
-                            else
-                            {
-                                chartObrasHoras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
-
-                            }
-                        }
-                    }
-                }
-            }
-
-            using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
-            {
-                cmd.Parameters.AddWithValue("@anofecho", Anofecho);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalHorasReal;
-                            string totalHorasRealStr = reader["Total Horas"].ToString().Replace("h", "").Trim();
-
-                            totalHorasRealStr = totalHorasRealStr.Replace(".", ",");
-
-                            bool podeConverterReal = double.TryParse(totalHorasRealStr, out totalHorasReal);
-                            string numeroDaObraReal = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterReal)
-                            {
-                                chartObrasHoras1.Series["Real"].Points.AddXY(numeroDaObraReal, totalHorasReal);
-                            }
-                            else
-                            {
-                                MessageBox.Show($"Erro na conversão de Total Horas Real: {totalHorasRealStr}");
-                                chartObrasHoras1.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
-                            }
-                        }
-                    }
-                }
-            }
-
-            BD.DesonectarBD();
-        }
-
-        public void CarregarGraficoObrasvalorAno()
-        {
-            string Anofecho = ComboBoxAnoAdd.SelectedItem?.ToString();
-
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-
-            string queryOrc = @"
-                        SELECT [Total Valor], [Numero da Obra]
-                        FROM dbo.Orçamentação
-                        WHERE [Ano de fecho] = @anofecho";
-
-            string queryReal = @"
-                        SELECT [Total Valor], [Numero da Obra]
-                        FROM dbo.RealObras
-                        WHERE [Ano de fecho] = @anofecho";
-
-
-            chartTotalValorObras1.Series["Orçamentação"].Points.Clear();
-            chartTotalValorObras1.Series["Real"].Points.Clear();
-
-            using (SqlCommand cmd = new SqlCommand(queryOrc, BD.GetConnection()))
-            {
-                cmd.Parameters.AddWithValue("@anofecho", Anofecho);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalValorOrc;
-                            string totalValorOrcStr = reader["Total Valor"].ToString().Replace("€", "").Trim();
-
-                            totalValorOrcStr = totalValorOrcStr.Replace(".", ",");
-
-                            bool podeConverterOrc = double.TryParse(totalValorOrcStr, out totalValorOrc);
-                            string numeroDaObraOrc = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterOrc)
-                            {
-                                chartTotalValorObras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, totalValorOrc);
-                            }
-                            else
-                            {
-                                chartTotalValorObras1.Series["Orçamentação"].Points.AddXY(numeroDaObraOrc, 0);
-                            }
-                        }
-                    }
-                }
-            }
-
-            using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
-            {
-                cmd.Parameters.AddWithValue("@anofecho", Anofecho);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalValorReal;
-                            string totalValorRealStr = reader["Total Valor"].ToString().Replace("€", "").Trim();
-
-                            totalValorRealStr = totalValorRealStr.Replace(".", ",");
-
-                            bool podeConverterReal = double.TryParse(totalValorRealStr, out totalValorReal);
-                            string numeroDaObraReal = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterReal)
-                            {
-                                chartTotalValorObras1.Series["Real"].Points.AddXY(numeroDaObraReal, totalValorReal);
-                            }
-                            else
-                            {
-                                MessageBox.Show($"Erro na conversão de Total Horas Real: {totalValorRealStr}");
-                                chartTotalValorObras1.Series["Real"].Points.AddXY(numeroDaObraReal, 0);
-                            }
-                        }
-                    }
-                }
-            }
-
-            BD.DesonectarBD();
-        }
-
-        public void CarregarGraficoObrasPercentagemAno()
-        {
-            string Anofecho = ComboBoxAnoAdd.SelectedItem?.ToString();
-
-            ComunicaBD BD = new ComunicaBD();
-            BD.ConectarBD();
-
-            string queryReal = @"
-                        SELECT [Percentagem Total], [Numero da Obra]
-                        FROM dbo.ConclusaoObras
-                        WHERE [Ano de fecho] = @anofecho";
-
-
-            chartTotalPercentagem.Series["% Total"].Points.Clear();
-
-            using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
-            {
-                cmd.Parameters.AddWithValue("@anofecho", Anofecho);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            double totalValorPercentagem;
-                            string totalValorPercentagemStr = reader["Percentagem Total"].ToString().Replace("%", "").Trim();
-
-                            totalValorPercentagemStr = totalValorPercentagemStr.Replace(".", ",");
-
-                            bool podeConverterReal = double.TryParse(totalValorPercentagemStr, out totalValorPercentagem);
-                            string numeroDaObraReal = reader["Numero da Obra"].ToString();
-
-                            if (podeConverterReal)
-                            {
-                                chartTotalPercentagem.Series["% Total"].Points.AddXY(numeroDaObraReal, totalValorPercentagem);
-                            }
-                            else
-                            {
-                                MessageBox.Show($"Erro na conversão de Total Horas Real: {totalValorPercentagemStr}");
-                                chartTotalPercentagem.Series["% Total"].Points.AddXY(numeroDaObraReal, 0);
-                            }
-                        }
-                    }
-                }
-            }
-
-            BD.DesonectarBD();
-        }
-
-        private void chartObrasHoras_Click(object sender, EventArgs e)
-        {
-            chartObrasHoras1.ChartAreas[0].AxisX.ScaleView.Size = 10;
-
-            chartObrasHoras1.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
-            chartObrasHoras1.ChartAreas[0].AxisX.ScrollBar.IsPositionedInside = true;
-
-            chartObrasHoras1.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
-
-            chartObrasHoras1.ChartAreas[0].CursorX.IsUserEnabled = true;
-            chartObrasHoras1.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-
-        }
-
-        /// <summary>
-        /// /////////////////////////////////////////////////////////////////////////////////////////////// Ja Melhorado //////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// </summary>
-        /// 
-        public class ChamarX
-        {
-            public bool IsActive { get; private set; }
-
-            public void Start()
-            {
-                // lógica de iniciar
-                IsActive = true;
-            }
-
-            public void Stop()
-            {
-                // lógica de parar
-                IsActive = false;
-            }
-        }
-        private void MudarTabelaGrafico_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_hook.IsActive)
-            {
-                _hook.Start();
-                PanelTabelas.Visible = false;
-                labeltabelagraficos.Text = "Gráficos Controlo das Obra";
-                CarregarGraficos();
-                PanelTotalObras.Visible = true;
-                PanelChartControlo.Visible = true;
-                PanelchartTotalHoras.Visible = true;
-                PanelchartObrasHoras.Visible = true;
-                PanelchartTotalValorObras.Visible = true;
+                return result;
             }
             else
             {
-                _hook.Stop();
-                PanelTabelas.Visible = true;
-                labeltabelagraficos.Text = "Tabela Controlo das Obra";
-                PanelTotalObras.Visible = false;
-                PanelChartControlo.Visible = false;
-                PanelchartTotalHoras.Visible = false;
-                PanelchartObrasHoras.Visible = false;
-                PanelchartTotalValorObras.Visible = false;
+                return 0;
             }
         }
-        private void VisualizarTabelaOrcamentacao()
+        private double CalcularPercentagem(string valorPercentagem)
         {
-            var tabela = new Mostartabelas();
-            DataTable dataTable = tabela.TabelaOrcamentacao();
-
-            DataGridViewOrcamentacaoObras.DataSource = dataTable;
-            DataGridViewOrcamentacaoObras.ClearSelection();
-            DataGridViewOrcamentacaoObras.ScrollBars = ScrollBars.Horizontal;
-            DataGridViewOrcamentacaoObras.Columns["Id"].Visible = false;
-            DataGridViewOrcamentacaoObras.Columns["Ano de fecho"].Width = 40;
-            DataGridViewOrcamentacaoObras.Columns["Numero da Obra"].Width = 60;
-            DataGridViewOrcamentacaoObras.Columns["Nome da Obra"].Width = 120;
-            DataGridViewOrcamentacaoObras.Columns["Preparador Responsavel"].Width = 70;
-            DataGridViewOrcamentacaoObras.Columns["Tipologia"].Width = 65;
-            DataGridViewOrcamentacaoObras.Columns["KG Estrutura"].Width = 70;
-            DataGridViewOrcamentacaoObras.Columns["Horas Estrutura"].Width = 50;
-            DataGridViewOrcamentacaoObras.Columns["Valor Estrutura"].Width = 75;
-            DataGridViewOrcamentacaoObras.Columns["KG/Euro Estrutura"].Width = 40;
-            DataGridViewOrcamentacaoObras.Columns["Horas Revestimentos"].Width = 50;
-            DataGridViewOrcamentacaoObras.Columns["Valor Revestimentos"].Width = 50;
-            DataGridViewOrcamentacaoObras.Columns["Total Horas"].Width = 50;
-            DataGridViewOrcamentacaoObras.Columns["Total Valor"].Width = 90;
-        }
-        private void VisualizarTabelaReal()
-        {
-            var tabela = new Mostartabelas();
-            DataTable dataTable = tabela.TabelaReal();
-
-            DataGridViewRealObras.DataSource = dataTable;
-            DataGridViewRealObras.ClearSelection();
-            DataGridViewRealObras.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            DataGridViewRealObras.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            DataGridViewRealObras.Columns["Id"].Visible = false;
-            DataGridViewRealObras.Columns["Numero da Obra"].Visible = false;
-            DataGridViewRealObras.Columns["Ano de fecho"].Visible = false;
-            DataGridViewRealObras.Columns["Tipologia"].Visible = false;
-            DataGridViewRealObras.ReadOnly = true;
-            DataGridViewRealObras.Columns["KG Estrutura"].Width = 90;
-            DataGridViewRealObras.ScrollBars = ScrollBars.Horizontal;
-            ApplyColumnColors();
-        }
-        private void VisualizarTabelaConcluido()
-        {
-            var tabela = new Mostartabelas();
-            DataTable dataTable = tabela.TabelaConclusao();
-
-            DataGridViewConclusaoObras.DataSource = dataTable;
-            DataGridViewConclusaoObras.ClearSelection();
-            DataGridViewConclusaoObras.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            DataGridViewConclusaoObras.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            DataGridViewConclusaoObras.Columns["Id"].Visible = false;
-            DataGridViewConclusaoObras.Columns["Numero da Obra"].Visible = false;
-            DataGridViewConclusaoObras.Columns["Ano de fecho"].Visible = false;
-            DataGridViewConclusaoObras.Columns["Tipologia"].Visible = false;
-            DataGridViewConclusaoObras.ReadOnly = true;
-            DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
-            DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
-            DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
-            DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
-        }
-        private void VisualizarTabelaOrcamentacaoTotal()
-        {
-            var tabela = new Mostartabelas();
-            DataTable dataTable = tabela.TabelaOrçamentacaoTotal(); 
-
-            DataGridViewOrcamentacaoObrasTotal.DataSource = dataTable;
-            DataGridViewOrcamentacaoObrasTotal.ClearSelection();
-            DataGridViewOrcamentacaoObrasTotal.Columns["Id"].Visible = false;
-            DataGridViewOrcamentacaoObrasTotal.ReadOnly = true;
-            DataGridViewOrcamentacaoObrasTotal.ColumnHeadersVisible = false;
-
-        }
-        private void VisualizarTabelaRealTotais()
-        {
-            var tabela = new Mostartabelas();
-            DataTable dataTable = tabela.TabelaRealTotal();
-
-            DataGridViewRealObrasTotal.DataSource = dataTable;
-            DataGridViewRealObrasTotal.ClearSelection();
-            DataGridViewRealObrasTotal.Columns["Id"].Visible = false;
-            DataGridViewRealObrasTotal.ReadOnly = true;
-            DataGridViewRealObrasTotal.ColumnHeadersVisible = false;
-            DataGridViewRealObrasTotal.ScrollBars = ScrollBars.Horizontal;
-        }
-        private void VisualizarTabelaConclusaoTotal()
-        {
-            var tabela = new Mostartabelas();
-            DataTable dataTable = tabela.TabelaConclusaoTotal();
-
-            DataGridViewConclusaoObrasTotal.DataSource = dataTable;
-            DataGridViewConclusaoObrasTotal.ClearSelection();
-            DataGridViewConclusaoObrasTotal.Columns["Id"].Visible = false;
-            DataGridViewConclusaoObrasTotal.ReadOnly = true;
-            DataGridViewConclusaoObrasTotal.ColumnHeadersVisible = false;
-            DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
-            DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
-            DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
-            DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
-        }
-        public void VisualizarGraficoPiePercentagem()
-        {
-            MostarGraficos grafico = new MostarGraficos();
-
-            var pieChart = pieChartControlo.Child as LiveCharts.Wpf.PieChart;
-
-            if (pieChart != null)
+            if (string.IsNullOrEmpty(valorPercentagem))
             {
-                pieChart.Series = grafico.CarregarGraficoRedondo();
-                pieChart.LegendLocation = LegendLocation.Top;
+                return 0;
+            }
+            valorPercentagem = valorPercentagem.Replace("%", "").Trim();
+            valorPercentagem = valorPercentagem.Replace(",", ".");
+            double resultado;
+            if (double.TryParse(valorPercentagem, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out resultado))
+            {
+                return resultado;
+            }
+            else
+            {
+                return 0;
             }
         }
-        public void VisualizarGraficoPiePercentagemTipologiaeAno()
+        private void PontoporvirgulaOrcamentacao()
         {
-            var grafico = new MostarGraficos();
-            DataTable tabela = DataGridViewRealObras.DataSource as DataTable;
-
-            var pieChart = pieChartControlo.Child as LiveCharts.Wpf.PieChart;
-
-            if (pieChart != null)
+            foreach (DataGridViewRow row in DataGridViewOrcamentacaoObras.Rows)
             {
-                pieChart.Series = grafico.CalcularPercentagemTipologia(tabela);
-                pieChart.LegendLocation = LiveCharts.LegendLocation.Top;
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    if (cell.Value != null && cell.Value is string)
+                    {
+                        string cellValue = cell.Value.ToString();
+
+                        cell.Value = cellValue.Replace(",", ".");
+                    }
+                }
             }
         }
-        private void VisualizarGraficoObrasPercentagem()
+        private void ComboBoxTipologiaFiltro_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var chartWpf = ChartTotalObras.Child as LiveCharts.Wpf.CartesianChart;
-            if (chartWpf == null) return;
-            var service = new MostarGraficos();
-            var (series, labels) = service.CarregarPercentagemTodasObras();
-
-            chartWpf.Series = series;
-            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
-            {
-                s.MaxColumnWidth = 30;   
-                s.ColumnPadding = 10;    
-            }
-
-            chartWpf.AxisX.Clear();
-            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
-            {
-                Title = "Número da Obra",
-                FontSize = 15,
-                Labels = labels,
-                LabelsRotation = 45,
-                Separator = new LiveCharts.Wpf.Separator { Step = 1},
-            });
-
-            chartWpf.AxisY.Clear();
-            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
-             {
-                Title = "Percentagem (%)",
-                LabelFormatter = value => value.ToString("N1") + " %",
-                Sections = new SectionsCollection
-             {
-            new AxisSection
-             {
-                Value = 100,
-                Stroke = Cor.Brushes.Red,
-                StrokeThickness = 2,
-                StrokeDashArray = new DoubleCollection { 4 }
-             }
-            }
-            });
-            chartWpf.LegendLocation = LegendLocation.Top;
+            FiltrarTipologia();
+            VisualizarGraficoTotalHoras();
+            AdicionarSufixosNasColunas();
+            VisualizarGraficoObrasHorasTipologia();
+            VisualizarGraficoObrasValorTipologia();
+            VisualizarGraficoObrasPercentagemTipologia();
+            VisualizarGraficoHorasTipologiaeAno();
+            VisualizarGraficoPiePercentagemTipologiaeAno();
         }
-        private void VisualizarGraficoTotalHoras()
+        private void ComboBoxAnoAdd_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var chartWpf = chartTotalHoras.Child as LiveCharts.Wpf.CartesianChart;
-            if (chartWpf == null) return;
-
-            var service = new MostarGraficos();
-            var (series, labels) = service.CarregarTotalTodasObras();
-
-            chartWpf.Series = series;
-
-            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
-            {
-                s.MaxColumnWidth = 30;
-                s.ColumnPadding = 10;
-            }
-
-            chartWpf.AxisX.Clear();
-            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
-            {
-                Title = "Obra",
-                FontSize = 15,
-                Labels = labels,
-                Separator = new LiveCharts.Wpf.Separator { Step = 1},
-
-                LabelsRotation = 45
-            });
-
-            chartWpf.AxisY.Clear();
-            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
-            {
-                Title = "Horas",
-                FontSize = 15,
-                LabelFormatter = value => value + "h"
-            });
-
-            chartWpf.LegendLocation = LegendLocation.Top;
-        }
-        private void VisualizarGraficoObrasHoras()
+           FiltrarPorAno();
+           AdicionarSufixosNasColunas();
+           VisualizarGraficoHorasTipologiaeAno();
+           VisualizarGraficoPiePercentagemTipologiaeAno();
+           VisualizarGraficoObrasHorasAno();
+           VisualizarGraficoObrasValorAno();
+           VisualizarGraficoObrasPercentagemAno();                       
+        }      
+        private void ButtonLimparFiltro_Click(object sender, EventArgs e)
         {
-            var chartWpf = chartObrasHoras.Child as LiveCharts.Wpf.CartesianChart;
-            if (chartWpf == null) return;
-            var service = new MostarGraficos();
-            var (series, labels) = service.CarregarGraficoObrasHoras();
-            chartWpf.Series = series;
-            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
-            {
-                s.MaxColumnWidth = 30;
-                s.ColumnPadding = 10;
-            }
-            chartWpf.AxisX.Clear();
-            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
-            {
-                Title = "Número da Obra",
-                FontSize = 15,
-                Labels = labels,
-                Separator = new LiveCharts.Wpf.Separator { Step = 1},                
-                LabelsRotation = 45
-            });
-
-            chartWpf.AxisY.Clear();
-            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
-            {
-                Title = "Horas",
-                FontSize = 15,
-                LabelFormatter = value => value + " h"
-            });
-            chartWpf.LegendLocation = LegendLocation.Top;
-        }
-        private void VisualizarGraficoObrasValor()
+            ComunicarTabelas();
+            CarregarGraficos();
+        }        
+        private void guna2Button5_Click(object sender, EventArgs e)
         {
-            var chartWpf = chartTotalValorObras.Child as LiveCharts.Wpf.CartesianChart;
-            if (chartWpf == null) return;
-            var service = new MostarGraficos();
-            var (series, labels) = service.CarregarGraficoObrasValor();
-            chartWpf.Series = series;
-            foreach (var s in chartWpf.Series.OfType<ColumnSeries>())
-            {
-                s.MaxColumnWidth = 30;
-                s.ColumnPadding = 10;
-            }
-            chartWpf.AxisX.Clear();
-            chartWpf.AxisX.Add(new LiveCharts.Wpf.Axis
-            {
-                Title = "Número da Obra",
-                FontSize = 15,
-                Labels = labels,
-                Separator = new LiveCharts.Wpf.Separator { Step = 1},
-                LabelsRotation = 45
-            });
-            chartWpf.AxisY.Clear();
-            chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
-            {
-                Title = "Valor (€)",
-                FontSize = 15,
-                LabelFormatter = value => "€" + value.ToString("N0")  
-            });
-            chartWpf.LegendLocation = LegendLocation.Top;
+            AtualizarTabelaRealnaBdManual();
+            AtualizarDados();
+            CalcularTabelas();
         }
+        private void guna2Button4_Click(object sender, EventArgs e)
+        {
+            InserirAnofecho();
+            ComunicarTabelas();
+        }
+        private void guna2Button6_Click(object sender, EventArgs e)
+        {
+            InserirTipologia();
+            ComunicarTabelas();
+        }
+        private void ButtonAtualizarKG_Click(object sender, EventArgs e)
+        {
+            AtualizarTabelaRealnaBdManual();
+            AtualizarDados();
+            CalcularTabelas();
+        }
+        private void ButtonPrecohora_Click(object sender, EventArgs e)
+        {
 
-
+        }
+        private void ButtonAtualizarbd_Click(object sender, EventArgs e)
+        {            
+           RemoverSufixosNasColunasOracamentacao();
+           VerificarEAtualizarOuSalvar();
+           VisualizarTabelaOrcamentacao();
+           VisualizarTabelaReal();
+           VisualizarTabelaConcluido();
+           AdicionarSufixosNasColunas();               
+        }         
+        private void ButtonExportExcelTodas_Click_1(object sender, EventArgs e)
+        {
+            ExportExcelRegistodeTodos();
+        }
+        private void ButtonExportExcelTabelas_Click(object sender, EventArgs e)
+        {
+            ExportarTabelaValoresExcel();
+        }        
     }
 }
 
