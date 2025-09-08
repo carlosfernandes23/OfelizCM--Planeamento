@@ -1,4 +1,6 @@
-﻿using LiveCharts;
+﻿using GMap.NET;
+using GMap.NET.MapProviders;
+using LiveCharts;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
+using GMap.NET;
+using GMap.NET.MapProviders;
 
 namespace OfelizCM
 {  
@@ -249,27 +253,29 @@ namespace OfelizCM
                         double ParsePercent(string col) =>
                             double.TryParse(reader[col].ToString().Replace("%", "").Trim(), out var val) ? val : 0;
 
-                        var categorias = new Dictionary<string, string>
+                        var categorias = new Dictionary<string, (string Coluna, System.Windows.Media.Brush Cor)>
                             {
-                                { "Estrutura", "Percentagem Estrutura Real" },
-                                { "Revestimentos", "Percentagem Revestimentos Real" },
-                                { "Aprovação", "Percentagem Aprovacao Real" },
-                                { "Alterações", "Percentagem Alteracoes Real" },
-                                { "Fabrico", "Percentagem Fabrico Real" },
-                                { "Soldadura", "Percentagem Soldadura Real" },
-                                { "Montagem", "Percentagem Montagem Real" },
-                                { "Diversos", "Percentagem Diversos Real" }
+                                { "Estrutura", ("Percentagem Estrutura Real", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red)) },
+                                { "Revestimentos", ("Percentagem Revestimentos Real", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(97, 155, 243))) },
+                                { "Aprovação", ("Percentagem Aprovacao Real", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Orange)) },
+                                { "Alterações", ("Percentagem Alteracoes Real", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(139, 201, 77))) },
+                                { "Fabrico", ("Percentagem Fabrico Real", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 128, 255))) },
+                                { "Soldadura", ("Percentagem Soldadura Real", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.DarkGreen)) },
+                                { "Montagem", ("Percentagem Montagem Real", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 192, 192))) },
+                                { "Diversos", ("Percentagem Diversos Real", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray)) }
                             };
 
                         foreach (var cat in categorias)
                         {
+                            double valor = ParsePercent(cat.Value.Coluna); 
                             var serie = new LiveCharts.Wpf.PieSeries
                             {
                                 Title = cat.Key,
-                                Values = new ChartValues<double> { ParsePercent(cat.Value) },
+                                Values = new ChartValues<double> { valor },
                                 DataLabels = true,
-                                LabelPoint = chartPoint => chartPoint.Y.ToString("F1") + " %",
-                                FontSize = 14
+                                LabelPoint = chartPoint => Math.Round(chartPoint.Y, 0, MidpointRounding.AwayFromZero).ToString() + " %",
+                                Fill = cat.Value.Cor, 
+                                FontSize = 12
                             };
                             series.Add(serie);
                         }
@@ -310,17 +316,80 @@ namespace OfelizCM
             }
 
             return new SeriesCollection
-        {
-            new PieSeries { Title = "Estrutura", Values = new ChartValues<double> { somaEstrutura / count }, DataLabels = true },
-            new PieSeries { Title = "Revestimentos", Values = new ChartValues<double> { somaRevestimentos / count }, DataLabels = true },
-            new PieSeries { Title = "Aprovação", Values = new ChartValues<double> { somaAprovacao / count }, DataLabels = true },
-            new PieSeries { Title = "Alterações", Values = new ChartValues<double> { somaAlteracoes / count }, DataLabels = true },
-            new PieSeries { Title = "Fabrico", Values = new ChartValues<double> { somaFabrico / count }, DataLabels = true },
-            new PieSeries { Title = "Soldadura", Values = new ChartValues<double> { somaSoldadura / count }, DataLabels = true },
-            new PieSeries { Title = "Montagem", Values = new ChartValues<double> { somaMontagem / count }, DataLabels = true },
-            new PieSeries { Title = "Diversos", Values = new ChartValues<double> { somaDiversos / count }, DataLabels = true },
-        };
-        }
+            {
+                new PieSeries
+                {
+                    Title = "Estrutura",
+                    Values = new ChartValues<double> { somaEstrutura / count },
+                    DataLabels = true,
+                    FontSize = 12,
+                    Fill = new SolidColorBrush(System.Windows.Media.Colors.Red),
+                    LabelPoint = cp => Math.Round(cp.Y, 0, MidpointRounding.AwayFromZero).ToString() + " %"
+                },
+                new PieSeries
+                {
+                    Title = "Revestimentos",
+                    Values = new ChartValues<double> { somaRevestimentos / count },
+                    DataLabels = true,
+                    Fill = new SolidColorBrush(System.Windows.Media.Color.FromRgb(97, 155, 243)),
+                    LabelPoint = cp => Math.Round(cp.Y, 0, MidpointRounding.AwayFromZero).ToString() + " %"
+                },
+                new PieSeries
+                {
+                    Title = "Aprovação",
+                    Values = new ChartValues<double> { somaAprovacao / count },
+                    DataLabels = true,
+                    FontSize = 12,
+                    Fill = new SolidColorBrush(System.Windows.Media.Colors.Orange),
+                    LabelPoint = cp => Math.Round(cp.Y, 0, MidpointRounding.AwayFromZero).ToString() + " %"
+                },
+                new PieSeries
+                {
+                    Title = "Alterações",
+                    Values = new ChartValues<double> { somaAlteracoes / count },
+                    DataLabels = true,
+                    FontSize = 12,
+                    Fill = new SolidColorBrush(System.Windows.Media.Color.FromRgb(139, 201, 77)),
+                    LabelPoint = cp => Math.Round(cp.Y, 0, MidpointRounding.AwayFromZero).ToString() + " %"
+                },
+                new PieSeries
+                {
+                    Title = "Fabrico",
+                    Values = new ChartValues<double> { somaFabrico / count },
+                    DataLabels = true,
+                    FontSize = 12,
+                    Fill = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 128, 255)),
+                    LabelPoint = cp => Math.Round(cp.Y, 0, MidpointRounding.AwayFromZero).ToString() + " %"
+                },
+                new PieSeries
+                {
+                    Title = "Soldadura",
+                    Values = new ChartValues<double> { somaSoldadura / count },
+                    DataLabels = true,
+                    FontSize = 12,
+                    Fill = new SolidColorBrush(System.Windows.Media.Colors.DarkGreen),
+                    LabelPoint = cp => Math.Round(cp.Y, 0, MidpointRounding.AwayFromZero).ToString() + " %"
+                },
+                new PieSeries
+                {
+                    Title = "Montagem",
+                    Values = new ChartValues<double> { somaMontagem / count },
+                    DataLabels = true,
+                    FontSize = 12,
+                    Fill = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 192, 192)),
+                    LabelPoint = cp => Math.Round(cp.Y, 0, MidpointRounding.AwayFromZero).ToString() + " %"
+                },
+                new PieSeries
+                {
+                    Title = "Diversos",
+                    Values = new ChartValues<double> { somaDiversos / count },
+                    DataLabels = true,
+                    FontSize = 12,
+                    Fill = new SolidColorBrush(System.Windows.Media.Colors.Gray),
+                    LabelPoint = cp => Math.Round(cp.Y, 0, MidpointRounding.AwayFromZero).ToString() + " %"
+                }
+            };
+        }        
         public (SeriesCollection series, List<string> labels) CarregarPercentagemTodasObras()
         {
             _conectarbd.ConectarBD();
@@ -988,7 +1057,6 @@ namespace OfelizCM
 
                 return (series, labels);
         }
-
         public string ObterNomeObra(string numeroObra) 
         {
             try
@@ -1010,6 +1078,7 @@ namespace OfelizCM
                 _conectarbd.DesonectarBD();
             }
         }
-
     }
+      
+
 }

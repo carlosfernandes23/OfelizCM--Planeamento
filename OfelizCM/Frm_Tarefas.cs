@@ -103,7 +103,7 @@ namespace OfelizCM
                 if (tempoInvisivelInicio == null)
                     tempoInvisivelInicio = DateTime.Now;
 
-                if ((DateTime.Now - tempoInvisivelInicio.Value).TotalMinutes >= 5)
+                if ((DateTime.Now - tempoInvisivelInicio.Value).TotalMinutes >= 30)
                 {
                     VerificarTimerTarefas.Stop(); 
 
@@ -111,7 +111,7 @@ namespace OfelizCM
                     this.Activate();
                     SetForegroundWindow(this.Handle);
 
-                    MessageBox.Show("Nenhuma tarefa selecionada nos últimos 5 minutos!\nPor favor, inicie uma tarefa.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Nenhuma tarefa selecionada \nPor favor, inicie uma tarefa.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                     tempoInvisivelInicio = DateTime.Now;
                     VerificarTimerTarefas.Start();

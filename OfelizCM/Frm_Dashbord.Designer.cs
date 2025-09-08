@@ -29,20 +29,18 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Frm_Dashbord));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gunaBarDataset1 = new Guna.Charts.WinForms.GunaBarDataset();
             this.guna2DragControl1 = new Guna.UI2.WinForms.Guna2DragControl(this.components);
             this.labelEuroReal2 = new System.Windows.Forms.Label();
@@ -64,7 +62,6 @@
             this.labelNomePreparador = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.labelPercentagemEstrutura = new System.Windows.Forms.Label();
-            this.chartCircle = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.labelValorEstrutura = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.guna2CustomGradientPanel22 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
@@ -73,7 +70,6 @@
             this.label34 = new System.Windows.Forms.Label();
             this.guna2VScrollBar4 = new Guna.UI2.WinForms.Guna2VScrollBar();
             this.DataGridViewHorasPreparador = new Guna.UI2.WinForms.Guna2DataGridView();
-            this.label16 = new System.Windows.Forms.Label();
             this.guna2ShadowPanel9 = new Guna.UI2.WinForms.Guna2ShadowPanel();
             this.guna2CustomGradientPanel48 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
             this.labelPercentagemDiversos = new System.Windows.Forms.Label();
@@ -133,7 +129,6 @@
             this.pictureBox9 = new System.Windows.Forms.PictureBox();
             this.guna2CustomGradientPanel3 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
             this.guna2CustomGradientPanel2 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
-            this.label4 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.labelPercentagemRev = new System.Windows.Forms.Label();
             this.LabelPercentagemH = new System.Windows.Forms.Label();
@@ -188,9 +183,9 @@
             this.guna2ShadowPanel11 = new Guna.UI2.WinForms.Guna2ShadowPanel();
             this.chartTotalPercentagem = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.guna2ShadowPanel12 = new Guna.UI2.WinForms.Guna2ShadowPanel();
-            this.guna2ShadowPanel13 = new Guna.UI2.WinForms.Guna2ShadowPanel();
             this.guna2ShadowPanel14 = new Guna.UI2.WinForms.Guna2ShadowPanel();
-            ((System.ComponentModel.ISupportInitialize)(this.chartCircle)).BeginInit();
+            this.chartCircle = new System.Windows.Forms.Integration.ElementHost();
+            this.pieChart1 = new LiveCharts.Wpf.PieChart();
             this.guna2CustomGradientPanel22.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewHorasPreparador)).BeginInit();
             this.guna2ShadowPanel9.SuspendLayout();
@@ -537,45 +532,6 @@
             this.labelPercentagemEstrutura.Text = "--";
             this.labelPercentagemEstrutura.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // chartCircle
-            // 
-            this.chartCircle.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.chartCircle.BackColor = System.Drawing.Color.Transparent;
-            this.chartCircle.BackImageAlignment = System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle.Left;
-            chartArea4.Area3DStyle.IsClustered = true;
-            chartArea4.Area3DStyle.IsRightAngleAxes = false;
-            chartArea4.Area3DStyle.LightStyle = System.Windows.Forms.DataVisualization.Charting.LightStyle.None;
-            chartArea4.Area3DStyle.Rotation = 50;
-            chartArea4.BackColor = System.Drawing.Color.Transparent;
-            chartArea4.CursorX.LineColor = System.Drawing.Color.Black;
-            chartArea4.IsSameFontSizeForAllAxes = true;
-            chartArea4.Name = "ChartArea1";
-            chartArea4.ShadowColor = System.Drawing.Color.Black;
-            this.chartCircle.ChartAreas.Add(chartArea4);
-            this.chartCircle.Location = new System.Drawing.Point(0, -3);
-            this.chartCircle.Name = "chartCircle";
-            this.chartCircle.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
-            series4.CustomProperties = "CollectedThreshold=1, DoughnutRadius=40, CollectedSliceExploded=True, LabelsHoriz" +
-    "ontalLineSize=2, PieLabelStyle=Outside, PieLineColor=Black, CollectedLegendText=" +
-    "Extra, CollectedColor=Black";
-            series4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            series4.IsValueShownAsLabel = true;
-            series4.LabelBorderColor = System.Drawing.Color.Transparent;
-            series4.MarkerBorderColor = System.Drawing.Color.Transparent;
-            series4.MarkerColor = System.Drawing.Color.Transparent;
-            series4.MarkerImage = "C:\\Users\\carlos.alves\\Downloads\\f88e2473\\1-c39bb5ff.ico";
-            series4.Name = "Percentagens";
-            series4.SmartLabelStyle.AllowOutsidePlotArea = System.Windows.Forms.DataVisualization.Charting.LabelOutsidePlotAreaStyle.Yes;
-            series4.SmartLabelStyle.CalloutBackColor = System.Drawing.Color.Red;
-            series4.SmartLabelStyle.CalloutLineWidth = 2;
-            series4.SmartLabelStyle.MinMovingDistance = 1D;
-            this.chartCircle.Series.Add(series4);
-            this.chartCircle.Size = new System.Drawing.Size(1081, 425);
-            this.chartCircle.TabIndex = 28;
-            this.chartCircle.Text = "chart1";
-            // 
             // labelValorEstrutura
             // 
             this.labelValorEstrutura.AutoSize = true;
@@ -676,57 +632,57 @@
             // DataGridViewHorasPreparador
             // 
             this.DataGridViewHorasPreparador.AllowUserToResizeRows = false;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.White;
-            this.DataGridViewHorasPreparador.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White;
+            this.DataGridViewHorasPreparador.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.DataGridViewHorasPreparador.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DataGridViewHorasPreparador.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridViewHorasPreparador.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridViewHorasPreparador.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.DataGridViewHorasPreparador.ColumnHeadersHeight = 40;
             this.DataGridViewHorasPreparador.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.DataGridViewHorasPreparador.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.DataGridViewHorasPreparador.DefaultCellStyle = dataGridViewCellStyle3;
             this.DataGridViewHorasPreparador.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.DataGridViewHorasPreparador.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.DataGridViewHorasPreparador.Location = new System.Drawing.Point(10, 10);
             this.DataGridViewHorasPreparador.MultiSelect = false;
             this.DataGridViewHorasPreparador.Name = "DataGridViewHorasPreparador";
             this.DataGridViewHorasPreparador.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridViewHorasPreparador.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridViewHorasPreparador.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.DataGridViewHorasPreparador.RowHeadersVisible = false;
             this.DataGridViewHorasPreparador.RowHeadersWidth = 62;
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle10.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.Color.White;
-            this.DataGridViewHorasPreparador.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White;
+            this.DataGridViewHorasPreparador.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.DataGridViewHorasPreparador.RowTemplate.Height = 28;
             this.DataGridViewHorasPreparador.Size = new System.Drawing.Size(434, 283);
             this.DataGridViewHorasPreparador.TabIndex = 44;
@@ -751,18 +707,6 @@
             this.DataGridViewHorasPreparador.ThemeStyle.RowsStyle.Height = 28;
             this.DataGridViewHorasPreparador.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.DataGridViewHorasPreparador.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.BackColor = System.Drawing.Color.Transparent;
-            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.label16.Location = new System.Drawing.Point(451, 10);
-            this.label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(153, 24);
-            this.label16.TabIndex = 45;
-            this.label16.Text = "Horas Individuais";
             // 
             // guna2ShadowPanel9
             // 
@@ -1610,18 +1554,6 @@
             this.guna2CustomGradientPanel2.Size = new System.Drawing.Size(100, 30);
             this.guna2CustomGradientPanel2.TabIndex = 48;
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.label4.Location = new System.Drawing.Point(27, 20);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(228, 24);
-            this.label4.TabIndex = 47;
-            this.label4.Text = "Percentagem dos Valores";
-            // 
             // label23
             // 
             this.label23.AutoSize = true;
@@ -2295,51 +2227,50 @@
             this.chartTotalHoras.BorderlineWidth = 5;
             this.chartTotalHoras.BorderSkin.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
             this.chartTotalHoras.BorderSkin.PageColor = System.Drawing.Color.Black;
-            chartArea5.AlignmentOrientation = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal;
-            chartArea5.AlignmentStyle = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.Position;
-            chartArea5.AxisX.MajorGrid.Enabled = false;
-            chartArea5.AxisX.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea5.AxisX2.MajorGrid.Enabled = false;
-            chartArea5.AxisX2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea5.AxisY.MajorGrid.Enabled = false;
-            chartArea5.AxisY.TitleFont = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea5.AxisY2.MajorGrid.Enabled = false;
-            chartArea5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
-            chartArea5.Name = "ChartArea1";
-            this.chartTotalHoras.ChartAreas.Add(chartArea5);
-            legend3.BackColor = System.Drawing.Color.Transparent;
-            legend3.Name = "Legend1";
-            legend3.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chartTotalHoras.Legends.Add(legend3);
-            this.chartTotalHoras.Location = new System.Drawing.Point(30, 24);
+            chartArea1.AlignmentOrientation = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal;
+            chartArea1.AlignmentStyle = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.Position;
+            chartArea1.AxisX.MajorGrid.Enabled = false;
+            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisX2.MajorGrid.Enabled = false;
+            chartArea1.AxisX2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisY.MajorGrid.Enabled = false;
+            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisY2.MajorGrid.Enabled = false;
+            chartArea1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            chartArea1.Name = "ChartArea1";
+            this.chartTotalHoras.ChartAreas.Add(chartArea1);
+            legend1.BackColor = System.Drawing.Color.Transparent;
+            legend1.Name = "Legend1";
+            legend1.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chartTotalHoras.Legends.Add(legend1);
+            this.chartTotalHoras.Location = new System.Drawing.Point(10, 10);
             this.chartTotalHoras.Name = "chartTotalHoras";
-            series5.BorderColor = System.Drawing.Color.Black;
-            series5.ChartArea = "ChartArea1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bar;
-            series5.Color = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(176)))), ((int)(((byte)(132)))));
-            series5.CustomProperties = "PointWidth=0.7";
-            series5.Font = new System.Drawing.Font("Adobe Gothic Std B", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            series5.IsValueShownAsLabel = true;
-            series5.LabelBorderWidth = 2;
-            series5.Legend = "Legend1";
-            series5.Name = "Horas";
-            series5.ShadowColor = System.Drawing.Color.Black;
-            this.chartTotalHoras.Series.Add(series5);
-            this.chartTotalHoras.Size = new System.Drawing.Size(475, 250);
+            series1.BorderColor = System.Drawing.Color.Black;
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bar;
+            series1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(176)))), ((int)(((byte)(132)))));
+            series1.CustomProperties = "PointWidth=0.7";
+            series1.Font = new System.Drawing.Font("Adobe Gothic Std B", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            series1.IsValueShownAsLabel = true;
+            series1.LabelBorderWidth = 2;
+            series1.Legend = "Legend1";
+            series1.Name = "Horas";
+            series1.ShadowColor = System.Drawing.Color.Black;
+            this.chartTotalHoras.Series.Add(series1);
+            this.chartTotalHoras.Size = new System.Drawing.Size(630, 280);
             this.chartTotalHoras.TabIndex = 138;
             this.chartTotalHoras.Text = "Total Horas";
             // 
             // guna2ShadowPanel11
             // 
             this.guna2ShadowPanel11.BackColor = System.Drawing.Color.Transparent;
-            this.guna2ShadowPanel11.Controls.Add(this.label16);
-            this.guna2ShadowPanel11.Controls.Add(this.chartTotalPercentagem);
             this.guna2ShadowPanel11.Controls.Add(this.chartTotalHoras);
+            this.guna2ShadowPanel11.Controls.Add(this.chartTotalPercentagem);
             this.guna2ShadowPanel11.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
             this.guna2ShadowPanel11.Location = new System.Drawing.Point(470, 695);
             this.guna2ShadowPanel11.Name = "guna2ShadowPanel11";
             this.guna2ShadowPanel11.ShadowColor = System.Drawing.Color.Black;
-            this.guna2ShadowPanel11.Size = new System.Drawing.Size(1039, 300);
+            this.guna2ShadowPanel11.Size = new System.Drawing.Size(1280, 300);
             this.guna2ShadowPanel11.TabIndex = 139;
             // 
             // chartTotalPercentagem
@@ -2350,37 +2281,37 @@
             this.chartTotalPercentagem.BorderlineWidth = 5;
             this.chartTotalPercentagem.BorderSkin.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
             this.chartTotalPercentagem.BorderSkin.PageColor = System.Drawing.Color.Black;
-            chartArea6.AlignmentOrientation = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal;
-            chartArea6.AlignmentStyle = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.Position;
-            chartArea6.AxisX.MajorGrid.Enabled = false;
-            chartArea6.AxisX.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea6.AxisX2.MajorGrid.Enabled = false;
-            chartArea6.AxisX2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea6.AxisY.MajorGrid.Enabled = false;
-            chartArea6.AxisY.TitleFont = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea6.AxisY2.MajorGrid.Enabled = false;
-            chartArea6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
-            chartArea6.Name = "ChartArea1";
-            this.chartTotalPercentagem.ChartAreas.Add(chartArea6);
-            legend4.BackColor = System.Drawing.Color.Transparent;
-            legend4.Name = "Legend1";
-            legend4.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chartTotalPercentagem.Legends.Add(legend4);
-            this.chartTotalPercentagem.Location = new System.Drawing.Point(551, 40);
+            chartArea2.AlignmentOrientation = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal;
+            chartArea2.AlignmentStyle = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.Position;
+            chartArea2.AxisX.MajorGrid.Enabled = false;
+            chartArea2.AxisX.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea2.AxisX2.MajorGrid.Enabled = false;
+            chartArea2.AxisX2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea2.AxisY.MajorGrid.Enabled = false;
+            chartArea2.AxisY.TitleFont = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea2.AxisY2.MajorGrid.Enabled = false;
+            chartArea2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            chartArea2.Name = "ChartArea1";
+            this.chartTotalPercentagem.ChartAreas.Add(chartArea2);
+            legend2.BackColor = System.Drawing.Color.Transparent;
+            legend2.Name = "Legend1";
+            legend2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chartTotalPercentagem.Legends.Add(legend2);
+            this.chartTotalPercentagem.Location = new System.Drawing.Point(640, 10);
             this.chartTotalPercentagem.Name = "chartTotalPercentagem";
-            series6.BorderColor = System.Drawing.Color.Black;
-            series6.ChartArea = "ChartArea1";
-            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bar;
-            series6.Color = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            series6.CustomProperties = "PointWidth=0.7";
-            series6.Font = new System.Drawing.Font("Adobe Gothic Std B", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            series6.IsValueShownAsLabel = true;
-            series6.LabelBorderWidth = 2;
-            series6.Legend = "Legend1";
-            series6.Name = "Percentagem";
-            series6.ShadowColor = System.Drawing.Color.Black;
-            this.chartTotalPercentagem.Series.Add(series6);
-            this.chartTotalPercentagem.Size = new System.Drawing.Size(475, 250);
+            series2.BorderColor = System.Drawing.Color.Black;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bar;
+            series2.Color = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            series2.CustomProperties = "PointWidth=0.7";
+            series2.Font = new System.Drawing.Font("Adobe Gothic Std B", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            series2.IsValueShownAsLabel = true;
+            series2.LabelBorderWidth = 2;
+            series2.Legend = "Legend1";
+            series2.Name = "Percentagem";
+            series2.ShadowColor = System.Drawing.Color.Black;
+            this.chartTotalPercentagem.Series.Add(series2);
+            this.chartTotalPercentagem.Size = new System.Drawing.Size(662, 280);
             this.chartTotalPercentagem.TabIndex = 139;
             this.chartTotalPercentagem.Text = "Total Horas";
             // 
@@ -2396,20 +2327,9 @@
             this.guna2ShadowPanel12.Size = new System.Drawing.Size(455, 300);
             this.guna2ShadowPanel12.TabIndex = 140;
             // 
-            // guna2ShadowPanel13
-            // 
-            this.guna2ShadowPanel13.BackColor = System.Drawing.Color.Transparent;
-            this.guna2ShadowPanel13.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
-            this.guna2ShadowPanel13.Location = new System.Drawing.Point(1515, 695);
-            this.guna2ShadowPanel13.Name = "guna2ShadowPanel13";
-            this.guna2ShadowPanel13.ShadowColor = System.Drawing.Color.Black;
-            this.guna2ShadowPanel13.Size = new System.Drawing.Size(233, 300);
-            this.guna2ShadowPanel13.TabIndex = 141;
-            // 
             // guna2ShadowPanel14
             // 
             this.guna2ShadowPanel14.BackColor = System.Drawing.Color.Transparent;
-            this.guna2ShadowPanel14.Controls.Add(this.label4);
             this.guna2ShadowPanel14.Controls.Add(this.chartCircle);
             this.guna2ShadowPanel14.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
             this.guna2ShadowPanel14.Location = new System.Drawing.Point(469, 284);
@@ -2418,6 +2338,15 @@
             this.guna2ShadowPanel14.Size = new System.Drawing.Size(1040, 405);
             this.guna2ShadowPanel14.TabIndex = 142;
             // 
+            // chartCircle
+            // 
+            this.chartCircle.Location = new System.Drawing.Point(16, 15);
+            this.chartCircle.Name = "chartCircle";
+            this.chartCircle.Size = new System.Drawing.Size(1011, 374);
+            this.chartCircle.TabIndex = 48;
+            this.chartCircle.Text = "elementHost1";
+            this.chartCircle.Child = this.pieChart1;
+            // 
             // Frm_Dashbord
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -2425,7 +2354,6 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
             this.ClientSize = new System.Drawing.Size(2000, 1000);
             this.Controls.Add(this.guna2ShadowPanel14);
-            this.Controls.Add(this.guna2ShadowPanel13);
             this.Controls.Add(this.guna2ShadowPanel12);
             this.Controls.Add(this.guna2ShadowPanel11);
             this.Controls.Add(this.guna2ShadowPanel10);
@@ -2451,7 +2379,6 @@
             this.Name = "Frm_Dashbord";
             this.Text = "Frm_Dashbord";
             this.Load += new System.EventHandler(this.Frm_Dashbord_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.chartCircle)).EndInit();
             this.guna2CustomGradientPanel22.ResumeLayout(false);
             this.guna2CustomGradientPanel22.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewHorasPreparador)).EndInit();
@@ -2540,11 +2467,9 @@
             this.guna2ShadowPanel10.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartTotalHoras)).EndInit();
             this.guna2ShadowPanel11.ResumeLayout(false);
-            this.guna2ShadowPanel11.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartTotalPercentagem)).EndInit();
             this.guna2ShadowPanel12.ResumeLayout(false);
             this.guna2ShadowPanel14.ResumeLayout(false);
-            this.guna2ShadowPanel14.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2571,7 +2496,6 @@
         private System.Windows.Forms.Label labelNomeObra;
         private System.Windows.Forms.Label label35;
         private System.Windows.Forms.Label labelPercentagemEstrutura;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartCircle;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.Label label34;
         private Guna.UI2.WinForms.Guna2CustomGradientPanel guna2CustomGradientPanel22;
@@ -2580,7 +2504,6 @@
         private System.Windows.Forms.Label labelValorEstrutura;
         private Guna.UI2.WinForms.Guna2DataGridView DataGridViewHorasPreparador;
         private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label labelPercentagemRev;
         private System.Windows.Forms.Label LabelPercentagemH;
         private System.Windows.Forms.Label labelDias;
@@ -2589,7 +2512,6 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox5;
@@ -2695,7 +2617,8 @@
         private Guna.UI2.WinForms.Guna2ShadowPanel guna2ShadowPanel11;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartTotalPercentagem;
         private Guna.UI2.WinForms.Guna2ShadowPanel guna2ShadowPanel12;
-        private Guna.UI2.WinForms.Guna2ShadowPanel guna2ShadowPanel13;
         private Guna.UI2.WinForms.Guna2ShadowPanel guna2ShadowPanel14;
+        private System.Windows.Forms.Integration.ElementHost chartCircle;
+        private LiveCharts.Wpf.PieChart pieChart1;
     }
 }

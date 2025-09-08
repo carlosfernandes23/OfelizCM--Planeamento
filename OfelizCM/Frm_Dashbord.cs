@@ -1,4 +1,6 @@
 ﻿using Guna.Charts.WinForms;
+using LiveCharts;
+using LiveCharts.Wpf;
 using Microsoft.Office.Interop.Excel;
 using ServiceStack.Script;
 using System;
@@ -7,6 +9,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,11 +17,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using DataTable = System.Data.DataTable;
+using System.Windows.Media;
 using Action = System.Action;
+using DataTable = System.Data.DataTable;
 using Font = System.Drawing.Font;
-using System.Globalization;
-
+using MediaColor = System.Windows.Media.Color;
 
 
 namespace OfelizCM
@@ -45,8 +48,7 @@ namespace OfelizCM
             CarregarPercentagemTotal();
             AtualizarIndicadorPercentagem();
             CarregarPercentagensCircle();
-            CarregarGraficoPiePercentagem();
-            CarregarPercentagensOrcamento();
+            CarregarGraficoRedodndo();
             CarregarPercentagensReal();
             CarregarValoresQuadro();
             AtualizarTabelaHorasPreparador();
@@ -301,199 +303,113 @@ namespace OfelizCM
             {
                 percentagem = Math.Min(100, Math.Max(0, percentagem));
 
-                guna2RadialGaugePercObra.Value = (int)percentagem;
+                AnimarGauge(guna2RadialGaugePercObra, percentagem);
             }
             else
             {
                 MessageBox.Show("Valor de percentagem inválido.");
             }
         }
+        private void AnimarGauge(Guna.UI2.WinForms.Guna2RadialGauge gauge, double valorFinal)
+        {
+            gauge.Value = 0; // Começa do zero
+            Timer timer = new Timer();
+            timer.Interval = 10; // milissegundos, ajusta a velocidade
+            timer.Tick += (s, e) =>
+            {
+                if (gauge.Value < valorFinal)
+                {
+                    gauge.Value += 1; // aumenta de 1 em 1, ajusta se quiser mais rápido
+                }
+                else
+                {
+                    gauge.Value = (int)valorFinal; 
+                    timer.Stop();
+                    timer.Dispose();
+                }
+            };
+            timer.Start();
+        }
 
-        public void CarregarGraficoPiePercentagem()
+        private void CarregarGraficoRedodndo()
+        {
+            var pieChart = chartCircle.Child as LiveCharts.Wpf.PieChart;
+
+            if (pieChart != null)
+            {
+                pieChart.Series = CarregarGraficoPiePercentagemLiveCharts();
+                pieChart.LegendLocation = LegendLocation.Top;
+            }
+        }
+        public LiveCharts.SeriesCollection CarregarGraficoPiePercentagemLiveCharts()
         {
             ComunicaBD BD = new ComunicaBD();
             BD.ConectarBD();
             string NumeroObra = labelNumeroObra.Text.Trim();
 
             string queryReal = @"
-           SELECT [Percentagem Estrutura], [Percentagem Revestimentos], [Percentagem Aprovação],
-           [Percentagem Alterações], [Percentagem Fabrico], [Percentagem Soldadura], 
-           [Percentagem Montagem], [Percentagem Diversos]
-            FROM dbo.RealObras
-            WHERE [Numero da Obra] = @NumeroDaObra";
+                        SELECT [Percentagem Estrutura], [Percentagem Revestimentos], [Percentagem Aprovação],
+                               [Percentagem Alterações], [Percentagem Fabrico], [Percentagem Soldadura], 
+                               [Percentagem Montagem], [Percentagem Diversos]
+                        FROM dbo.RealObras
+                        WHERE [Numero da Obra] = @NumeroDaObra";
 
-            chartCircle.Series["Percentagens"].Points.Clear();
-            chartCircle.Series["Percentagens"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
-            chartCircle.Series["Percentagens"].IsValueShownAsLabel = true;
-            chartCircle.Series["Percentagens"].IsValueShownAsLabel = true;
+            var series = new LiveCharts.SeriesCollection();
 
-            chartCircle.Series["Percentagens"].Font = new Font("Arial", 13, FontStyle.Bold);
-
-            using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
+            try
             {
-                cmd.Parameters.AddWithValue("@NumeroDaObra", NumeroObra);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                using (SqlCommand cmd = new SqlCommand(queryReal, BD.GetConnection()))
                 {
-                    if (reader.HasRows)
+                    cmd.Parameters.AddWithValue("@NumeroDaObra", NumeroObra);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while (reader.Read())
+                        if (reader.Read())
                         {
-                            double estruturaReal, revestimentosReal, aprovacaoReal, alteracoesReal, fabricoReal, soldaduraReal, montagemReal, diversosReal;
-
-                            string estruturaRealStr = reader["Percentagem Estrutura"].ToString().Replace("%", "").Trim();
-                            string revestimentosRealStr = reader["Percentagem Revestimentos"].ToString().Replace("%", "").Trim();
-                            string aprovacaoRealStr = reader["Percentagem Aprovação"].ToString().Replace("%", "").Trim();
-                            string alteracoesRealStr = reader["Percentagem Alterações"].ToString().Replace("%", "").Trim();
-                            string fabricoRealStr = reader["Percentagem Fabrico"].ToString().Replace("%", "").Trim();
-                            string soldaduraRealStr = reader["Percentagem Soldadura"].ToString().Replace("%", "").Trim();
-                            string montagemRealStr = reader["Percentagem Montagem"].ToString().Replace("%", "").Trim();
-                            string diversosRealStr = reader["Percentagem Diversos"].ToString().Replace("%", "").Trim();
-
-                            bool podeConverterEstrutura = double.TryParse(estruturaRealStr, out estruturaReal);
-                            bool podeConverterRevestimentos = double.TryParse(revestimentosRealStr, out revestimentosReal);
-                            bool podeConverterAprovacao = double.TryParse(aprovacaoRealStr, out aprovacaoReal);
-                            bool podeConverterAlteracoes = double.TryParse(alteracoesRealStr, out alteracoesReal);
-                            bool podeConverterFabrico = double.TryParse(fabricoRealStr, out fabricoReal);
-                            bool podeConverterSoldadura = double.TryParse(soldaduraRealStr, out soldaduraReal);
-                            bool podeConverterMontagem = double.TryParse(montagemRealStr, out montagemReal);
-                            bool podeConverterDiversos = double.TryParse(diversosRealStr, out diversosReal);
-
-                            if (podeConverterEstrutura)
+                            double ParsePercent(string col)
                             {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(estruturaReal);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.Red;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.Red;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.Red;
-                            }
-                            else
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.Red;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.Red;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.Red;
+                                var val = reader[col]?.ToString().Replace("%", "").Trim();
+                                return double.TryParse(val, out double result) ? result : 0;
                             }
 
-                            if (podeConverterRevestimentos)
+                            var categorias = new Dictionary<string, (string Coluna, System.Windows.Media.Brush Cor)>
                             {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(revestimentosReal);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.FromArgb(97, 155, 243);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.FromArgb(97, 155, 243);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.FromArgb(97, 155, 243);
-                            }
-                            else
+                                { "Estrutura", ("Percentagem Estrutura", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red)) },
+                                { "Revestimentos", ("Percentagem Revestimentos", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(97, 155, 243))) },
+                                { "Aprovação", ("Percentagem Aprovação", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Orange)) },
+                                { "Alterações", ("Percentagem Alterações", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(139, 201, 77))) },
+                                { "Fabrico", ("Percentagem Fabrico", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 128, 255))) },
+                                { "Soldadura", ("Percentagem Soldadura", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.DarkGreen)) },
+                                { "Montagem", ("Percentagem Montagem", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 192, 192))) },
+                                { "Diversos", ("Percentagem Diversos", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray)) }
+                            };
+
+                            foreach (var cat in categorias)
                             {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.FromArgb(97, 155, 243);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.FromArgb(97, 155, 243);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.FromArgb(97, 155, 243);
+                                double valor = ParsePercent(cat.Value.Coluna);
+
+                                var pieSeries = new PieSeries
+                                {
+                                    Title = cat.Key,
+                                    Values = new ChartValues<double> { valor },
+                                    DataLabels = true,
+                                    LabelPoint = point => Math.Round(point.Y).ToString() + " %",
+                                    Fill = cat.Value.Cor,
+                                    FontSize = 14
+                                };
+
+                                series.Add(pieSeries);
                             }
-
-                            if (podeConverterAprovacao)
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(aprovacaoReal);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.Orange;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.Orange;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.Orange;
-                            }
-                            else
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.Orange;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.Orange;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.Orange;
-                            }
-
-                            if (podeConverterAlteracoes)
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(alteracoesReal);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.FromArgb(139, 201, 77);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.FromArgb(139, 201, 77);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.FromArgb(139, 201, 77);
-                            }
-                            else
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.FromArgb(139, 201, 77);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.FromArgb(139, 201, 77);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.FromArgb(139, 201, 77);
-                            }
-
-                            if (podeConverterFabrico)
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(fabricoReal);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.FromArgb(255, 128, 255);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.FromArgb(255, 128, 255);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.FromArgb(255, 128, 255);
-                            }
-                            else
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.FromArgb(255, 128, 255);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.FromArgb(255, 128, 255);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.FromArgb(255, 128, 255);
-                            }
-
-                            if (podeConverterSoldadura)
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(soldaduraReal);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.DarkGreen;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.DarkGreen;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.DarkGreen;
-
-                            }
-                            else
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.DarkGreen;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.DarkGreen;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.DarkGreen;
-
-                            }
-
-                            if (podeConverterMontagem)
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(montagemReal);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.FromArgb(0, 192, 192); 
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.FromArgb(0, 192, 192);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.FromArgb(0, 192, 192);
-
-                            }
-                            else
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.FromArgb(0, 192, 192);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.FromArgb(0, 192, 192);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.FromArgb(0, 192, 192);
-
-                            }
-
-                            if (podeConverterDiversos)
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(diversosReal);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.Gray;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.Gray;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.Gray;
-
-
-                            }
-                            else
-                            {
-                                int pontoIndex = chartCircle.Series["Percentagens"].Points.AddY(0);
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].Color = Color.Gray;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].LabelForeColor = Color.Gray;
-                                chartCircle.Series["Percentagens"].Points[pontoIndex].BorderColor = Color.Gray;
-
-                            }
-
                         }
                     }
                 }
+
+                return series;
             }
-
-            BD.DesonectarBD();
+            finally
+            {
+                BD.DesonectarBD();
+            }
         }
-
         private void CarregarPercentagensOrcamento()
         {
             ComunicaBD BD = new ComunicaBD();
@@ -1376,7 +1292,8 @@ namespace OfelizCM
                         double totalHoras;
                         if (double.TryParse(valorLimpo, NumberStyles.Any, CultureInfo.CurrentCulture, out totalHoras))
                         {
-                            chartTotalHoras.Series["Horas"].Points.AddXY(nomePreparador, totalHoras);
+                            var ponto = chartTotalHoras.Series["Horas"].Points.AddXY(nomePreparador, totalHoras);
+                            chartTotalHoras.Series["Horas"].Points[ponto].Label = totalHoras.ToString("N1") + " h";
                         }
                         else
                         {
@@ -1386,7 +1303,6 @@ namespace OfelizCM
                 }
             }
         }
-
         private void GraficoTotalPercentagem()
         {
             chartTotalPercentagem.Series["Percentagem"].Points.Clear();
@@ -1406,6 +1322,8 @@ namespace OfelizCM
                         if (double.TryParse(valorLimpo, NumberStyles.Any, CultureInfo.CurrentCulture, out totalHoras))
                         {
                             chartTotalPercentagem.Series["Percentagem"].Points.AddXY(nomePreparador, totalHoras);
+                            int pontoIndex = chartTotalPercentagem.Series["Percentagem"].Points.Count - 1;
+                            chartTotalPercentagem.Series["Percentagem"].Points[pontoIndex].Label = totalHoras.ToString("N1") + " %";
                         }
                         else
                         {
@@ -1416,9 +1334,10 @@ namespace OfelizCM
            }
 
         }
-               
+        
+        
 
     }
-    }
+}
 
 
