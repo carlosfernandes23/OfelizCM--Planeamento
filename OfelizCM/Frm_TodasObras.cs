@@ -61,7 +61,7 @@ namespace OfelizCM
             PanelTabelas.Location = new Point(215, 60);
             PanelTabelas.Size = new Size(2342, 1395);
             this.totalObrasTableAdapter.Fill(this.tempoPreparacaoDataSet.TotalObras);
-            ComunicarTabelas();
+            ComunicarTabelasSemAnofecho();
             AtualizarDados();
             CalcularTabelas();
             CarregarGraficos();
@@ -135,6 +135,12 @@ namespace OfelizCM
             VisualizarTabelaOrcamentacao();
             VisualizarTabelaReal();
             VisualizarTabelaConcluido();       
+        }
+        private void ComunicarTabelasSemAnofecho()
+        {
+            VisualizarTabelaOrcamentacaoSemAnofecho();
+            VisualizarTabelaRealSemAnofecho();
+            VisualizarTabelaConcluidoSemAnofecho();
         }
         private void AtualizarDados()
         {
@@ -542,7 +548,58 @@ namespace OfelizCM
             DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
             DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
             DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
-        }       
+        }
+        private void VisualizarTabelaOrcamentacaoSemAnofecho()
+        {
+            var tabela = new Mostartabelassemanofecho();
+            DataTable dataTable = tabela.TabelaOrcamentacao();
+
+            DataGridViewOrcamentacaoObras.DataSource = dataTable;
+            DataGridViewOrcamentacaoObras.ClearSelection();
+            DataGridViewOrcamentacaoObras.ScrollBars = ScrollBars.Horizontal;
+            DataGridViewOrcamentacaoObras.Columns["Id"].Visible = false;
+            ConfigurarColunasOrcamentacao();
+        }
+        private void VisualizarTabelaRealSemAnofecho()
+        {
+            var tabela = new Mostartabelassemanofecho();
+            DataTable dataTable = tabela.TabelaReal();
+
+            DataGridViewRealObras.DataSource = dataTable;
+            DataGridViewRealObras.ClearSelection();
+            DataGridViewRealObras.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            DataGridViewRealObras.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            DataGridViewRealObras.Columns["Id"].Visible = false;
+            DataGridViewRealObras.Columns["Numero da Obra"].Visible = false;
+            DataGridViewRealObras.Columns["Ano de fecho"].Visible = false;
+            DataGridViewRealObras.Columns["Tipologia"].Visible = false;
+            DataGridViewRealObras.ReadOnly = true;
+            DataGridViewRealObras.Columns["KG Estrutura"].Width = 90;
+            DataGridViewRealObras.Columns["KG/Euro Estrutura"].HeaderText = "Euro/kg Estrutura";
+            DataGridViewRealObras.ScrollBars = ScrollBars.Horizontal;
+            int linhaInicial = 25;
+            if (linhaInicial < DataGridViewRealObras.Rows.Count)
+                DataGridViewRealObras.FirstDisplayedScrollingRowIndex = linhaInicial;
+        }
+        private void VisualizarTabelaConcluidoSemAnofecho()
+        {
+            var tabela = new Mostartabelassemanofecho();
+            DataTable dataTable = tabela.TabelaConclusao();
+
+            DataGridViewConclusaoObras.DataSource = dataTable;
+            DataGridViewConclusaoObras.ClearSelection();
+            DataGridViewConclusaoObras.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            DataGridViewConclusaoObras.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            DataGridViewConclusaoObras.Columns["Id"].Visible = false;
+            DataGridViewConclusaoObras.Columns["Numero da Obra"].Visible = false;
+            DataGridViewConclusaoObras.Columns["Ano de fecho"].Visible = false;
+            DataGridViewConclusaoObras.Columns["Tipologia"].Visible = false;
+            DataGridViewConclusaoObras.ReadOnly = true;
+            DataGridViewConclusaoObras.Columns["Total Horas"].Width = 90;
+            DataGridViewConclusaoObras.Columns["Total Valor"].Width = 90;
+            DataGridViewConclusaoObras.Columns["Percentagem Total"].Width = 70;
+            DataGridViewConclusaoObras.Columns["Dias de Preparação"].Width = 70;
+        }
         public void VisualizarGraficoPiePercentagem()
         {
             MostarGraficos grafico = new MostarGraficos();
@@ -739,7 +796,7 @@ namespace OfelizCM
                 string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
                 double percentagem = chartPoint.Y;
 
-                labelobraeuros.Text = $"{nomeObra} |  {percentagem:N1} €";
+                labelobraeuros.Text = $"{nomeObra} |  {percentagem:N2} €";
             };
         }
         private void VisualizarGraficoObrasValorTipologia()
@@ -790,7 +847,7 @@ namespace OfelizCM
                 string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
                 double percentagem = chartPoint.Y;
 
-                labelobraeuros.Text = $"{nomeObra} |  {percentagem:N1} €";
+                labelobraeuros.Text = $"{nomeObra} |  {percentagem:N2} €";
             };
         }
         private void VisualizarGraficoObrasValorAno()
@@ -841,7 +898,7 @@ namespace OfelizCM
                 string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
                 double percentagem = chartPoint.Y;
 
-                labelobraeuros.Text = $"{nomeObra} |  {percentagem:N1} €";
+                labelobraeuros.Text = $"{nomeObra} |  {percentagem:N2} €";
             };
         }
         private void VisualizarGraficoObrasPercentagemAno()
@@ -2585,48 +2642,28 @@ namespace OfelizCM
         public void CarregarPastasNaComboBoxAno()
         {
             string caminhoPasta = @"\\marconi\COMPANY SHARED FOLDER\OFELIZ\OFM\2.AN\2.CM\DP\1 Obras";
-
-            if (Directory.Exists(caminhoPasta))
-            {
-                string[] subpastas = Directory.GetDirectories(caminhoPasta);
-
-                ComboBoxAnoAdd.Items.Clear();
-                string pattern = @"^[A-Za-z0-9]{4}$";
-                foreach (string subpasta in subpastas)
-                {
-                    string nomePasta = Path.GetFileName(subpasta);
-
-                    if (Regex.IsMatch(nomePasta, pattern))
-                    {
-                        ComboBoxAnoAdd.Items.Add(nomePasta);
-                    }
-                }
-            }
-            else
+            if (!Directory.Exists(caminhoPasta))
             {
                 MessageBox.Show("O caminho especificado não existe.");
+                return;
             }
-            if (Directory.Exists(caminhoPasta))
+            string[] subpastas = Directory.GetDirectories(caminhoPasta);
+            ComboBoxAnoAdd.Items.Clear();
+            ComboBoxAnoAdd2.Items.Clear();
+            foreach (string subpasta in subpastas)
             {
-                string[] subpastas = Directory.GetDirectories(caminhoPasta);
+                string nomePasta = Path.GetFileName(subpasta);
 
-                ComboBoxAnoAdd2.Items.Clear();
-                string pattern = @"^[A-Za-z0-9]{4}$";
-                foreach (string subpasta in subpastas)
+                if (int.TryParse(nomePasta, out int ano))
                 {
-                    string nomePasta = Path.GetFileName(subpasta);
-
-                    if (Regex.IsMatch(nomePasta, pattern))
+                    if (ano >= 2020)
                     {
+                        ComboBoxAnoAdd.Items.Add(nomePasta);
                         ComboBoxAnoAdd2.Items.Add(nomePasta);
                     }
                 }
             }
-            else
-            {
-                MessageBox.Show("O caminho especificado não existe.");
-            }
-        }
+        }        
         private void AdicionarSufixosNasColunas()
         {
             foreach (DataGridViewRow row in DataGridViewOrcamentacaoObras.Rows)
@@ -3930,7 +3967,17 @@ namespace OfelizCM
                     ultimaLinha.Cells[col].Value = null;
             }
         }
-
+        private void checkanofecho_Click(object sender, EventArgs e)
+        {
+            if (checkanofecho.Checked)
+            {
+                labelanofecho.Text = "Com Ano de fecho";
+            }
+            else
+            {
+                labelanofecho.Text = "Sem Ano de fecho";
+            }
+        }
     }
 }
 
