@@ -111,7 +111,7 @@
             this.chartObrasHoras = new System.Windows.Forms.Integration.ElementHost();
             this.cartesianChart3 = new LiveCharts.Wpf.CartesianChart();
             this.PanelChartControlo = new Guna.UI2.WinForms.Guna2Panel();
-            this.label9 = new System.Windows.Forms.Label();
+            this.labelcontroloobra = new System.Windows.Forms.Label();
             this.pieChartControlo = new System.Windows.Forms.Integration.ElementHost();
             this.pieChart1 = new LiveCharts.Wpf.PieChart();
             this.PanelchartTotalValorObras = new Guna.UI2.WinForms.Guna2Panel();
@@ -126,10 +126,16 @@
             this.ButtonAtualizarKG = new Guna.UI2.WinForms.Guna2Button();
             this.labelgraficostabela = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.pieChartControloobra = new System.Windows.Forms.Integration.ElementHost();
             this.pieChart2 = new LiveCharts.Wpf.PieChart();
-            this.label3 = new System.Windows.Forms.Label();
-            this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
+            this.labelNobra = new System.Windows.Forms.Label();
+            this.PanelChartControloObra = new Guna.UI2.WinForms.Guna2Panel();
+            this.Panel1 = new Guna.UI2.WinForms.Guna2Panel();
+            this.Buttonatualizaobra = new Guna.UI2.WinForms.Guna2ImageButton();
+            this.pictureBoxatualizaobra = new System.Windows.Forms.PictureBox();
+            this.chartTotalHorasPessoas = new System.Windows.Forms.Integration.ElementHost();
+            this.cartesianChart5 = new LiveCharts.Wpf.CartesianChart();
+            this.ComboBoxObras = new Guna.UI2.WinForms.Guna2ComboBox();
             this.PanelExportar = new Guna.UI2.WinForms.Guna2Panel();
             this.ButtonExportExcelTabelas = new Guna.UI2.WinForms.Guna2Button();
             this.ButtonExportExcelHoras = new Guna.UI2.WinForms.Guna2Button();
@@ -138,14 +144,15 @@
             this.pictureBoxGif1 = new System.Windows.Forms.PictureBox();
             this.Buttonlimparanofecho = new CuoreUI.Controls.cuiButton();
             this.PanelFiltrar = new Guna.UI2.WinForms.Guna2Panel();
+            this.checkanofecho = new CuoreUI.Controls.cuiCheckbox();
             this.pictureBoxGif = new System.Windows.Forms.PictureBox();
             this.ButtonLimaprtaabela = new CuoreUI.Controls.cuiButton();
             this.guna2Panel2 = new Guna.UI2.WinForms.Guna2Panel();
             this.label16 = new System.Windows.Forms.Label();
             this.guna2Panel3 = new Guna.UI2.WinForms.Guna2Panel();
             this.guna2Panel4 = new Guna.UI2.WinForms.Guna2Panel();
-            this.checkanofecho = new Guna.UI2.WinForms.Guna2CustomCheckBox();
-            this.labelanofecho = new System.Windows.Forms.Label();
+            this.ButtonAtualisarLinha = new Guna.UI2.WinForms.Guna2Button();
+            this.Buttonlimaprlinha = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewConclusaoObras)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewRealObras)).BeginInit();
             this.PanelTabelas.SuspendLayout();
@@ -160,7 +167,9 @@
             this.PanelchartObrasHoras.SuspendLayout();
             this.PanelChartControlo.SuspendLayout();
             this.PanelchartTotalValorObras.SuspendLayout();
-            this.guna2Panel1.SuspendLayout();
+            this.PanelChartControloObra.SuspendLayout();
+            this.Panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxatualizaobra)).BeginInit();
             this.PanelExportar.SuspendLayout();
             this.PanelInserirAtualizar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGif1)).BeginInit();
@@ -367,8 +376,8 @@
             this.ComboBoxTipologiaFiltro.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.ComboBoxTipologiaFiltro.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxTipologiaFiltro.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.ComboBoxTipologiaFiltro.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            this.ComboBoxTipologiaFiltro.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            this.ComboBoxTipologiaFiltro.FocusedColor = System.Drawing.Color.Black;
+            this.ComboBoxTipologiaFiltro.FocusedState.BorderColor = System.Drawing.Color.Black;
             this.ComboBoxTipologiaFiltro.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.ComboBoxTipologiaFiltro.ForeColor = System.Drawing.Color.Black;
             this.ComboBoxTipologiaFiltro.HoverState.BorderColor = System.Drawing.Color.Black;
@@ -387,7 +396,7 @@
             this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
             this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label7.Location = new System.Drawing.Point(43, 167);
+            this.label7.Location = new System.Drawing.Point(44, 156);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(124, 20);
@@ -428,7 +437,7 @@
             // 
             this.LabelPrecoOrcamentado.BackColor = System.Drawing.Color.Transparent;
             this.LabelPrecoOrcamentado.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelPrecoOrcamentado.Location = new System.Drawing.Point(83, 197);
+            this.LabelPrecoOrcamentado.Location = new System.Drawing.Point(84, 186);
             this.LabelPrecoOrcamentado.Margin = new System.Windows.Forms.Padding(0);
             this.LabelPrecoOrcamentado.Name = "LabelPrecoOrcamentado";
             this.LabelPrecoOrcamentado.Size = new System.Drawing.Size(31, 18);
@@ -447,11 +456,11 @@
             this.TextBoxprecoHora.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
             this.TextBoxprecoHora.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
             this.TextBoxprecoHora.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.TextBoxprecoHora.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            this.TextBoxprecoHora.FocusedState.BorderColor = System.Drawing.Color.Black;
             this.TextBoxprecoHora.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.TextBoxprecoHora.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.TextBoxprecoHora.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            this.TextBoxprecoHora.Location = new System.Drawing.Point(35, 218);
+            this.TextBoxprecoHora.Location = new System.Drawing.Point(36, 207);
             this.TextBoxprecoHora.Name = "TextBoxprecoHora";
             this.TextBoxprecoHora.PasswordChar = '\0';
             this.TextBoxprecoHora.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -535,7 +544,7 @@
             this.ComboBoxPreparadorAdd.ForeColor = System.Drawing.Color.Black;
             this.ComboBoxPreparadorAdd.HoverState.BorderColor = System.Drawing.Color.Black;
             this.ComboBoxPreparadorAdd.ItemHeight = 30;
-            this.ComboBoxPreparadorAdd.Location = new System.Drawing.Point(3388, 11);
+            this.ComboBoxPreparadorAdd.Location = new System.Drawing.Point(200, 11);
             this.ComboBoxPreparadorAdd.Margin = new System.Windows.Forms.Padding(2);
             this.ComboBoxPreparadorAdd.Name = "ComboBoxPreparadorAdd";
             this.ComboBoxPreparadorAdd.Size = new System.Drawing.Size(29, 36);
@@ -916,7 +925,7 @@
             this.ButtonInserirTipologia.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(44)))), ((int)(((byte)(55)))));
             this.ButtonInserirTipologia.Size = new System.Drawing.Size(165, 35);
             this.ButtonInserirTipologia.TabIndex = 84;
-            this.ButtonInserirTipologia.Text = "Inserir";
+            this.ButtonInserirTipologia.Text = "Inserir / atualizar";
             this.ButtonInserirTipologia.Click += new System.EventHandler(this.ButtonInserirTipologia_Click);
             // 
             // ComboBoxTipologiaInserir
@@ -927,8 +936,8 @@
             this.ComboBoxTipologiaInserir.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.ComboBoxTipologiaInserir.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxTipologiaInserir.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.ComboBoxTipologiaInserir.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            this.ComboBoxTipologiaInserir.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            this.ComboBoxTipologiaInserir.FocusedColor = System.Drawing.Color.Black;
+            this.ComboBoxTipologiaInserir.FocusedState.BorderColor = System.Drawing.Color.Black;
             this.ComboBoxTipologiaInserir.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.ComboBoxTipologiaInserir.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ComboBoxTipologiaInserir.HoverState.BorderColor = System.Drawing.Color.Black;
@@ -984,8 +993,8 @@
             this.ComboBoxAnoAdd2.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.ComboBoxAnoAdd2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxAnoAdd2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.ComboBoxAnoAdd2.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            this.ComboBoxAnoAdd2.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            this.ComboBoxAnoAdd2.FocusedColor = System.Drawing.Color.Black;
+            this.ComboBoxAnoAdd2.FocusedState.BorderColor = System.Drawing.Color.Black;
             this.ComboBoxAnoAdd2.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.ComboBoxAnoAdd2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ComboBoxAnoAdd2.HoverState.BorderColor = System.Drawing.Color.Black;
@@ -1023,8 +1032,8 @@
             this.ComboBoxAnoAdd.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.ComboBoxAnoAdd.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxAnoAdd.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.ComboBoxAnoAdd.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            this.ComboBoxAnoAdd.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            this.ComboBoxAnoAdd.FocusedColor = System.Drawing.Color.Black;
+            this.ComboBoxAnoAdd.FocusedState.BorderColor = System.Drawing.Color.Black;
             this.ComboBoxAnoAdd.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.ComboBoxAnoAdd.ForeColor = System.Drawing.Color.Black;
             this.ComboBoxAnoAdd.HoverState.BorderColor = System.Drawing.Color.Black;
@@ -1067,11 +1076,11 @@
             this.TextBoxKG.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
             this.TextBoxKG.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
             this.TextBoxKG.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.TextBoxKG.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            this.TextBoxKG.FocusedState.BorderColor = System.Drawing.Color.Black;
             this.TextBoxKG.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.TextBoxKG.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.TextBoxKG.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(159)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            this.TextBoxKG.Location = new System.Drawing.Point(36, 80);
+            this.TextBoxKG.Location = new System.Drawing.Point(38, 74);
             this.TextBoxKG.Name = "TextBoxKG";
             this.TextBoxKG.PasswordChar = '\0';
             this.TextBoxKG.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -1189,7 +1198,7 @@
             this.PanelchartTotalHoras.Controls.Add(this.label10);
             this.PanelchartTotalHoras.Controls.Add(this.chartTotalHoras);
             this.PanelchartTotalHoras.FillColor = System.Drawing.Color.WhiteSmoke;
-            this.PanelchartTotalHoras.Location = new System.Drawing.Point(824, 406);
+            this.PanelchartTotalHoras.Location = new System.Drawing.Point(2293, 406);
             this.PanelchartTotalHoras.Name = "PanelchartTotalHoras";
             this.PanelchartTotalHoras.Size = new System.Drawing.Size(262, 340);
             this.PanelchartTotalHoras.TabIndex = 120;
@@ -1211,7 +1220,7 @@
             // 
             // chartTotalHoras
             // 
-            this.chartTotalHoras.Location = new System.Drawing.Point(5, 41);
+            this.chartTotalHoras.Location = new System.Drawing.Point(5, 45);
             this.chartTotalHoras.Name = "chartTotalHoras";
             this.chartTotalHoras.Size = new System.Drawing.Size(254, 284);
             this.chartTotalHoras.TabIndex = 0;
@@ -1276,34 +1285,34 @@
             this.PanelChartControlo.BorderColor = System.Drawing.Color.Black;
             this.PanelChartControlo.BorderRadius = 15;
             this.PanelChartControlo.BorderThickness = 1;
-            this.PanelChartControlo.Controls.Add(this.label9);
+            this.PanelChartControlo.Controls.Add(this.labelcontroloobra);
             this.PanelChartControlo.Controls.Add(this.pieChartControlo);
             this.PanelChartControlo.FillColor = System.Drawing.Color.WhiteSmoke;
-            this.PanelChartControlo.Location = new System.Drawing.Point(215, 406);
+            this.PanelChartControlo.Location = new System.Drawing.Point(215, 407);
             this.PanelChartControlo.Name = "PanelChartControlo";
-            this.PanelChartControlo.Size = new System.Drawing.Size(603, 340);
+            this.PanelChartControlo.Size = new System.Drawing.Size(510, 340);
             this.PanelChartControlo.TabIndex = 122;
             this.PanelChartControlo.Visible = false;
             // 
-            // label9
+            // labelcontroloobra
             // 
-            this.label9.AutoSize = true;
-            this.label9.BackColor = System.Drawing.Color.Transparent;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.label9.ForeColor = System.Drawing.Color.Black;
-            this.label9.Location = new System.Drawing.Point(196, 9);
-            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(222, 29);
-            this.label9.TabIndex = 85;
-            this.label9.Text = "Controlo das Obras";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelcontroloobra.AutoSize = true;
+            this.labelcontroloobra.BackColor = System.Drawing.Color.Transparent;
+            this.labelcontroloobra.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.labelcontroloobra.ForeColor = System.Drawing.Color.Black;
+            this.labelcontroloobra.Location = new System.Drawing.Point(25, 9);
+            this.labelcontroloobra.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelcontroloobra.Name = "labelcontroloobra";
+            this.labelcontroloobra.Size = new System.Drawing.Size(165, 29);
+            this.labelcontroloobra.TabIndex = 85;
+            this.labelcontroloobra.Text = "Controlo Obra";
+            this.labelcontroloobra.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pieChartControlo
             // 
-            this.pieChartControlo.Location = new System.Drawing.Point(5, 41);
+            this.pieChartControlo.Location = new System.Drawing.Point(5, 45);
             this.pieChartControlo.Name = "pieChartControlo";
-            this.pieChartControlo.Size = new System.Drawing.Size(595, 285);
+            this.pieChartControlo.Size = new System.Drawing.Size(500, 285);
             this.pieChartControlo.TabIndex = 0;
             this.pieChartControlo.Text = "elementHost4";
             this.pieChartControlo.Child = this.pieChart1;
@@ -1388,7 +1397,7 @@
             this.ButtonAtualizarbd.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ButtonAtualizarbd.ForeColor = System.Drawing.Color.White;
             this.ButtonAtualizarbd.IndicateFocus = true;
-            this.ButtonAtualizarbd.Location = new System.Drawing.Point(15, 63);
+            this.ButtonAtualizarbd.Location = new System.Drawing.Point(17, 45);
             this.ButtonAtualizarbd.Name = "ButtonAtualizarbd";
             this.ButtonAtualizarbd.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(44)))), ((int)(((byte)(55)))));
             this.ButtonAtualizarbd.Size = new System.Drawing.Size(165, 35);
@@ -1410,7 +1419,7 @@
             this.ButtonPrecohora.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
             this.ButtonPrecohora.ForeColor = System.Drawing.Color.White;
             this.ButtonPrecohora.IndicateFocus = true;
-            this.ButtonPrecohora.Location = new System.Drawing.Point(17, 263);
+            this.ButtonPrecohora.Location = new System.Drawing.Point(18, 252);
             this.ButtonPrecohora.Name = "ButtonPrecohora";
             this.ButtonPrecohora.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(44)))), ((int)(((byte)(55)))));
             this.ButtonPrecohora.Size = new System.Drawing.Size(165, 35);
@@ -1446,7 +1455,7 @@
             this.ButtonAtualizarKG.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ButtonAtualizarKG.ForeColor = System.Drawing.Color.White;
             this.ButtonAtualizarKG.IndicateFocus = true;
-            this.ButtonAtualizarKG.Location = new System.Drawing.Point(18, 116);
+            this.ButtonAtualizarKG.Location = new System.Drawing.Point(20, 110);
             this.ButtonAtualizarKG.Name = "ButtonAtualizarKG";
             this.ButtonAtualizarKG.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(44)))), ((int)(((byte)(55)))));
             this.ButtonAtualizarKG.Size = new System.Drawing.Size(165, 35);
@@ -1482,43 +1491,116 @@
             this.label15.Text = "Exportar";
             this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // elementHost1
+            // pieChartControloobra
             // 
-            this.elementHost1.Location = new System.Drawing.Point(5, 41);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(595, 285);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost4";
-            this.elementHost1.Child = this.pieChart2;
+            this.pieChartControloobra.Location = new System.Drawing.Point(5, 45);
+            this.pieChartControloobra.Name = "pieChartControloobra";
+            this.pieChartControloobra.Size = new System.Drawing.Size(500, 285);
+            this.pieChartControloobra.TabIndex = 0;
+            this.pieChartControloobra.Text = "elementHost4";
+            this.pieChartControloobra.Child = this.pieChart2;
             // 
-            // label3
+            // labelNobra
             // 
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(196, 9);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(222, 29);
-            this.label3.TabIndex = 85;
-            this.label3.Text = "Controlo das Obras";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelNobra.AutoSize = true;
+            this.labelNobra.BackColor = System.Drawing.Color.Transparent;
+            this.labelNobra.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.labelNobra.ForeColor = System.Drawing.Color.Black;
+            this.labelNobra.Location = new System.Drawing.Point(483, 8);
+            this.labelNobra.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelNobra.Name = "labelNobra";
+            this.labelNobra.Size = new System.Drawing.Size(117, 29);
+            this.labelNobra.TabIndex = 85;
+            this.labelNobra.Text = "Nº Obra : ";
+            this.labelNobra.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // guna2Panel1
+            // PanelChartControloObra
             // 
-            this.guna2Panel1.BackColor = System.Drawing.Color.Transparent;
-            this.guna2Panel1.BorderColor = System.Drawing.Color.Black;
-            this.guna2Panel1.BorderRadius = 15;
-            this.guna2Panel1.BorderThickness = 1;
-            this.guna2Panel1.Controls.Add(this.label3);
-            this.guna2Panel1.Controls.Add(this.elementHost1);
-            this.guna2Panel1.FillColor = System.Drawing.Color.WhiteSmoke;
-            this.guna2Panel1.Location = new System.Drawing.Point(1089, 406);
-            this.guna2Panel1.Name = "guna2Panel1";
-            this.guna2Panel1.Size = new System.Drawing.Size(603, 340);
-            this.guna2Panel1.TabIndex = 124;
-            this.guna2Panel1.Visible = false;
+            this.PanelChartControloObra.BackColor = System.Drawing.Color.Transparent;
+            this.PanelChartControloObra.BorderColor = System.Drawing.Color.Black;
+            this.PanelChartControloObra.BorderRadius = 15;
+            this.PanelChartControloObra.BorderThickness = 1;
+            this.PanelChartControloObra.Controls.Add(this.Panel1);
+            this.PanelChartControloObra.Controls.Add(this.chartTotalHorasPessoas);
+            this.PanelChartControloObra.Controls.Add(this.labelNobra);
+            this.PanelChartControloObra.Controls.Add(this.ComboBoxObras);
+            this.PanelChartControloObra.Controls.Add(this.pieChartControloobra);
+            this.PanelChartControloObra.FillColor = System.Drawing.Color.WhiteSmoke;
+            this.PanelChartControloObra.Location = new System.Drawing.Point(731, 407);
+            this.PanelChartControloObra.Name = "PanelChartControloObra";
+            this.PanelChartControloObra.Size = new System.Drawing.Size(1561, 340);
+            this.PanelChartControloObra.TabIndex = 124;
+            this.PanelChartControloObra.Visible = false;
+            // 
+            // Panel1
+            // 
+            this.Panel1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.Panel1.BorderColor = System.Drawing.Color.Gray;
+            this.Panel1.BorderRadius = 5;
+            this.Panel1.BorderThickness = 1;
+            this.Panel1.Controls.Add(this.Buttonatualizaobra);
+            this.Panel1.Controls.Add(this.pictureBoxatualizaobra);
+            this.Panel1.FillColor = System.Drawing.Color.WhiteSmoke;
+            this.Panel1.Location = new System.Drawing.Point(410, 6);
+            this.Panel1.Name = "Panel1";
+            this.Panel1.Size = new System.Drawing.Size(51, 36);
+            this.Panel1.TabIndex = 132;
+            // 
+            // Buttonatualizaobra
+            // 
+            this.Buttonatualizaobra.CheckedState.ImageSize = new System.Drawing.Size(64, 64);
+            this.Buttonatualizaobra.HoverState.ImageSize = new System.Drawing.Size(28, 28);
+            this.Buttonatualizaobra.Image = global::OfelizCM.Properties.Resources.refresh1;
+            this.Buttonatualizaobra.ImageOffset = new System.Drawing.Point(0, 0);
+            this.Buttonatualizaobra.ImageRotate = 0F;
+            this.Buttonatualizaobra.ImageSize = new System.Drawing.Size(28, 28);
+            this.Buttonatualizaobra.Location = new System.Drawing.Point(5, 3);
+            this.Buttonatualizaobra.Name = "Buttonatualizaobra";
+            this.Buttonatualizaobra.PressedState.ImageSize = new System.Drawing.Size(28, 28);
+            this.Buttonatualizaobra.Size = new System.Drawing.Size(40, 30);
+            this.Buttonatualizaobra.TabIndex = 107;
+            this.Buttonatualizaobra.Click += new System.EventHandler(this.Buttonatualizaobra_Click);
+            // 
+            // pictureBoxatualizaobra
+            // 
+            this.pictureBoxatualizaobra.Image = global::OfelizCM.Properties.Resources.refresh;
+            this.pictureBoxatualizaobra.Location = new System.Drawing.Point(13, 3);
+            this.pictureBoxatualizaobra.Name = "pictureBoxatualizaobra";
+            this.pictureBoxatualizaobra.Size = new System.Drawing.Size(28, 28);
+            this.pictureBoxatualizaobra.TabIndex = 106;
+            this.pictureBoxatualizaobra.TabStop = false;
+            this.pictureBoxatualizaobra.Visible = false;
+            // 
+            // chartTotalHorasPessoas
+            // 
+            this.chartTotalHorasPessoas.Location = new System.Drawing.Point(511, 40);
+            this.chartTotalHorasPessoas.Name = "chartTotalHorasPessoas";
+            this.chartTotalHorasPessoas.Size = new System.Drawing.Size(1034, 290);
+            this.chartTotalHorasPessoas.TabIndex = 86;
+            this.chartTotalHorasPessoas.Text = "elementHost2";
+            this.chartTotalHorasPessoas.Child = this.cartesianChart5;
+            // 
+            // ComboBoxObras
+            // 
+            this.ComboBoxObras.BackColor = System.Drawing.Color.Transparent;
+            this.ComboBoxObras.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.ComboBoxObras.BorderRadius = 5;
+            this.ComboBoxObras.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.ComboBoxObras.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ComboBoxObras.FillColor = System.Drawing.Color.WhiteSmoke;
+            this.ComboBoxObras.FocusedColor = System.Drawing.Color.Black;
+            this.ComboBoxObras.FocusedState.BorderColor = System.Drawing.Color.Black;
+            this.ComboBoxObras.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ComboBoxObras.ForeColor = System.Drawing.Color.Black;
+            this.ComboBoxObras.HoverState.BorderColor = System.Drawing.Color.Black;
+            this.ComboBoxObras.ItemHeight = 30;
+            this.ComboBoxObras.Location = new System.Drawing.Point(5, 6);
+            this.ComboBoxObras.Margin = new System.Windows.Forms.Padding(2);
+            this.ComboBoxObras.Name = "ComboBoxObras";
+            this.ComboBoxObras.Size = new System.Drawing.Size(398, 36);
+            this.ComboBoxObras.TabIndex = 51;
+            this.ComboBoxObras.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.ComboBoxObras.SelectedIndexChanged += new System.EventHandler(this.ComboBoxObras_SelectedIndexChanged);
             // 
             // PanelExportar
             // 
@@ -1530,9 +1612,9 @@
             this.PanelExportar.Controls.Add(this.ButtonExportExcelTabelas);
             this.PanelExportar.Controls.Add(this.ButtonExportExcelHoras);
             this.PanelExportar.FillColor = System.Drawing.Color.WhiteSmoke;
-            this.PanelExportar.Location = new System.Drawing.Point(9, 1252);
+            this.PanelExportar.Location = new System.Drawing.Point(9, 1283);
             this.PanelExportar.Name = "PanelExportar";
-            this.PanelExportar.Size = new System.Drawing.Size(200, 186);
+            this.PanelExportar.Size = new System.Drawing.Size(200, 155);
             this.PanelExportar.TabIndex = 127;
             // 
             // ButtonExportExcelTabelas
@@ -1553,7 +1635,7 @@
             this.ButtonExportExcelTabelas.ImageOffset = new System.Drawing.Point(-2, 0);
             this.ButtonExportExcelTabelas.ImageSize = new System.Drawing.Size(40, 40);
             this.ButtonExportExcelTabelas.IndicateFocus = true;
-            this.ButtonExportExcelTabelas.Location = new System.Drawing.Point(17, 119);
+            this.ButtonExportExcelTabelas.Location = new System.Drawing.Point(16, 95);
             this.ButtonExportExcelTabelas.Name = "ButtonExportExcelTabelas";
             this.ButtonExportExcelTabelas.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(44)))), ((int)(((byte)(55)))));
             this.ButtonExportExcelTabelas.Size = new System.Drawing.Size(165, 49);
@@ -1579,7 +1661,7 @@
             this.ButtonExportExcelHoras.ImageOffset = new System.Drawing.Point(-2, 0);
             this.ButtonExportExcelHoras.ImageSize = new System.Drawing.Size(40, 40);
             this.ButtonExportExcelHoras.IndicateFocus = true;
-            this.ButtonExportExcelHoras.Location = new System.Drawing.Point(17, 49);
+            this.ButtonExportExcelHoras.Location = new System.Drawing.Point(16, 40);
             this.ButtonExportExcelHoras.Name = "ButtonExportExcelHoras";
             this.ButtonExportExcelHoras.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(44)))), ((int)(((byte)(55)))));
             this.ButtonExportExcelHoras.Size = new System.Drawing.Size(165, 49);
@@ -1677,7 +1759,6 @@
             this.PanelFiltrar.BorderColor = System.Drawing.Color.Black;
             this.PanelFiltrar.BorderRadius = 15;
             this.PanelFiltrar.BorderThickness = 1;
-            this.PanelFiltrar.Controls.Add(this.labelanofecho);
             this.PanelFiltrar.Controls.Add(this.checkanofecho);
             this.PanelFiltrar.Controls.Add(this.pictureBoxGif);
             this.PanelFiltrar.Controls.Add(this.ButtonLimaprtaabela);
@@ -1692,10 +1773,34 @@
             this.PanelFiltrar.Size = new System.Drawing.Size(200, 307);
             this.PanelFiltrar.TabIndex = 126;
             // 
+            // checkanofecho
+            // 
+            this.checkanofecho.Checked = false;
+            this.checkanofecho.CheckedForeground = System.Drawing.Color.DarkGreen;
+            this.checkanofecho.CheckedOutlineColor = System.Drawing.Color.DarkGreen;
+            this.checkanofecho.CheckedSymbolColor = System.Drawing.Color.WhiteSmoke;
+            this.checkanofecho.Content = "Sem Ano Fecho";
+            this.checkanofecho.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.checkanofecho.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.checkanofecho.Location = new System.Drawing.Point(25, 199);
+            this.checkanofecho.MinimumSize = new System.Drawing.Size(16, 16);
+            this.checkanofecho.Name = "checkanofecho";
+            this.checkanofecho.OutlineStyle = true;
+            this.checkanofecho.OutlineThickness = 1F;
+            this.checkanofecho.Rounding = 5;
+            this.checkanofecho.ShowSymbols = true;
+            this.checkanofecho.Size = new System.Drawing.Size(160, 25);
+            this.checkanofecho.TabIndex = 132;
+            this.checkanofecho.Text = "Sem Ano Fecho";
+            this.checkanofecho.UncheckedForeground = System.Drawing.Color.Empty;
+            this.checkanofecho.UncheckedOutlineColor = System.Drawing.Color.Gray;
+            this.checkanofecho.UncheckedSymbolColor = System.Drawing.Color.Empty;
+            this.checkanofecho.CheckedChanged += new System.EventHandler(this.checkanofecho_CheckedChanged);
+            // 
             // pictureBoxGif
             // 
             this.pictureBoxGif.Image = global::OfelizCM.Properties.Resources.refresh;
-            this.pictureBoxGif.Location = new System.Drawing.Point(38, 250);
+            this.pictureBoxGif.Location = new System.Drawing.Point(40, 250);
             this.pictureBoxGif.Name = "pictureBoxGif";
             this.pictureBoxGif.Size = new System.Drawing.Size(28, 28);
             this.pictureBoxGif.TabIndex = 105;
@@ -1710,7 +1815,7 @@
             this.ButtonLimaprtaabela.CheckedForeColor = System.Drawing.Color.White;
             this.ButtonLimaprtaabela.CheckedImageTint = System.Drawing.Color.White;
             this.ButtonLimaprtaabela.CheckedOutline = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(106)))), ((int)(((byte)(0)))));
-            this.ButtonLimaprtaabela.Content = "Limpar Tabela";
+            this.ButtonLimaprtaabela.Content = "Limpar Filtros";
             this.ButtonLimaprtaabela.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ButtonLimaprtaabela.DialogResult = System.Windows.Forms.DialogResult.None;
             this.ButtonLimaprtaabela.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
@@ -1756,9 +1861,9 @@
             this.guna2Panel2.Controls.Add(this.label6);
             this.guna2Panel2.Controls.Add(this.TextBoxKG);
             this.guna2Panel2.FillColor = System.Drawing.Color.WhiteSmoke;
-            this.guna2Panel2.Location = new System.Drawing.Point(7, 930);
+            this.guna2Panel2.Location = new System.Drawing.Point(9, 975);
             this.guna2Panel2.Name = "guna2Panel2";
-            this.guna2Panel2.Size = new System.Drawing.Size(200, 316);
+            this.guna2Panel2.Size = new System.Drawing.Size(200, 302);
             this.guna2Panel2.TabIndex = 129;
             // 
             // label16
@@ -1795,44 +1900,59 @@
             this.guna2Panel4.BorderColor = System.Drawing.Color.Black;
             this.guna2Panel4.BorderRadius = 15;
             this.guna2Panel4.BorderThickness = 1;
+            this.guna2Panel4.Controls.Add(this.ButtonAtualisarLinha);
+            this.guna2Panel4.Controls.Add(this.Buttonlimaprlinha);
             this.guna2Panel4.Controls.Add(this.label14);
             this.guna2Panel4.Controls.Add(this.ButtonAtualizarbd);
             this.guna2Panel4.FillColor = System.Drawing.Color.WhiteSmoke;
             this.guna2Panel4.Location = new System.Drawing.Point(7, 799);
             this.guna2Panel4.Name = "guna2Panel4";
-            this.guna2Panel4.Size = new System.Drawing.Size(200, 125);
+            this.guna2Panel4.Size = new System.Drawing.Size(200, 170);
             this.guna2Panel4.TabIndex = 131;
             // 
-            // checkanofecho
+            // ButtonAtualisarLinha
             // 
-            this.checkanofecho.CheckedState.BorderColor = System.Drawing.Color.ForestGreen;
-            this.checkanofecho.CheckedState.BorderRadius = 3;
-            this.checkanofecho.CheckedState.BorderThickness = 1;
-            this.checkanofecho.CheckedState.FillColor = System.Drawing.Color.DarkGreen;
-            this.checkanofecho.Location = new System.Drawing.Point(32, 197);
-            this.checkanofecho.Name = "checkanofecho";
-            this.checkanofecho.Size = new System.Drawing.Size(20, 20);
-            this.checkanofecho.TabIndex = 132;
-            this.checkanofecho.Text = "guna2CustomCheckBox1";
-            this.checkanofecho.UncheckedState.BorderColor = System.Drawing.Color.Black;
-            this.checkanofecho.UncheckedState.BorderRadius = 3;
-            this.checkanofecho.UncheckedState.BorderThickness = 1;
-            this.checkanofecho.UncheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.checkanofecho.Click += new System.EventHandler(this.checkanofecho_Click);
+            this.ButtonAtualisarLinha.Animated = true;
+            this.ButtonAtualisarLinha.BackColor = System.Drawing.Color.Transparent;
+            this.ButtonAtualisarLinha.BorderColor = System.Drawing.Color.Silver;
+            this.ButtonAtualisarLinha.BorderRadius = 12;
+            this.ButtonAtualisarLinha.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.ButtonAtualisarLinha.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.ButtonAtualisarLinha.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.ButtonAtualisarLinha.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.ButtonAtualisarLinha.FillColor = System.Drawing.Color.Black;
+            this.ButtonAtualisarLinha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ButtonAtualisarLinha.ForeColor = System.Drawing.Color.White;
+            this.ButtonAtualisarLinha.IndicateFocus = true;
+            this.ButtonAtualisarLinha.Location = new System.Drawing.Point(17, 85);
+            this.ButtonAtualisarLinha.Name = "ButtonAtualisarLinha";
+            this.ButtonAtualisarLinha.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(44)))), ((int)(((byte)(55)))));
+            this.ButtonAtualisarLinha.Size = new System.Drawing.Size(165, 35);
+            this.ButtonAtualisarLinha.TabIndex = 122;
+            this.ButtonAtualisarLinha.Text = "Atualizar Linha";
+            this.ButtonAtualisarLinha.Click += new System.EventHandler(this.ButtonAtualisarLinha_Click);
             // 
-            // labelanofecho
+            // Buttonlimaprlinha
             // 
-            this.labelanofecho.AutoSize = true;
-            this.labelanofecho.BackColor = System.Drawing.Color.Transparent;
-            this.labelanofecho.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelanofecho.ForeColor = System.Drawing.Color.Black;
-            this.labelanofecho.Location = new System.Drawing.Point(59, 197);
-            this.labelanofecho.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.labelanofecho.Name = "labelanofecho";
-            this.labelanofecho.Size = new System.Drawing.Size(115, 18);
-            this.labelanofecho.TabIndex = 133;
-            this.labelanofecho.Text = "Sem Ano Fecho";
-            this.labelanofecho.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Buttonlimaprlinha.Animated = true;
+            this.Buttonlimaprlinha.BackColor = System.Drawing.Color.Transparent;
+            this.Buttonlimaprlinha.BorderColor = System.Drawing.Color.Silver;
+            this.Buttonlimaprlinha.BorderRadius = 12;
+            this.Buttonlimaprlinha.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.Buttonlimaprlinha.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.Buttonlimaprlinha.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Buttonlimaprlinha.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.Buttonlimaprlinha.FillColor = System.Drawing.Color.Black;
+            this.Buttonlimaprlinha.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Buttonlimaprlinha.ForeColor = System.Drawing.Color.White;
+            this.Buttonlimaprlinha.IndicateFocus = true;
+            this.Buttonlimaprlinha.Location = new System.Drawing.Point(17, 125);
+            this.Buttonlimaprlinha.Name = "Buttonlimaprlinha";
+            this.Buttonlimaprlinha.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(44)))), ((int)(((byte)(55)))));
+            this.Buttonlimaprlinha.Size = new System.Drawing.Size(165, 35);
+            this.Buttonlimaprlinha.TabIndex = 121;
+            this.Buttonlimaprlinha.Text = "Eliminar Linha";
+            this.Buttonlimaprlinha.Click += new System.EventHandler(this.Buttonlimaprlinha_Click);
             // 
             // Frm_TodasObras
             // 
@@ -1848,7 +1968,7 @@
             this.Controls.Add(this.PanelInserirAtualizar);
             this.Controls.Add(this.PanelFiltrar);
             this.Controls.Add(this.ButtonAtualizarvalorhora);
-            this.Controls.Add(this.guna2Panel1);
+            this.Controls.Add(this.PanelChartControloObra);
             this.Controls.Add(this.PanelchartTotalValorObras);
             this.Controls.Add(this.PanelChartControlo);
             this.Controls.Add(this.PanelchartObrasHoras);
@@ -1884,8 +2004,10 @@
             this.PanelChartControlo.PerformLayout();
             this.PanelchartTotalValorObras.ResumeLayout(false);
             this.PanelchartTotalValorObras.PerformLayout();
-            this.guna2Panel1.ResumeLayout(false);
-            this.guna2Panel1.PerformLayout();
+            this.PanelChartControloObra.ResumeLayout(false);
+            this.PanelChartControloObra.PerformLayout();
+            this.Panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxatualizaobra)).EndInit();
             this.PanelExportar.ResumeLayout(false);
             this.PanelExportar.PerformLayout();
             this.PanelInserirAtualizar.ResumeLayout(false);
@@ -1957,7 +2079,7 @@
         private System.Windows.Forms.Integration.ElementHost chartTotalValorObras;
         private LiveCharts.Wpf.CartesianChart cartesianChart4;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label labelcontroloobra;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label labelobra;
@@ -1975,9 +2097,9 @@
         private Guna.UI2.WinForms.Guna2Panel PanelExportar;
         private Guna.UI2.WinForms.Guna2Panel PanelInserirAtualizar;
         private Guna.UI2.WinForms.Guna2Panel PanelFiltrar;
-        private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private Guna.UI2.WinForms.Guna2Panel PanelChartControloObra;
+        private System.Windows.Forms.Label labelNobra;
+        private System.Windows.Forms.Integration.ElementHost pieChartControloobra;
         private LiveCharts.Wpf.PieChart pieChart2;
         private LiveCharts.Wpf.CartesianChart cartesianChart3;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel2;
@@ -1992,7 +2114,14 @@
         private Guna.UI2.WinForms.Guna2DataGridView DataGridViewConclusaoObrasTotal;
         private Guna.UI2.WinForms.Guna2DataGridView DataGridViewOrcamentacaoObrasTotal;
         private Guna.UI2.WinForms.Guna2DataGridView DataGridViewRealObrasTotal;
-        private System.Windows.Forms.Label labelanofecho;
-        private Guna.UI2.WinForms.Guna2CustomCheckBox checkanofecho;
+        private Guna.UI2.WinForms.Guna2ComboBox ComboBoxObras;
+        private System.Windows.Forms.Integration.ElementHost chartTotalHorasPessoas;
+        private LiveCharts.Wpf.CartesianChart cartesianChart5;
+        private Guna.UI2.WinForms.Guna2Button Buttonlimaprlinha;
+        private Guna.UI2.WinForms.Guna2Button ButtonAtualisarLinha;
+        private Guna.UI2.WinForms.Guna2ImageButton Buttonatualizaobra;
+        private System.Windows.Forms.PictureBox pictureBoxatualizaobra;
+        private Guna.UI2.WinForms.Guna2Panel Panel1;
+        private CuoreUI.Controls.cuiCheckbox checkanofecho;
     }
 }
