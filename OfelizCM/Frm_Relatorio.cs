@@ -1,17 +1,9 @@
-﻿using iText.Kernel.Pdf.Canvas.Wmf;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static OfelizCM.Frm_Atualizar;
 using static OfelizCM.PDFCreat;
 
 namespace OfelizCM

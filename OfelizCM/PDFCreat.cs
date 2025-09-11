@@ -1,12 +1,11 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using iText.Kernel.Colors; // Usado para trabalhar com cores no iTextSharp
 using iText.Kernel.Pdf;
 using iText.Layout;
+using iText.Layout.Borders; // Para manipulação de bordas
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using iText.Kernel.Colors; // Usado para trabalhar com cores no iTextSharp
-using iText.Layout.Borders; // Para manipulação de bordas
+using System;
+using System.Windows.Forms;
 
 namespace OfelizCM
 {

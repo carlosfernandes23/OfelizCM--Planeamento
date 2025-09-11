@@ -1,8 +1,5 @@
-﻿using Guna.UI2.WinForms;
-using ServiceStack.Text;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -11,13 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Windows.Forms;
-using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
-using static OfelizCM.Frm_Atualizar;
 using static OfelizCM.PDFCreat;
 using Bitmap = System.Drawing.Bitmap;
 

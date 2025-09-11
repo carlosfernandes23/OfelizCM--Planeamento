@@ -1,16 +1,14 @@
-﻿using OfficeOpenXml;
-using OfficeOpenXml.Table;
-using System.Data;
-using System.IO;
+﻿using OfelizCM;
+using OfficeOpenXml;
 using OfficeOpenXml.Style;
-using System.Drawing;
-using System.Linq;
 using System;
-using OfficeOpenXml.Table.PivotTable;
-using OfelizCM;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 
 public class ExcelExport
 {

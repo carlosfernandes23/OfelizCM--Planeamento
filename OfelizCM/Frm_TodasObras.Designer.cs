@@ -656,6 +656,9 @@
             this.DataGridViewOrcamentacaoObras.ThemeStyle.RowsStyle.Height = 28;
             this.DataGridViewOrcamentacaoObras.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.DataGridViewOrcamentacaoObras.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this.DataGridViewOrcamentacaoObras.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.DataGridViewOrcamentacaoObras_CellValidating);
+            this.DataGridViewOrcamentacaoObras.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.DataGridViewOrcamentacaoObras_EditingControlShowing);
+            this.DataGridViewOrcamentacaoObras.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DataGridViewOrcamentacaoObras_KeyDown);
             // 
             // DataGridViewConclusaoObrasTotal
             // 

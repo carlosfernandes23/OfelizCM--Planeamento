@@ -1,26 +1,19 @@
-﻿using ServiceStack;
-using ServiceStack.Text;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls.WebParts;
 using System.Windows.Forms;
 using static OfelizCM.PDFCreat;
-using System.Net.Http;
-using NHunspell;
 using MessageBox = System.Windows.Forms.MessageBox;
-using Newtonsoft.Json.Linq;
-using Guna.UI2.WinForms;
-using System.Net.Mail;
 
 namespace OfelizCM
 {

@@ -1,29 +1,21 @@
-﻿using GMap.NET;
-using GMap.NET;
-using GMap.NET.MapProviders;
-using GMap.NET.MapProviders;
-using LiveCharts;
+﻿using LiveCharts;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
-using static OfelizCM.Frm_Dashbord;
 
 namespace OfelizCM
 {
     internal abstract class BaseConsulta
     {
         protected readonly ComunicaBD _conectarbd;
-
         protected BaseConsulta()
         {
-            _conectarbd = new ComunicaBD();
+            _conectarbd = new ComunicaBD(); 
         }
     }
     internal class Mostartabelas : BaseConsulta
@@ -247,10 +239,10 @@ namespace OfelizCM
         {
             _conectarbd.ConectarBD();
             string query = @"SELECT [Percentagem Estrutura Real], [Percentagem Revestimentos Real], [Percentagem Aprovacao Real],
-                                   [Percentagem Alteracoes Real], [Percentagem Fabrico Real], [Percentagem Soldadura Real], 
-                                   [Percentagem Montagem Real], [Percentagem Diversos Real]
-                                   FROM dbo.TotalObras";
-
+                                    [Percentagem Alteracoes Real], [Percentagem Fabrico Real], [Percentagem Soldadura Real], 
+                                    [Percentagem Montagem Real], [Percentagem Diversos Real]
+                                    FROM dbo.TotalObras";
+             
             var series = new SeriesCollection();
             try
             {
@@ -297,6 +289,86 @@ namespace OfelizCM
                 _conectarbd.DesonectarBD();
             }
         }
+        public SeriesCollection CarregarGraficoRedondoanodefecho(string Anofecho)
+        {
+            _conectarbd.ConectarBD();
+            string query = @"SELECT [Percentagem Estrutura], [Percentagem Revestimentos], [Percentagem Aprovação],
+                            [Percentagem Alterações], [Percentagem Fabrico], [Percentagem Soldadura], 
+                            [Percentagem Montagem], [Percentagem Diversos]
+                            FROM dbo.RealObras                        
+                            WHERE [Ano de fecho] = @AnoFecho
+                            ORDER BY ID ASC";
+
+            var series = new SeriesCollection();
+            try
+            {
+                using (var cmd = new SqlCommand(query, _conectarbd.GetConnection()))
+                {
+                    cmd.Parameters.AddWithValue("@AnoFecho", Anofecho);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        var totais = new Dictionary<string, double>
+                            {
+                                { "Percentagem Estrutura", 0 },
+                                { "Percentagem Revestimentos", 0 },
+                                { "Percentagem Aprovação", 0 },
+                                { "Percentagem Alterações", 0 },
+                                { "Percentagem Fabrico", 0 },
+                                { "Percentagem Soldadura", 0 },
+                                { "Percentagem Montagem", 0 },
+                                { "Percentagem Diversos", 0 }
+                            };
+
+                        while (reader.Read())
+                        {
+                            foreach (var key in totais.Keys.ToList())
+                            {
+                                string raw = reader[key].ToString().Replace("%", "").Replace(".", ",").Trim();
+                                if (double.TryParse(raw, out double val))
+                                    totais[key] += val;
+                            }
+                        }
+
+                        var categorias = new Dictionary<string, (string Coluna, System.Windows.Media.Brush Cor)>
+                            {
+                                { "Estrutura", ("Percentagem Estrutura", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red)) },
+                                { "Revestimentos", ("Percentagem Revestimentos", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(97, 155, 243))) },
+                                { "Aprovação", ("Percentagem Aprovação", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Orange)) },
+                                { "Alterações", ("Percentagem Alterações", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(139, 201, 77))) },
+                                { "Fabrico", ("Percentagem Fabrico", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 128, 255))) },
+                                { "Soldadura", ("Percentagem Soldadura", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.DarkGreen)) },
+                                { "Montagem", ("Percentagem Montagem", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 192, 192))) },
+                                { "Diversos", ("Percentagem Diversos", new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray)) }
+                            };
+
+                        double somaTotal = totais.Values.Sum();
+
+                        foreach (var cat in categorias)
+                        {
+                            double valor = totais[cat.Value.Coluna];
+                            double percentual = somaTotal > 0 ? valor / somaTotal * 100 : 0;
+
+                            var serie = new LiveCharts.Wpf.PieSeries
+                            {
+                                Title = cat.Key,
+                                Values = new ChartValues<double> { percentual },
+                                DataLabels = true,
+                                LabelPoint = chartPoint => Math.Round(chartPoint.Y, 0, MidpointRounding.AwayFromZero).ToString() + " %",
+                                Fill = cat.Value.Cor,
+                                FontSize = 12
+                            };
+                            series.Add(serie);
+                        }
+                    }
+                }
+                return series;
+            }
+            finally
+            {
+                _conectarbd.DesonectarBD();
+            }
+        }
         public SeriesCollection CarregarGraficoPiePercentagemComObra(string NumeroObra)
         {
             ComunicaBD BD = new ComunicaBD();
@@ -305,8 +377,8 @@ namespace OfelizCM
             string queryReal = @"SELECT [Percentagem Estrutura], [Percentagem Revestimentos], [Percentagem Aprovação],
                                [Percentagem Alterações], [Percentagem Fabrico], [Percentagem Soldadura], 
                                [Percentagem Montagem], [Percentagem Diversos]
-                        FROM dbo.RealObras
-                        WHERE [Numero da Obra] = @NumeroDaObra";
+                               FROM dbo.RealObras
+                               WHERE [Numero da Obra] = @NumeroDaObra";
 
             var series = new LiveCharts.SeriesCollection();
 
@@ -528,7 +600,7 @@ namespace OfelizCM
                             FontSize = 12,
                             LabelPoint = point =>
                             {
-                              return $"{point.Y:N1} %";
+                              return $"{point.Y:N0} %";
                             }
                         }
                     };
@@ -766,7 +838,7 @@ namespace OfelizCM
                             Fill = Brushes.LightBlue,
                             Stroke = Brushes.Black,
                             StrokeThickness = 0.5,
-                            LabelPoint = point => point.Y + "€"
+                            LabelPoint = point => Math.Round(point.Y, 0) + "€",
                         },
                         new ColumnSeries
                         {
@@ -776,7 +848,7 @@ namespace OfelizCM
                             Fill = Brushes.Orange,
                             Stroke = Brushes.Black,
                             StrokeThickness = 0.5,
-                            LabelPoint = point => point.Y + "€"
+                            LabelPoint = point => Math.Round(point.Y, 0) + "€",
                         }
                     };
 
@@ -861,7 +933,7 @@ namespace OfelizCM
                                 Fill = Brushes.LightBlue,
                                 Stroke = Brushes.Black,
                                 StrokeThickness = 0.5,
-                                LabelPoint = point => point.Y + "€"
+                                LabelPoint = point => Math.Round(point.Y, 0) + "€",
                             },
                             new ColumnSeries
                             {
@@ -871,7 +943,7 @@ namespace OfelizCM
                                 Fill = Brushes.Orange,
                                 Stroke = Brushes.Black,
                                 StrokeThickness = 0.5,
-                                LabelPoint = point => point.Y + "€"
+                                LabelPoint = point => Math.Round(point.Y, 0) + "€",
                             }
                         };
 
@@ -946,7 +1018,7 @@ namespace OfelizCM
                                 Fill = Brushes.LightBlue,
                                 Stroke = Brushes.Black,
                                 StrokeThickness = 0.5,
-                                LabelPoint = point => point.Y + "€"
+                                LabelPoint = point => Math.Round(point.Y, 0) + "€",
                             },
                             new ColumnSeries
                             {
@@ -956,7 +1028,7 @@ namespace OfelizCM
                                 Fill = Brushes.Orange,
                                 Stroke = Brushes.Black,
                                 StrokeThickness = 0.5,
-                                LabelPoint = point => point.Y + "€"
+                                LabelPoint = point => Math.Round(point.Y, 0) + "€",
                             }
                         };
 

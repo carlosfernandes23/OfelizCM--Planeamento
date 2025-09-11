@@ -1,9 +1,7 @@
 ﻿using OfficeOpenXml;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using System.Linq;
 
 public class ExcelHelper
 {

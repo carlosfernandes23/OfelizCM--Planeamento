@@ -1,32 +1,17 @@
-﻿using GMap.NET;
-using GMap.NET.MapProviders;
-using GMap.NET.WindowsForms;
-using GMap.NET.WindowsForms.Markers;
-using GMap.NET.WindowsPresentation;
-using LiveCharts;
+﻿using LiveCharts;
 using LiveCharts.Wpf;
-using MaterialSkin;
-using MaterialSkin.Controls;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
-using ServiceStack.Script;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Media;
-using static ServiceStack.Script.Lisp;
 using Color = System.Drawing.Color;
 using Cor = System.Windows.Media;
 
@@ -93,25 +78,10 @@ namespace OfelizCM
             imgOriginal = ButtonLimaprtaabela.Image;
             imgGif = Properties.Resources.refresh;
             ButtonLimaprtaabela.Image = imgOriginal;
-            ConfigurarDataGridView(DataGridViewOrcamentacaoObras);
-            ConfigurarDataGridView(DataGridViewRealObras);
-            ConfigurarDataGridView(DataGridViewConclusaoObras);
-        }
-        private void ConfigurarDataGridView(DataGridView dgv)
-        {
-            dgv.DataBindingComplete += (s, e) =>
-            {
-                dgv.ClearSelection();
-                dgv.CurrentCell = null;
-            };
-            dgv.GotFocus += (s, e) =>
-            {
-                if (dgv.CurrentCell != null)
-                {
-                    dgv.ClearSelection();
-                    dgv.CurrentCell = null;
-                }
-            };
+            ConfiguarDataGridViewOrcamentacaoObras();
+            DataGridViewOrcamentacaoObras.EditMode = DataGridViewEditMode.EditOnEnter;
+            DataGridViewOrcamentacaoObras.CellValidating += DataGridViewOrcamentacaoObras_CellValidating;
+            DataGridViewOrcamentacaoObras.CurrentCellDirtyStateChanged += DataGridViewOrcamentacaoObras_CurrentCellDirtyStateChanged;
         }
         public void VerificarUsuario()
         {
@@ -632,6 +602,18 @@ namespace OfelizCM
                 pieChart.LegendLocation = LiveCharts.LegendLocation.Top;
             }
         }
+        public void VisualizarGraficoPiePercentagemAnodefecho()
+        {
+            MostarGraficos grafico = new MostarGraficos();
+            string anodefecho = ComboBoxAnoAdd.SelectedItem?.ToString();
+            labelcontroloobra.Text = $"Gráfico Controlo do Ano de fecho : {anodefecho}";
+            var pieChart = pieChartControlo.Child as LiveCharts.Wpf.PieChart;
+            if (pieChart != null)
+            {
+                pieChart.Series = grafico.CarregarGraficoRedondoanodefecho(anodefecho);
+                pieChart.LegendLocation = LegendLocation.Top;
+            }
+        }
         private void VisualizarGraficoObrasPercentagem()
         {
             var chartWpf = ChartTotalObrasPercentagem.Child as LiveCharts.Wpf.CartesianChart;
@@ -645,7 +627,7 @@ namespace OfelizCM
                 s.MaxColumnWidth = 30;
                 s.ColumnPadding = 10;
                 s.DataLabels = true;
-                s.LabelPoint = point => $"{point.Y:N1} %";
+                s.LabelPoint = point => $"{point.Y:N0} %";
             }
 
             chartWpf.AxisX.Clear();
@@ -662,7 +644,7 @@ namespace OfelizCM
             chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
             {
                 Title = "Percentagem (%)",
-                LabelFormatter = value => value.ToString("N1") + " %",
+                LabelFormatter = value => value.ToString("N0") + " %",
                 Sections = new SectionsCollection
              {
             new AxisSection
@@ -762,7 +744,7 @@ namespace OfelizCM
                 string nomeObra = new MostarGraficos().ObterNomeObra(numeroObra);
                 double percentagem = chartPoint.Y;
 
-                labelobrasHoras.Text = $"{nomeObra} | {percentagem:N1} h";
+                labelobrasHoras.Text = $"{nomeObra} | {percentagem} h";
             };
         }
         private void VisualizarGraficoObrasValor()
@@ -933,7 +915,7 @@ namespace OfelizCM
                         Fill = Cor.Brushes.Yellow,
                         Stroke = Cor.Brushes.Black,
                         StrokeThickness = 0.5,
-                        LabelPoint = point => point.Y + "%"
+                        LabelPoint = point => Math.Round(point.Y, 0) + "%"
                     }
                 };
 
@@ -951,7 +933,7 @@ namespace OfelizCM
             chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
             {
                 Title = "Percentagem (%)",
-                LabelFormatter = value => value.ToString("N1") + " %",
+                LabelFormatter = value => value.ToString("N0") + " %",
                 Sections = new SectionsCollection
                      {
                     new AxisSection
@@ -1071,7 +1053,7 @@ namespace OfelizCM
                                 Fill = Cor.Brushes.Yellow,
                                 Stroke = Cor.Brushes.Black,
                                 StrokeThickness = 0.5,
-                                LabelPoint = point => point.Y + "%"
+                                LabelPoint = point => Math.Round(point.Y, 0) + "%"
                             }
                         };
 
@@ -1089,7 +1071,7 @@ namespace OfelizCM
             chartWpf.AxisY.Add(new LiveCharts.Wpf.Axis
             {
                 Title = "Percentagem (%)",
-                LabelFormatter = value => value.ToString("N1") + " %",
+                LabelFormatter = value => value.ToString("N0") + " %",
                 Sections = new SectionsCollection
                      {
                     new AxisSection
@@ -3608,6 +3590,99 @@ namespace OfelizCM
                 DataGridViewOrcamentacaoObras[e.ColumnIndex, e.RowIndex] = textCell;
             }
         }
+        private void ConfiguarDataGridViewOrcamentacaoObras()
+        {
+            foreach (DataGridViewColumn column in DataGridViewOrcamentacaoObras.Columns)
+            {
+                column.ReadOnly = true;
+            }
+
+            if (DataGridViewOrcamentacaoObras.Columns.Contains("Numero da Obra"))
+            {
+                DataGridViewOrcamentacaoObras.Columns["Numero da Obra"].ReadOnly = false;
+            }
+
+            if (DataGridViewOrcamentacaoObras.Columns.Contains("Nome da Obra"))
+            {
+                DataGridViewOrcamentacaoObras.Columns["Nome da Obra"].ReadOnly = false;
+            }
+
+            if (DataGridViewOrcamentacaoObras.Columns.Contains("Preparador Responsavel"))
+            {
+                DataGridViewOrcamentacaoObras.Columns["Preparador Responsavel"].ReadOnly = false;
+            }
+
+            if (DataGridViewOrcamentacaoObras.Columns.Contains("Tipologia"))
+            {
+                DataGridViewOrcamentacaoObras.Columns["Tipologia"].ReadOnly = false;
+            }
+
+            if (DataGridViewOrcamentacaoObras.Columns.Contains("KG Estrutura"))
+            {
+                DataGridViewOrcamentacaoObras.Columns["KG Estrutura"].ReadOnly = false;
+            }
+
+            if (DataGridViewOrcamentacaoObras.Columns.Contains("Horas Estrutura"))
+            {
+                DataGridViewOrcamentacaoObras.Columns["Horas Estrutura"].ReadOnly = false;
+            }
+
+            if (DataGridViewOrcamentacaoObras.Columns.Contains("Horas Revestimentos"))
+            {
+                DataGridViewOrcamentacaoObras.Columns["Horas Revestimentos"].ReadOnly = false;
+            }
+        }
+        private void DataGridViewOrcamentacaoObras_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            string colName = DataGridViewOrcamentacaoObras.Columns[e.ColumnIndex].Name;
+            var cell = DataGridViewOrcamentacaoObras.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+            if (e.FormattedValue != null)
+            {
+                string text = e.FormattedValue.ToString().Trim();
+
+                if (colName.Contains("KG"))
+                    text = text.Replace(" kg", "");
+                else if (colName.Contains("Horas"))
+                    text = text.Replace(" h", "");
+                else if (colName.Contains("Valor"))
+                    text = text.Replace(" €", "").Replace('.', ',');
+
+                if (double.TryParse(text, out double result))
+                    cell.Value = result;
+            }
+        }
+        private void DataGridViewOrcamentacaoObras_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (DataGridViewOrcamentacaoObras.IsCurrentCellDirty)
+            {
+                DataGridViewOrcamentacaoObras.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+        private void DataGridViewOrcamentacaoObras_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (e.Control is TextBox tb)
+            {
+                tb.KeyDown -= TextBox_KeyDown;
+                tb.KeyDown += TextBox_KeyDown;
+            }
+        }
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                e.Handled = true;
+            }
+        }
+        private void DataGridViewOrcamentacaoObras_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
         public DataTable DataGridViewToDataTable(DataGridView dataGridView, bool incluirCabecalho)
         {
             DataTable dataTable = new DataTable();
@@ -3884,6 +3959,7 @@ namespace OfelizCM
             VisualizarGraficoObrasHorasAno();
             VisualizarGraficoObrasValorAno();
             VisualizarGraficoObrasPercentagemAno();
+            VisualizarGraficoPiePercentagemAnodefecho();
             Modificartabelas();
             Calcular();
             LimparColunaUltimaLinha(DataGridViewOrcamentacaoObras);
@@ -4260,6 +4336,8 @@ namespace OfelizCM
             Limpar(DataGridViewOrcamentacaoObras);
             AdicionarSufixosNasColunas();           
         }
+
+       
     }
 }
 

@@ -1,27 +1,16 @@
-﻿using Guna.Charts.WinForms;
-using LiveCharts;
+﻿using LiveCharts;
 using LiveCharts.Wpf;
-using Microsoft.Office.Interop.Excel;
-using ServiceStack.Script;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
-using System.Windows.Media;
 using Action = System.Action;
 using DataTable = System.Data.DataTable;
-using Font = System.Drawing.Font;
-using MediaColor = System.Windows.Media.Color;
 
 
 namespace OfelizCM
